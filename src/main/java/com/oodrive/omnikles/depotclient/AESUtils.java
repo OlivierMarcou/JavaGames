@@ -17,14 +17,14 @@ import java.util.Collection;
  */
 public class AESUtils {
 
-
-    public static String encrypt(File file, X509Certificate certificat64cer) {
+    public static void encrypt(File file, X509Certificate certificat64cer) {
         try {
             Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
             field.setAccessible(true);
             field.set(null, java.lang.Boolean.FALSE);
         } catch (Exception ex) {
         }
+        String resultat = null;
         try {
             // Chargement du fichier à chiffrer
             byte[] buffer = new byte[(int)file.length()];
@@ -44,63 +44,65 @@ public class AESUtils {
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
             CMSEnvelopedData envData = gen.generate(msg, new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES256_CBC)
                     .setProvider("BC").build());
-
+            System.out.println("Size crypted File: " + envData.getEncoded().length);
             byte[] pkcs7envelopedData = envData.getEncoded();
             // Ecriture du document chiffré
-            FileOutputStream envfos = new FileOutputStream(file.getName() + ".pk7");
+            FileOutputStream envfos = new FileOutputStream(file.getAbsolutePath() + ".crypt");
             envfos.write(pkcs7envelopedData);
             envfos.close();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
     }
 
-    public static String decryptByPk(String path, PrivateKey pk){
-        File file = new File(path);
-        byte[] pkcs7envelopedData = new byte[(int)file.length()];
-        DataInputStream in = null;
-        try {
-            in = new DataInputStream(new FileInputStream(file));
-            in.readFully(pkcs7envelopedData);
-            in.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static String decryptByPk(File file, PrivateKey pk){
+        if(file.exists()) {
+            byte[] pkcs7envelopedData = new byte[(int) file.length()];
+            DataInputStream in = null;
+            try {
+                in = new DataInputStream(new FileInputStream(file));
+                in.readFully(pkcs7envelopedData);
+                in.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        CMSEnvelopedData ced = null;
-        try {
-            ced = new CMSEnvelopedData(pkcs7envelopedData);
-        } catch (CMSException e) {
-            e.printStackTrace();
-        }
-        Collection recip = ced.getRecipientInfos().getRecipients();
+            CMSEnvelopedData ced = null;
+            try {
+                ced = new CMSEnvelopedData(pkcs7envelopedData);
+            } catch (CMSException e) {
+                e.printStackTrace();
+            }
+            Collection recip = ced.getRecipientInfos().getRecipients();
 
-        KeyTransRecipientInformation rinfo = (KeyTransRecipientInformation)
-                recip.iterator().next();
+            KeyTransRecipientInformation rinfo = (KeyTransRecipientInformation)
+                    recip.iterator().next();
 
-        byte[] contents = new byte[0];
-        try {
-            Recipient recipient = new JceKeyTransEnvelopedRecipient(pk).setProvider("BC");
-            contents = rinfo.getContent(recipient);
-        } catch (CMSException e) {
-            e.printStackTrace();
-        }
+            byte[] contents = new byte[0];
+            try {
+                Recipient recipient = new JceKeyTransEnvelopedRecipient(pk).setProvider("BC");
+                contents = rinfo.getContent(recipient);
+            } catch (CMSException e) {
+                e.printStackTrace();
+            }
 
-        FileOutputStream envfos = null;
-        try {
-            envfos = new FileOutputStream("fichier_non_chiffrer");
-            envfos.write(contents);
-            envfos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            FileOutputStream envfos = null;
+            try {
+                envfos = new FileOutputStream("fichier_non_chiffrer");
+                envfos.write(contents);
+                envfos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return contents.toString();
+        }else{
+            return null;
         }
-        return contents.toString();
     }
 
 }

@@ -1,11 +1,6 @@
 package com.oodrive.omnikles.depotclient;
 
-import org.apache.log4j.Logger;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -17,38 +12,43 @@ import java.util.List;
  */
 public class CryptoService {
 
-    public static final Logger logger = Logger.getLogger(CryptoService.class);
-
-    public String crypteByCertificat(File fichier) throws IOException {
-        SslConnexion ssl = new SslConnexion();
-        ssl.connexion();
-        String certificat = ssl.certificat;
-        String resultat = null;
-        try {
-            final CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-            InputStream is = new ByteArrayInputStream(certificat.getBytes());
-            X509Certificate certificatX509 = (X509Certificate) certFactory.generateCertificate(is);
-            resultat = AESUtils.encrypt(fichier, certificatX509);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+    public void crypteByCertificat(File file) throws IOException {
+        if(file.exists()) {
+            SslConnexion ssl = new SslConnexion();
+            ssl.connexion();
+            String certificat = ssl.certificat;
+            try {
+                final CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+                InputStream is = new ByteArrayInputStream(certificat.getBytes());
+                X509Certificate certificatX509 = (X509Certificate) certFactory.generateCertificate(is);
+                AESUtils.encrypt(file, certificatX509);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            throw new FileNotFoundException("fichier introuvable : "+ file.getAbsolutePath());
         }
-        return resultat;
     }
 
-    public String decryptWindows(String decrypte) {
-        CertificatesManager cm = new CertificatesManager();
-        List<KeyPair> certificats =  new ArrayList<>();
-        try {
-            KeyStore ks = cm.getKeyStore();
-            certificats = cm.loadKeyPairsFromKeystore(ks);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+    public String decryptWindows(File file) throws FileNotFoundException {
+        if(file.exists()){
+            CertificatesManager cm = new CertificatesManager();
+            List<KeyPair> certificats =  new ArrayList<>();
+            String decrypte = null;
+            try {
+                KeyStore ks = cm.getKeyStore();
+                certificats = cm.loadKeyPairsFromKeystore(ks);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                decrypte = AESUtils.decryptByPk(file, certificats.get(0).getPrivateKey());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return decrypte;
+        }else{
+            throw new FileNotFoundException("Fichier introuvable : "+ file.getAbsolutePath());
         }
-        try {
-            decrypte = AESUtils.decryptByPk("pom.xml" + ".pk7", certificats.get(0).getPrivateKey());
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return decrypte;
     }
 }

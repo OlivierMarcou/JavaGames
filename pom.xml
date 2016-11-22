@@ -19,17 +19,16 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
             <version>1.55</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/bcpkix-jdk15on-1.55.jar</systemPath>
         </dependency>
+
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.55</version>
-        </dependency>
-<!-- https://mvnrepository.com/artifact/com.savoirtech.eos/eos-core -->
-        <dependency>
-            <groupId>com.savoirtech.eos</groupId>
-            <artifactId>eos-core</artifactId>
-            <version>1.1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/bcprov-jdk15on-1.55.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -38,11 +37,6 @@
             <version>2.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
-        </dependency>
         <dependency>
             <groupId>sun.security.mscapi</groupId>
             <artifactId>sunmscapi</artifactId>
@@ -58,6 +52,7 @@
             <artifactId>json</artifactId>
             <version>20080701</version>
         </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -68,7 +63,17 @@
 					<minimizeJar>true</minimizeJar>
                     <filters>
                         <filter>
+                            <artifact>bouncycastle:*</artifact>
+                            <excludes>
+                                <exclude>**</exclude>
+                            </excludes>
+                        </filter>
+
+                        <filter>
                             <artifact>*:*</artifact>
+                            <includes>
+                                <include>**</include>
+                            </includes>
                             <excludes>
                                 <exclude>META-INF/*.SF</exclude>
                                 <exclude>META-INF/*.DSA</exclude>
@@ -99,8 +104,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
+                    <finalName>CryptoDoc</finalName>
+                    <outputDirectory>.</outputDirectory>
                     <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <addMavenDescriptor>true</addMavenDescriptor>
                         <manifestEntries>
                             <Application-Name>OMNIKLES</Application-Name>
                             <Permissions>all-permissions</Permissions>
@@ -118,13 +125,30 @@
                     </archive>
                 </configuration>
             </plugin>
-
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jarsigner-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>sign</id>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<keystore>OS201404180675.pfx</keystore>
+					<alias>1</alias>
+					<storepass>7b2d5ad158fd2cf9d4ed31b012f0ed431e499b23</storepass>
+				</configuration>
+			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
         </plugins>

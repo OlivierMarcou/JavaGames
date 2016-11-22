@@ -1,7 +1,5 @@
 package com.oodrive.omnikles.depotclient;
 
-import org.apache.log4j.Logger;
-
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -13,15 +11,14 @@ import java.io.IOException;
 
 public class CryptoDoc extends JFrame {
 
-    public static final Logger logger = Logger.getLogger(CryptoDoc.class);
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         CryptoDoc window = new CryptoDoc();
         CryptoService cs = new CryptoService();
-        String resultat = cs.crypteByCertificat(new File(window.fileChooser()));
-        logger.debug("Crypté : "+resultat);
-        resultat = cs.decryptWindows(resultat);
-        logger.debug("Decrypté : "+resultat);
+        String selectFile = window.fileChooser();
+        System.out.println(selectFile);
+        cs.crypteByCertificat(new File(selectFile));
+        String resultat = cs.decryptWindows(new File(selectFile + ".crypt"));
+        System.out.println("Decrypté : "+resultat);
     }
 
     public CryptoDoc(){

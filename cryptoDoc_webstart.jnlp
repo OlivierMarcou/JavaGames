@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="https://olivier.net/jnlp/" href="cryptoDoc_webstart.jnlp">
+    <information>
+        <title>Cryptographie document</title>
+        <vendor>omnikles</vendor>
+    </information>
+	<security>
+		<all-permissions/>
+	</security>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.7+"
+              href="http://java.sun.com/products/autodl/j2se" java-vm-args="-Djava.net.preferIPv4Stack=true"/>
+        <jar href="CryptoDoc.jar"
+            main="true" />
+        <!--<jar href="https://olivier.net/jnlp/libs/bcpkix-jdk15on-155.jar" main="false" />-->
+        <!--<jar href="https://olivier.net/jnlp/libs/bcprov-jdk15on-155.jar" main="false" />-->
+        <extension name="BouncyCastle cryptography library" href="bcpkix.jnlp"/>
+        <extension name="BouncyCastle cryptography library" href="bcprov.jnlp"/>
+    </resources>
+    <application-desc
+         name="CryptoDoc" main-class="com.oodrive.omnikles.depotclient.CryptoDoc"
+         width="300"
+         height="300">
+     </application-desc>
+     <update check="background"/>
+</jnlp>

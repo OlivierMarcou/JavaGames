@@ -15,8 +15,6 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,11 +30,9 @@ import java.util.List;
  */
 public class SslConnexion {
     
-    public static final Logger logger = LoggerFactory.getLogger(SslConnexion.class);
-
     private String urlSigning = "https://olivier.net/tender-link-rest/tenderlink/user/_signin";
     private String urlCertificat = "https://olivier.net/tender-link-rest/tenderlink/certificat/634";
-    private boolean debug = false;
+    private boolean debug = true;
     private String username = "admin";
     private String password = "1234";
     private String userType = "ADMIN";
@@ -46,16 +42,19 @@ public class SslConnexion {
 
     public int connexion() throws IOException {
         if (debug)
-            logger.info("... Debut connexion ...");
+            System.out.println("... Debut connexion ...");
 
         SSLContextBuilder builder = new SSLContextBuilder();
         try {
+            System.out.println("loadTrustMaterial");
             builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (KeyStoreException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Connection ssl socket ");
         SSLConnectionSocketFactory sslsf = null;
         try {
             sslsf = new SSLConnectionSocketFactory(builder.build());
@@ -64,6 +63,8 @@ public class SslConnexion {
         } catch (KeyManagementException e) {
             e.printStackTrace();
         }
+
+        System.out.println("HttpClient");
         httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
 
         HttpPost httpPost = new HttpPost(urlSigning);
@@ -71,10 +72,14 @@ public class SslConnexion {
         params.add(new BasicNameValuePair("j_password", password));
         params.add(new BasicNameValuePair("j_username", username));
         params.add(new BasicNameValuePair("j_user_type", userType));
+
+        System.out.println("connexion with ids : "+ password + " "+username +" " + userType);
         httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
         CloseableHttpResponse response = httpclient.execute(httpPost);
+
+        System.out.println("End connexion");
         try {
-            logger.info("Code retour connexion : " + response.getStatusLine());
+            System.out.println("Code retour connexion : " + response.getStatusLine());
             HttpEntity entity = response.getEntity();
             EntityUtils.consume(entity);
             getCertificat();
@@ -87,19 +92,23 @@ public class SslConnexion {
     }
 
     public void getCertificat(){
+        System.out.println("getCertificat method");
         HttpGet httpGet = new HttpGet(urlCertificat);
         CloseableHttpResponse response = null;
         try {
+            System.out.println("Start request TenderLink");
             response = httpclient.execute(httpGet);
             HttpEntity entity = response.getEntity();
             BufferedReader in = new BufferedReader(new InputStreamReader(entity.getContent()));
             String sLine = "";
+            System.out.println("Read response TenderLink");
             StringBuffer responseBuffer = new StringBuffer();
             while ((sLine = in.readLine()) != null) {
                 responseBuffer.append(sLine);
             }
+            System.out.println("Reponse TenderLink : ");
             String jsonCertificat = responseBuffer.toString();
-
+            System.out.println(jsonCertificat);
             JSONObject obj = null;
             try {
                 obj = new JSONObject(jsonCertificat);
