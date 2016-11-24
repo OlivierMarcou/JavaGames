@@ -22,6 +22,10 @@
          name="CryptoDoc" main-class="com.oodrive.omnikles.depotclient.CryptoDoc"
          width="300"
          height="300">
+    <argument>-user=admin</argument>
+        <argument>pass=1234</argument>
+        <argument>usertype=ADMIN</argument>
+        <argument>-sessionid=8CAF667FDE2CFA7F45C2FBF829763494</argument>
      </application-desc>
      <update check="background"/>
 </jnlp>

@@ -12,10 +12,9 @@ import java.util.List;
  */
 public class CryptoService {
 
-    public void crypteByCertificat(File file) throws IOException {
+    public void crypteByCertificat(File file, SslConnexion ssl) throws IOException {
         if(file.exists()) {
-            SslConnexion ssl = new SslConnexion();
-            ssl.connexion();
+            ssl.getCertificatWithJSessionId();
             String certificat = ssl.certificat;
             try {
                 final CertificateFactory certFactory = CertificateFactory.getInstance("X.509");

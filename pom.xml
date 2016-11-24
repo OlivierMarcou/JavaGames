@@ -22,7 +22,6 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/bcpkix-jdk15on-1.55.jar</systemPath>
         </dependency>
-
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
@@ -75,6 +74,7 @@
                                 <include>**</include>
                             </includes>
                             <excludes>
+                                <exclude>/org/bouncycastle</exclude>
                                 <exclude>META-INF/*.SF</exclude>
                                 <exclude>META-INF/*.DSA</exclude>
                                 <exclude>META-INF/*.RSA</exclude>

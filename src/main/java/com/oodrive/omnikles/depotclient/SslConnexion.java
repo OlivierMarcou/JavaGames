@@ -1,18 +1,13 @@
 package com.oodrive.omnikles.depotclient;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,25 +17,39 @@ import java.io.InputStreamReader;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by olivier on 21/11/16.
  */
 public class SslConnexion {
     
-    private String urlSigning = "https://olivier.net/tender-link-rest/tenderlink/user/_signin";
-    private String urlCertificat = "https://olivier.net/tender-link-rest/tenderlink/certificat/634";
+    private String urlCertificat = null;
     private boolean debug = true;
-    private String username = "admin";
-    private String password = "1234";
-    private String userType = "ADMIN";
-    private String JSessionId = "";
-    private CloseableHttpClient httpclient;
+    private String JSessionId = null;
     public String certificat = null;
 
-    public int connexion() throws IOException {
+    public String getUrlCertificat() {
+        return urlCertificat;
+    }
+
+    public void setUrlCertificat(String urlCertificat) {
+        this.urlCertificat = urlCertificat;
+    }
+
+    public String getJSessionId() {
+        return JSessionId;
+    }
+
+    public void setJSessionId(String JSessionId) {
+        this.JSessionId = JSessionId;
+    }
+
+    public void setCertificat(String certificat) {
+        this.certificat = certificat;
+    }
+
+    public void getCertificatWithJSessionId(){
+        System.out.println("getCertificatWithJSessionId method");
         if (debug)
             System.out.println("... Debut connexion ...");
 
@@ -54,6 +63,7 @@ public class SslConnexion {
             e.printStackTrace();
         }
 
+        HttpGet httpGet = new HttpGet(urlCertificat);
         System.out.println("Connection ssl socket ");
         SSLConnectionSocketFactory sslsf = null;
         try {
@@ -65,39 +75,19 @@ public class SslConnexion {
         }
 
         System.out.println("HttpClient");
-        httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+        CloseableHttpClient httpclientSsl = HttpClients.custom()
+                .setSSLSocketFactory(sslsf)
+                .build();
 
-        HttpPost httpPost = new HttpPost(urlSigning);
-        List<NameValuePair> params = new ArrayList<>(3);
-        params.add(new BasicNameValuePair("j_password", password));
-        params.add(new BasicNameValuePair("j_username", username));
-        params.add(new BasicNameValuePair("j_user_type", userType));
-
-        System.out.println("connexion with ids : "+ password + " "+username +" " + userType);
-        httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-        CloseableHttpResponse response = httpclient.execute(httpPost);
-
-        System.out.println("End connexion");
-        try {
-            System.out.println("Code retour connexion : " + response.getStatusLine());
-            HttpEntity entity = response.getEntity();
-            EntityUtils.consume(entity);
-            getCertificat();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            response.close();
-        }
-        return 0;
-    }
-
-    public void getCertificat(){
-        System.out.println("getCertificat method");
-        HttpGet httpGet = new HttpGet(urlCertificat);
+        httpGet.setHeader("Cookie", "JSESSIONID="+JSessionId);
+        if(httpclientSsl == null)
+            throw new NullPointerException("HTTP client is null !");
+        if(httpGet == null)
+            throw new NullPointerException("GET Request is null !");
         CloseableHttpResponse response = null;
         try {
             System.out.println("Start request TenderLink");
-            response = httpclient.execute(httpGet);
+            response = httpclientSsl.execute(httpGet);
             HttpEntity entity = response.getEntity();
             BufferedReader in = new BufferedReader(new InputStreamReader(entity.getContent()));
             String sLine = "";
