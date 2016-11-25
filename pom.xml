@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.oodrive.omnikles.cryptographie</groupId>
+    <artifactId>CryptoDoc</artifactId>
+    <version>0.01-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.santuario</groupId>
+            <artifactId>xmlsec</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.55</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/bcpkix-jdk15on-1.55.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.55</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/bcprov-jdk15on-1.55.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>sun.security.mscapi</groupId>
+            <artifactId>sunmscapi</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20080701</version>
+        </dependency>
+
+    </dependencies>
+    <build>
+        <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<configuration>
+					<minimizeJar>true</minimizeJar>
+                    <filters>
+                        <filter>
+                            <artifact>bouncycastle:*</artifact>
+                            <excludes>
+                                <exclude>**</exclude>
+                            </excludes>
+                        </filter>
+
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                            <excludes>
+                                <exclude>/org/bouncycastle</exclude>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+				</configuration>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <!--<configuration>-->
+                            <!--<transformers>-->
+                                <!--<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+                                    <!--<mainClass>com.oodrive.omnikles.depotclient.ChooserFile</mainClass>-->
+                                <!--</transformer>-->
+                            <!--</transformers>-->
+                        <!--</configuration>-->
+                    </execution>
+                </executions>
+			</plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <finalName>CryptoDoc</finalName>
+                    <outputDirectory>.</outputDirectory>
+                    <archive>
+                        <addMavenDescriptor>true</addMavenDescriptor>
+                        <manifestEntries>
+                            <Application-Name>OMNIKLES</Application-Name>
+                            <Permissions>all-permissions</Permissions>
+                            <Codebase>*</Codebase><addClasspath>true</addClasspath>
+                            <Caller-Allowable-Codebase>localhost *.omnikles.com *.omnikles.net *.oodrive.fr *.oodrive.com *.oodrive.net *</Caller-Allowable-Codebase>
+                        </manifestEntries>
+                        <manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <mainClass>com.oodrive.omnikles.depotclient.CryptoDoc</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <addExtensions />
+                            <classpathPrefix />
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jarsigner-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>sign</id>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<keystore>OS201404180675.pfx</keystore>
+					<alias>1</alias>
+					<storepass>7b2d5ad158fd2cf9d4ed31b012f0ed431e499b23</storepass>
+				</configuration>
+			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
