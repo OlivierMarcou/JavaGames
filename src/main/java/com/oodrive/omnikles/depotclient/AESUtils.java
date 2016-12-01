@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 public class AESUtils {
 
-    public static void encrypt(File file, X509Certificate certificat64cer) {
+    public static File encrypt(File file, X509Certificate certificat64cer) {
         try {
             Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
             field.setAccessible(true);
@@ -50,10 +50,11 @@ public class AESUtils {
             FileOutputStream envfos = new FileOutputStream(file.getAbsolutePath() + ".crypt");
             envfos.write(pkcs7envelopedData);
             envfos.close();
-
+            return new File(file.getAbsolutePath() + ".crypt");
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public static String decryptByPk(File file, PrivateKey pk){

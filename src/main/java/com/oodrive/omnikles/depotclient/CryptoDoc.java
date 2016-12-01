@@ -31,34 +31,33 @@ public class CryptoDoc extends JFrame {
             System.out.println(keyValue[0] + " " + keyValue[1]);
             parameters.put(keyValue[0], keyValue[1]);
         }
-        if(parameters.get("action") == "depot") {
+        if(parameters.get("action").equals("depot")) {
             depot(parameters);
         }
 
-        if(parameters.get("action") == "decrypt"){
+        if(parameters.get("action").equals("decrypt")){
             openDepot(parameters);
         }
 
     }
 
     private static void openDepot(HashMap<String, String> parameters) throws MalformedURLException, FileNotFoundException {
-        URL url = new URL( parameters.get("urlCryptedFile"));
-        File f = new File( url.getFile().replaceAll( "%20", " " ) );
+        URL url = new URL(parameters.get("urlCryptedFile"));
+        File f = new File(url.getFile().replaceAll( "%20", " " ));
         String resultat = cs.decryptWindows(f);
         System.out.println("Decrypted : "+resultat);
     }
 
     private static void depot(HashMap<String, String> parameters) throws IOException {
-
         SslConnexion ssl = new SslConnexion();
-        ssl.setJSessionId(parameters.get("sessionid"));
-        ssl.setUrlCertificat(parameters.get("urlCertificat"));
-
+        String certificat = ssl.getCertificatWithJSessionId(parameters.get("urlCertificat"), parameters.get("sessionid"));
+        if(certificat == null)
+            throw new NullPointerException("Aucun certificat trouvé pour : " + parameters.get("urlCertificat"));
         String selectFile = window.fileChooser();
         System.out.println(selectFile);
-        cs.crypteByCertificat(new File(selectFile), ssl);
-        File cryptedFile = new File(selectFile + ".crypt");
-        //TODO : send cryptedFile to tenderlink depot
+        File cryptedFile = cs.crypteByCertificat(new File(selectFile), certificat);
+
+        ssl.sslUploadFile(cryptedFile, parameters.get("urlDepot"), parameters.get("sessionid"));
     }
     public CryptoDoc(){
         setSize(200, 200);

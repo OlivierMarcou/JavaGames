@@ -12,21 +12,20 @@ import java.util.List;
  */
 public class CryptoService {
 
-    public void crypteByCertificat(File file, SslConnexion ssl) throws IOException {
+    public File crypteByCertificat(File file, String certificat) throws IOException {
         if(file.exists()) {
-            ssl.getCertificatWithJSessionId();
-            String certificat = ssl.certificat;
             try {
                 final CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
                 InputStream is = new ByteArrayInputStream(certificat.getBytes());
                 X509Certificate certificatX509 = (X509Certificate) certFactory.generateCertificate(is);
-                AESUtils.encrypt(file, certificatX509);
+                return AESUtils.encrypt(file, certificatX509);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }else{
             throw new FileNotFoundException("fichier introuvable : "+ file.getAbsolutePath());
         }
+        return null;
     }
 
     public String decryptWindows(File file) throws FileNotFoundException {

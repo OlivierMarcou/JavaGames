@@ -22,6 +22,7 @@
          height="300">
         <argument>urlCryptedFile=http://portal.omnikles.com:8082/tenderlink-rest/tenderlink/...</argument>
         <argument>urlCertificat=http://portal.omnikles.com:8082/tenderlink-rest/tenderlink/...</argument>
+        <argument>urlDepot=http://portal.omnikles.com:8082/tenderlink-rest/tenderlink/...</argument>
         <argument>action=depot</argument>
         <argument>sessionid=1291A73D7F070CD65C019D1E40EBD74E</argument>
      </application-desc>
