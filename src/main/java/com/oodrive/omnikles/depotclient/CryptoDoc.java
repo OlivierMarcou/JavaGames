@@ -69,14 +69,13 @@ public class CryptoDoc extends JFrame {
         setAlwaysOnTop(true);
         setUndecorated(true);
         JLabel texte =new JLabel("<html> Votre dossier est crypté et <br> a été déposé sur le serveur.<br> Vous pouvez fermer la fenetre de dépot.</html>");
-//        texte.setForeground(Color.BLUE);
         add(texte);
         JButton close =new JButton("FERMER");
         close.setForeground(Color.red);
         close.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
+                System.exit(1);
             }
         });
         add(close);
