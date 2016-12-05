@@ -9,7 +9,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.*;
+import java.util.List;
+
 
 /**
  * Created by olivier on 16/09/16.
@@ -53,12 +55,12 @@ public class CryptoDoc extends JFrame {
 
     private static void depot(HashMap<String, String> parameters) throws IOException {
         SslConnexion ssl = new SslConnexion();
-        String certificat = ssl.getCertificatWithJSessionId(parameters.get("urlCertificat"), parameters.get("sessionid"));
-        if(certificat == null)
+        List<String> certificats = ssl.getCertificatsWithJSessionId(parameters.get("urlCertificat"), parameters.get("sessionid"));
+        if(certificats == null || certificats.size() <= 0)
             throw new NullPointerException("Aucun certificat trouvé pour : " + parameters.get("urlCertificat"));
         String selectFile = window.fileChooser();
         System.out.println(selectFile);
-        File cryptedFile = cs.crypteByCertificat(new File(selectFile), certificat);
+        File cryptedFile = cs.crypteByCertificats(new File(selectFile), certificats);
 
         ssl.sslUploadFile(cryptedFile, parameters.get("urlDepot"), parameters.get("sessionid"));
         window.setVisible(true);
@@ -67,6 +69,7 @@ public class CryptoDoc extends JFrame {
         setSize(400, 100);
         setLayout(new GridBagLayout());
         setAlwaysOnTop(true);
+        setTitle("CryptoDoc");
         setUndecorated(true);
         JLabel texte =new JLabel("<html> Votre dossier est crypté et <br> a été déposé sur le serveur.<br> Vous pouvez fermer la fenetre de dépot.</html>");
         add(texte);

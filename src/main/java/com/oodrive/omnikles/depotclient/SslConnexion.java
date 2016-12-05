@@ -29,7 +29,7 @@ public class SslConnexion {
 
     private boolean debug = true;
 
-    public String getCertificatWithJSessionId(String urlCertificat, String JSessionId){
+    public List<String> getCertificatsWithJSessionId(String urlCertificat, String JSessionId){
         System.out.println("getCertificatWithJSessionId method");
         if (debug)
             System.out.println("... Debut connexion ...");
@@ -88,7 +88,7 @@ public class SslConnexion {
                 for(int i=0; i<certificats.length(); i++){
                     certificatsB64.add(certificats.get(i).toString());
                 }
-                return certificatsB64.get(0); //TODO: ensuite on retournera la liste qui servira à crypter plusieur fois la clé AES256
+                return certificatsB64;
             } catch (JSONException e) {
                 e.printStackTrace();
             }

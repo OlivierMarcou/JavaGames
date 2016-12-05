@@ -11,13 +11,14 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by olivier on 14/11/16.
  */
 public class AESUtils {
 
-    public static File encrypt(File file, X509Certificate certificat64cer) {
+    public static File encrypt(File file, List<X509Certificate> certificats64cer) {
         try {
             Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
             field.setAccessible(true);
@@ -26,7 +27,7 @@ public class AESUtils {
         }
         String resultat = null;
         try {
-            // Chargement du fichier � chiffrer
+            // Chargement du fichier à chiffrer
             byte[] buffer = new byte[(int)file.length()];
             DataInputStream in = new DataInputStream(new FileInputStream(file));
             in.readFully(buffer);
@@ -35,7 +36,8 @@ public class AESUtils {
             CMSEnvelopedDataGenerator gen = new CMSEnvelopedDataGenerator();
             // La variable cert correspond au certificat du destinataire
             // La clé publique de ce certificat servira à chiffrer la clé symétrique
-            gen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(certificat64cer).setProvider("BC"));
+            for(X509Certificate x509Certificate:certificats64cer)
+                gen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(x509Certificate).setProvider("BC"));
             // Choix de l'algorithme à clé symétrique pour chiffrer le document.
             // AES est un standard. Vous pouvez donc l'utiliser sans crainte.
             // Il faut savoir qu'en france la taille maximum autorisée est de 128
