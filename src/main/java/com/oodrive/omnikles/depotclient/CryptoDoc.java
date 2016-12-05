@@ -1,6 +1,9 @@
 package com.oodrive.omnikles.depotclient;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -52,28 +55,40 @@ public class CryptoDoc extends JFrame {
         SslConnexion ssl = new SslConnexion();
         String certificat = ssl.getCertificatWithJSessionId(parameters.get("urlCertificat"), parameters.get("sessionid"));
         if(certificat == null)
-            throw new NullPointerException("Aucun certificat trouv� pour : " + parameters.get("urlCertificat"));
+            throw new NullPointerException("Aucun certificat trouvé pour : " + parameters.get("urlCertificat"));
         String selectFile = window.fileChooser();
         System.out.println(selectFile);
         File cryptedFile = cs.crypteByCertificat(new File(selectFile), certificat);
 
         ssl.sslUploadFile(cryptedFile, parameters.get("urlDepot"), parameters.get("sessionid"));
+        window.setVisible(true);
     }
     public CryptoDoc(){
-        setSize(200, 200);
+        setSize(400, 100);
+        setLayout(new GridBagLayout());
+        setAlwaysOnTop(true);
+        setUndecorated(true);
+        JLabel texte =new JLabel("<html> Votre dossier est crypté et <br> a été déposé sur le serveur.<br> Vous pouvez fermer la fenetre de dépot.</html>");
+//        texte.setForeground(Color.BLUE);
+        add(texte);
+        JButton close =new JButton("FERMER");
+        close.setForeground(Color.red);
+        close.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+        add(close);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
+        setVisible(false);
     }
 
     public String fileChooser() {
         String filename = null;
         String dir = null;
         JFileChooser c = new JFileChooser(System.getenv("HOME"));
-//        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-//                "*.*", "*");
-//        c.addChoosableFileFilter(filter);
         c.setAcceptAllFileFilterUsed(false);
-//        c.setFileFilter(filter);
         int rVal = c.showOpenDialog(CryptoDoc.this);
         if (rVal == JFileChooser.APPROVE_OPTION) {
             filename = c.getSelectedFile().getName();
@@ -85,9 +100,5 @@ public class CryptoDoc extends JFrame {
             dir = null;
         }
         return null;
-    }
-
-    public void load(String path){
-
     }
 }

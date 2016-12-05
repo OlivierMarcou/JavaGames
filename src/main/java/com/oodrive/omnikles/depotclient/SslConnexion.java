@@ -88,7 +88,7 @@ public class SslConnexion {
                 for(int i=0; i<certificats.length(); i++){
                     certificatsB64.add(certificats.get(i).toString());
                 }
-                return certificatsB64.get(0); //TODO: ensuite on retournera la liste qui servira a crypter plusieur fois la cl� AES256
+                return certificatsB64.get(0); //TODO: ensuite on retournera la liste qui servira à crypter plusieur fois la clé AES256
             } catch (JSONException e) {
                 e.printStackTrace();
             }
