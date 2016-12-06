@@ -18,7 +18,7 @@
 			<id>test</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
-				<jdk>1.5</jdk>
+				<jdk>1.8</jdk>
 			</activation>
 			<repositories>
 				<repository>
