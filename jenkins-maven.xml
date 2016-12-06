@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<pluginGroups>
+		<pluginGroup>com.oodrive.common.core</pluginGroup>
+	</pluginGroups>
+	<mirrors>
+
+	</mirrors>
+	<servers>
+		<server>
+			<id>nexus</id>
+			<username>jenkins</username>
+			<password>jenkins</password>
+		</server>
+	</servers>
+	<profiles>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<jdk>1.5</jdk>
+			</activation>
+			<repositories>
+				<repository>
+					<id>releases-local2</id>
+					<name>public repository</name>
+					<url>http://192.168.6.91:8081/content/groups/public</url>
+				</repository>
+				<repository>
+					<id>repo1</id>
+					<name>Repository for Maven2</name>
+					<url>http://repo1.maven.org/maven2</url>
+				</repository>
+				<repository>
+					<id>Nexus</id>
+					<name>Nexus public mirror</name>
+					<url>http://192.168.6.91:8081/nexus/content/groups/public</url>
+				</repository>
+				<repository>
+					<id>OldNexus</id>
+					<name>ancien nexus</name>
+					<url>http://nexus.omnikles.net/content/groups/public</url>
+				</repository>
+				<repository>
+					<id>thirdparty</id>
+					<name>3rd Party</name>
+					<releases>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</snapshots>
+					<url>http://192.168.6.91:8081/nexus/content/repositories/thirdparty
+					</url>
+					<layout>default</layout>
+				</repository>
+				<repository>
+					<id>snapshots</id>
+					<name>oodrive snapshots</name>
+					<releases>
+						<enabled>false</enabled>
+						<updatePolicy>never</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</snapshots>
+					<url>http://192.168.6.91:8081/nexus/content/repositories/snapshots
+					</url>
+					<layout>default</layout>
+				</repository>
+				<repository>
+					<id>spring</id>
+					<name>Spring Maven MILESTONE Repository</name>
+					<url>http://192.168.6.91:8081/nexus/content/repositories/spring
+					</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>snapshots</id>
+					<name>oodrive snapshots</name>
+					<releases>
+						<enabled>false</enabled>
+						<updatePolicy>never</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</snapshots>
+					<url>http://192.168.6.91:8081/nexus/content/repositories/snapshots
+					</url>
+					<layout>default</layout>
+				</pluginRepository>
+				<pluginRepository>
+					<id>codehaus-snapshots</id>
+					<name>codehaus snapshots</name>
+					<releases>
+						<enabled>false</enabled>
+						<updatePolicy>never</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</snapshots>
+					<url>http://192.168.6.91:8081/nexus/content/repositories/codehaus-snapshots
+					</url>
+					<layout>default</layout>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+	</profiles>
+</settings>

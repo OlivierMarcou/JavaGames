@@ -48,7 +48,7 @@ public class CryptoDoc extends JFrame {
 
     private static void openDepot(HashMap<String, String> parameters) throws MalformedURLException, FileNotFoundException {
         URL url = new URL(parameters.get("urlCryptedFile"));
-        File f = new File(url.getFile().replaceAll( "%20", " " ));
+        File f = new File(url.getFile().replaceAll( "%20", " " ));//TODO : completement faux
         String resultat = cs.decryptWindows(f);
         System.out.println("Decrypted : "+resultat);
     }
