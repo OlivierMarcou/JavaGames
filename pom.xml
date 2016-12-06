@@ -8,6 +8,34 @@
     <artifactId>CryptoDoc</artifactId>
     <version>0.01-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+
+            <name>Nexus Releases</name>
+            <url>
+                http://192.168.6.91:8081/nexus/content/repositories/releases
+            </url>
+            <uniqueVersion>true</uniqueVersion>
+        </repository>
+
+        <snapshotRepository>
+            <id>nexus</id>
+            <name>Nexus Snapshots</name>
+            <url>
+                http://192.168.6.91:8081/nexus/content/repositories/snapshots
+            </url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git:http://oogit.oodrive.net/omnikles/CryptoDoc.git</connection>
+        <url>scm:git:http://oogit.oodrive.net/omnikles/CryptoDoc.git</url>
+    </scm>
+
     <dependencies>
 
         <dependency>
