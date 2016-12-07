@@ -8,8 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -47,8 +46,8 @@ public class CryptoDoc extends JFrame {
     }
 
     private static void openDepot(HashMap<String, String> parameters) throws MalformedURLException, FileNotFoundException {
-        URL url = new URL(parameters.get("urlCryptedFile"));
-        File f = new File(url.getFile().replaceAll( "%20", " " ));//TODO : completement faux
+        SslConnexion ssl = new SslConnexion();
+        File f = ssl.sslDownloadFile(parameters.get("urlCryptedFile"), parameters.get("sessionid"), parameters.get("filename"));
         String resultat = cs.decryptWindows(f);
         System.out.println("Decrypted : "+resultat);
     }
@@ -65,6 +64,7 @@ public class CryptoDoc extends JFrame {
         ssl.sslUploadFile(cryptedFile, parameters.get("urlDepot"), parameters.get("sessionid"));
         window.setVisible(true);
     }
+
     public CryptoDoc(){
         setSize(400, 100);
         setLayout(new GridBagLayout());
