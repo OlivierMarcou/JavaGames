@@ -1,12 +1,16 @@
 package com.oodrive.omnikles.depotclient;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
+
 
 /**
  * Created by olivier on 16/09/16.
@@ -31,46 +35,62 @@ public class CryptoDoc extends JFrame {
             System.out.println(keyValue[0] + " " + keyValue[1]);
             parameters.put(keyValue[0], keyValue[1]);
         }
-        if(parameters.get("action").equals("depot"))
+        if(parameters.get("action").equals("depot")) {
             depot(parameters);
-        if(parameters.get("action").equals("decrypt"))
+        }
+
+        if(parameters.get("action").equals("decrypt")){
             openDepot(parameters);
+        }
+
     }
 
     private static void openDepot(HashMap<String, String> parameters) throws MalformedURLException, FileNotFoundException {
-        URL url = new URL( parameters.get("urlCryptedFile"));
-        File f = new File( url.getFile().replaceAll( "%20", " " ) );
+        SslConnexion ssl = new SslConnexion();
+        File f = ssl.sslDownloadFile(parameters.get("urlCryptedFile"), parameters.get("sessionid"), parameters.get("filename"));
         String resultat = cs.decryptWindows(f);
         System.out.println("Decrypted : "+resultat);
     }
 
     private static void depot(HashMap<String, String> parameters) throws IOException {
-
         SslConnexion ssl = new SslConnexion();
-        ssl.setJSessionId(parameters.get("sessionid"));
-        ssl.setUrlCertificat(parameters.get("urlCertificat"));
-
+        List<String> certificats = ssl.getCertificatsWithJSessionId(parameters.get("urlCertificat"), parameters.get("sessionid"));
+        if(certificats == null || certificats.size() <= 0)
+            throw new NullPointerException("Aucun certificat trouvé pour : " + parameters.get("urlCertificat"));
         String selectFile = window.fileChooser();
         System.out.println(selectFile);
-        cs.crypteByCertificat(new File(selectFile), ssl);
-        File cryptedFile = new File(selectFile + ".crypt");
-        //TODO : send cryptedFile to tenderlink depot
+        File cryptedFile = cs.crypteByCertificats(new File(selectFile), certificats);
+
+        ssl.sslUploadFile(cryptedFile, parameters.get("urlDepot"), parameters.get("sessionid"));
+        window.setVisible(true);
     }
+
     public CryptoDoc(){
-        setSize(200, 200);
+        setSize(400, 100);
+        setLayout(new GridBagLayout());
+        setAlwaysOnTop(true);
+        setTitle("CryptoDoc");
+        setUndecorated(true);
+        JLabel texte =new JLabel("<html> Votre dossier est crypté et <br> a été déposé sur le serveur.<br> Vous pouvez fermer la fenetre de dépot.</html>");
+        add(texte);
+        JButton close =new JButton("FERMER");
+        close.setForeground(Color.red);
+        close.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(1);
+            }
+        });
+        add(close);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
+        setVisible(false);
     }
 
     public String fileChooser() {
         String filename = null;
         String dir = null;
         JFileChooser c = new JFileChooser(System.getenv("HOME"));
-//        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-//                "*.*", "*");
-//        c.addChoosableFileFilter(filter);
         c.setAcceptAllFileFilterUsed(false);
-//        c.setFileFilter(filter);
         int rVal = c.showOpenDialog(CryptoDoc.this);
         if (rVal == JFileChooser.APPROVE_OPTION) {
             filename = c.getSelectedFile().getName();
@@ -82,9 +102,5 @@ public class CryptoDoc extends JFrame {
             dir = null;
         }
         return null;
-    }
-
-    public void load(String path){
-
     }
 }

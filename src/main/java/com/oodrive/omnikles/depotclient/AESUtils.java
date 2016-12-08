@@ -11,13 +11,14 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by olivier on 14/11/16.
  */
 public class AESUtils {
 
-    public static void encrypt(File file, X509Certificate certificat64cer) {
+    public static File encrypt(File file, List<X509Certificate> certificats64cer) {
         try {
             Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
             field.setAccessible(true);
@@ -26,7 +27,7 @@ public class AESUtils {
         }
         String resultat = null;
         try {
-            // Chargement du fichier à chiffrer
+            // Chargement du fichier Ã  chiffrer
             byte[] buffer = new byte[(int)file.length()];
             DataInputStream in = new DataInputStream(new FileInputStream(file));
             in.readFully(buffer);
@@ -34,26 +35,28 @@ public class AESUtils {
             // Chiffrement du document
             CMSEnvelopedDataGenerator gen = new CMSEnvelopedDataGenerator();
             // La variable cert correspond au certificat du destinataire
-            // La clé publique de ce certificat servira à chiffrer la clé symétrique
-            gen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(certificat64cer).setProvider("BC"));
-            // Choix de l'algorithme à clé symétrique pour chiffrer le document.
+            // La clÃ© publique de ce certificat servira Ã  chiffrer la clÃ© symÃ©trique
+            for(X509Certificate x509Certificate:certificats64cer)
+                gen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(x509Certificate).setProvider("BC"));
+            // Choix de l'algorithme Ã  clÃ© symÃ©trique pour chiffrer le document.
             // AES est un standard. Vous pouvez donc l'utiliser sans crainte.
-            // Il faut savoir qu'en france la taille maximum autorisée est de 128
-            // bits pour les clés symétriques (ou clés secrètes)
+            // Il faut savoir qu'en france la taille maximum autorisÃ©e est de 128
+            // bits pour les clÃ©s symÃ©triques (ou clÃ©s secrÃ¨tes)
             CMSTypedData msg     = new CMSProcessableByteArray(buffer);
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
             CMSEnvelopedData envData = gen.generate(msg, new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES256_CBC)
                     .setProvider("BC").build());
             System.out.println("Size crypted File: " + envData.getEncoded().length);
             byte[] pkcs7envelopedData = envData.getEncoded();
-            // Ecriture du document chiffré
+            // Ecriture du document chiffrÃ©
             FileOutputStream envfos = new FileOutputStream(file.getAbsolutePath() + ".crypt");
             envfos.write(pkcs7envelopedData);
             envfos.close();
-
+            return new File(file.getAbsolutePath() + ".crypt");
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public static String decryptByPk(File file, PrivateKey pk){
