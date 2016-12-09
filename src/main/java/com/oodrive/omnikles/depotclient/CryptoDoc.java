@@ -1,13 +1,12 @@
 package com.oodrive.omnikles.depotclient;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,13 +16,16 @@ import java.util.List;
  */
 
 
-public class CryptoDoc extends JFrame {
+public class CryptoDoc {
 
-    private static CryptoDoc window = new CryptoDoc();
+    private static CloseWindow closeWindow = new CloseWindow();
+    private static MainWindow mainWindow = new MainWindow();
+
     private static CryptoService cs = new CryptoService();
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
         System.out.println("WebStart CryptoDoc !");
+        System.out.println(System.getProperty("user.home"));
         HashMap<String, String> parameters = new HashMap<>();
 
         String[] keyValue = new String[2];
@@ -42,6 +44,10 @@ public class CryptoDoc extends JFrame {
         if(parameters.get("action").equals("decrypt")){
             openDepot(parameters);
         }
+        if(parameters.get("action").equals("debug")){
+            File f =new File("plop.txt.crypt");
+            cs.decryptTest(f, "newkey.p12", "omnikles".toCharArray());
+        }
 
     }
 
@@ -57,50 +63,12 @@ public class CryptoDoc extends JFrame {
         List<String> certificats = ssl.getCertificatsWithJSessionId(parameters.get("urlCertificat"), parameters.get("sessionid"));
         if(certificats == null || certificats.size() <= 0)
             throw new NullPointerException("Aucun certificat trouvé pour : " + parameters.get("urlCertificat"));
-        String selectFile = window.fileChooser();
+        String selectFile = mainWindow.fileChooser();
         System.out.println(selectFile);
         File cryptedFile = cs.crypteByCertificats(new File(selectFile), certificats);
 
         ssl.sslUploadFile(cryptedFile, parameters.get("urlDepot"), parameters.get("sessionid"));
-        window.setVisible(true);
+        mainWindow.setVisible(true);
     }
 
-    public CryptoDoc(){
-        setSize(400, 100);
-        setLayout(new GridBagLayout());
-        setAlwaysOnTop(true);
-        setTitle("CryptoDoc");
-        setUndecorated(true);
-        JLabel texte =new JLabel("<html> Votre dossier est crypté et <br> a été déposé sur le serveur.<br> Vous pouvez fermer la fenetre de dépot.</html>");
-        add(texte);
-        JButton close =new JButton("FERMER");
-        close.setForeground(Color.red);
-        close.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(1);
-            }
-        });
-        add(close);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setVisible(false);
-    }
-
-    public String fileChooser() {
-        String filename = null;
-        String dir = null;
-        JFileChooser c = new JFileChooser(System.getenv("HOME"));
-        c.setAcceptAllFileFilterUsed(false);
-        int rVal = c.showOpenDialog(CryptoDoc.this);
-        if (rVal == JFileChooser.APPROVE_OPTION) {
-            filename = c.getSelectedFile().getName();
-            dir = c.getCurrentDirectory().toString();
-            return dir+"/"+filename;
-        }
-        if (rVal == JFileChooser.CANCEL_OPTION) {
-            filename = null ;
-            dir = null;
-        }
-        return null;
-    }
 }

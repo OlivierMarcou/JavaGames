@@ -60,6 +60,8 @@ public class AESUtils {
     }
 
     public static String decryptByPk(File file, PrivateKey pk){
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
         if(file.exists()) {
             byte[] pkcs7envelopedData = new byte[(int) file.length()];
             DataInputStream in = null;

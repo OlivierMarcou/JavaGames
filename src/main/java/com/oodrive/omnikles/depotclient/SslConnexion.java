@@ -42,7 +42,7 @@ public class SslConnexion {
 
     public File sslDownloadFile(String url, String JSessionId, String filename){
         System.out.println("getCertificatWithJSessionId method");
-        File file = new File(filename);
+        File file = new File(System.getProperty("user.home") + File.separatorChar + filename);
         try {
             HttpEntity entity = getResponseHttpGet(url, JSessionId).getEntity();
             BufferedInputStream bis = new BufferedInputStream(entity.getContent());
