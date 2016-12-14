@@ -28,4 +28,9 @@ public class KeyPair {
     public void setPrivateKey(PrivateKey privateKey) {
         this.privateKey = privateKey;
     }
+
+    @Override
+    public String toString(){
+        return String.valueOf(certificate.getIssuerDN());
+    }
 }

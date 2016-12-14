@@ -34,19 +34,23 @@ public class CryptoService {
         return null;
     }
 
-    public String decryptWindows(File file) throws FileNotFoundException {
+    public List<KeyPair> getInstalledCertificats(){
+        CertificatesManager cm = new CertificatesManager();
+        List<KeyPair> certificats =  new ArrayList<>();
+        try {
+            KeyStore ks = cm.getKeyStore();
+            certificats = cm.loadKeyPairsFromKeystore(ks, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return certificats;
+    }
+
+    public String decryptWindows(File file, KeyPair certificate) throws FileNotFoundException {
         if(file.exists()){
-            CertificatesManager cm = new CertificatesManager();
-            List<KeyPair> certificats =  new ArrayList<>();
             String decrypte = null;
             try {
-                KeyStore ks = cm.getKeyStore();
-                certificats = cm.loadKeyPairsFromKeystore(ks, null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                decrypte = AESUtils.decryptByPk(file, certificats.get(0).getPrivateKey());
+                decrypte = AESUtils.decryptByPk(file, certificate);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -56,21 +60,14 @@ public class CryptoService {
         }
     }
 
-    public String decryptTest(File file, String p12Filename, char[] password) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
+    public String decryptP12(File file, String p12Filename, char[] password)
+            throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
         File p12File = new File(p12Filename);
-        if(file.exists() && p12File.exists()){
-            CertificatesManager cm = new CertificatesManager();
-            KeyStore p12 = KeyStore.getInstance("pkcs12");
-		    p12.load(new FileInputStream(p12File), password);
-            List<KeyPair> certificats =  new ArrayList<>();
+        if(file.exists() ){
             String decrypte = null;
+            List<KeyPair> certificats = getKeyPair(password, p12File);
             try {
-                certificats = cm.loadKeyPairsFromKeystore(p12, password);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                decrypte = AESUtils.decryptByPk(file, certificats.get(0).getPrivateKey());
+                decrypte = AESUtils.decryptByPk(file, certificats.get(0));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -78,5 +75,21 @@ public class CryptoService {
         }else{
             throw new FileNotFoundException("Fichier introuvable : "+ file.getAbsolutePath());
         }
+    }
+
+    public List<KeyPair> getKeyPair(char[] password, File p12File)
+            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+        if(p12File.exists()) {
+            CertificatesManager cm = new CertificatesManager();
+            KeyStore p12 = KeyStore.getInstance("pkcs12");
+            p12.load(new FileInputStream(p12File), password);
+
+            try {
+                return cm.loadKeyPairsFromKeystore(p12, password);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

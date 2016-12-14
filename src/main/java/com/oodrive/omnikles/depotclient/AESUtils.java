@@ -5,10 +5,13 @@ import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.security.PrivateKey;
-import java.security.Security;
+import java.security.*;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.List;
@@ -59,9 +62,64 @@ public class AESUtils {
         return null;
     }
 
-    public static String decryptByPk(File file, PrivateKey pk){
+    public static String decryptMessage(File file, KeyPair keyPair) {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-
+        byte [] decripted  = null;
+        if(file.exists()) {
+            byte[] pkcs7envelopedData = new byte[(int) file.length()];
+            DataInputStream in = null;
+            try {
+                in = new DataInputStream(new FileInputStream(file));
+                in.readFully(pkcs7envelopedData);
+                in.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (keyPair.getPrivateKey() != null) {
+                    Cipher cipher = Cipher.getInstance("RSA", Security.getProvider("BC"));
+                    cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
+                    cipher.update(pkcs7envelopedData);
+                    decripted = cipher.doFinal();
+                }
+            } catch (InvalidKeyException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            } catch (NoSuchPaddingException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+            FileOutputStream envfos = null;
+            try {
+                envfos = new FileOutputStream(System.getProperty("user.home")
+                        + File.separatorChar + "fichier_decrypte_" + file.getName());
+                envfos.write(decripted);
+                envfos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "ok";
+        }
+        return "echec";
+    }
+    
+    public static String decryptByPk(File file, KeyPair keyPair)
+            throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        System.out.println("USE KEY : " + keyPair.toString());
         if(file.exists()) {
             byte[] pkcs7envelopedData = new byte[(int) file.length()];
             DataInputStream in = null;
@@ -88,7 +146,9 @@ public class AESUtils {
 
             byte[] contents = new byte[0];
             try {
-                Recipient recipient = new JceKeyTransEnvelopedRecipient(pk).setProvider("BC");
+                Recipient recipient = new JceKeyTransEnvelopedRecipient(keyPair.getPrivateKey()).setProvider("BC");
+                System.out.println("Encryption Algo OID : ");
+                System.out.println(rinfo.getKeyEncryptionAlgOID());
                 contents = rinfo.getContent(recipient);
             } catch (CMSException e) {
                 e.printStackTrace();
@@ -96,7 +156,8 @@ public class AESUtils {
 
             FileOutputStream envfos = null;
             try {
-                envfos = new FileOutputStream("fichier_non_chiffrer");
+                envfos = new FileOutputStream(System.getProperty("user.home")
+                        + File.separatorChar + "fichier_decrypte_" + file.getName());
                 envfos.write(contents);
                 envfos.close();
             } catch (FileNotFoundException e) {

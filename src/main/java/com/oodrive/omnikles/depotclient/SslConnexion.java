@@ -181,7 +181,7 @@ public class SslConnexion {
             JSONArray certificats = obj.getJSONArray("certificats");
             List<String> certificatsB64 = new ArrayList();
             for(int i=0; i<certificats.length(); i++){
-                certificatsB64.add(certificats.get(i).toString());
+                certificatsB64.add(certificats.get(i).toString().replaceAll("\r", ""));
             }
             return certificatsB64;
         } catch (JSONException e) {
