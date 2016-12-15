@@ -1,8 +1,6 @@
 package com.oodrive.omnikles.depotclient;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import sun.misc.BASE64Encoder;
-import sun.security.provider.X509Factory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,15 +62,12 @@ public class CertificatesManager {
 					java.security.cert.Certificate[] certificateChain = keyStore
 							.getCertificateChain(keyAlias);
 					X509Certificate signerCertificate = (X509Certificate) certificateChain[0];
-
-					BASE64Encoder encoder = new BASE64Encoder();
-					System.out.println(X509Factory.BEGIN_CERT);
-					String result = encoder.encodeBuffer(signerCertificate.getEncoded());
-					System.out.println(X509Factory.END_CERT);
-					System.out.println(result);
-
 					keyPairs.add(new KeyPair(signerCertificate,
 							(PrivateKey) keytmp));
+					System.out.println("Algo : " + keytmp.getAlgorithm());
+					System.out.println("key pk : " + keytmp.getEncoded());
+				}else{
+					System.out.println("class : " + keytmp.getClass().getCanonicalName());
 				}
 			}
 		} catch (Exception e) {

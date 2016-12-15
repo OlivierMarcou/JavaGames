@@ -64,10 +64,7 @@ public class CryptoDoc {
         FileInputStream file;
         URL url =  ClassLoader.getSystemResource("cryptodoc.properties");
         if(url != null && url.getFile() != null) {
-            String path = url.getFile();
-            file = new FileInputStream(path);
-            mainProperties.load(file);
-            file.close();
+            mainProperties.load(url.openStream());
             versionString = mainProperties.getProperty("build.version");
             return versionString;
         }

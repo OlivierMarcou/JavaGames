@@ -120,6 +120,7 @@ public class AESUtils {
             throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         System.out.println("USE KEY : " + keyPair.toString());
+        System.out.println("PK : " + keyPair.getPkB64());
         if(file.exists()) {
             byte[] pkcs7envelopedData = new byte[(int) file.length()];
             DataInputStream in = null;

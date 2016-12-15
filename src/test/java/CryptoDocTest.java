@@ -1,9 +1,6 @@
-import com.oodrive.omnikles.depotclient.CloseWindow;
 import com.oodrive.omnikles.depotclient.CryptoService;
 import com.oodrive.omnikles.depotclient.KeyPair;
 import com.oodrive.omnikles.depotclient.MainWindow;
-import sun.misc.BASE64Encoder;
-import sun.security.provider.X509Factory;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +18,6 @@ import java.util.List;
 
 public class CryptoDocTest {
 
-    private static CloseWindow closeWindow = new CloseWindow();
     private static MainWindow mainWindow = new MainWindow();
     private static CryptoService cs = new CryptoService();
 
@@ -56,9 +52,9 @@ public class CryptoDocTest {
         List<KeyPair> certificats = cs.getKeyPair("ok".toCharArray(), new File("test.p12"));
         String selectFile = mainWindow.fileChooser();
         System.out.println(selectFile);
-        BASE64Encoder encoder = new BASE64Encoder();
-        String result = X509Factory.BEGIN_CERT + "\n" + encoder.encodeBuffer(certificats.get(0).getCertificate().getEncoded()) + "\n" + X509Factory.END_CERT;
+        String result = certificats.get(0).getX509CertificateB64();
         System.out.println(result);
+        System.out.println("PK : "+certificats.get(0).getPkB64());
         List<String > certs = new ArrayList<>();
         certs.add(result);
         return cs.crypteByCertificats(new File(selectFile), certs);
