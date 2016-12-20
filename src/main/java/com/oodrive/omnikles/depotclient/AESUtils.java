@@ -47,7 +47,7 @@ public class AESUtils {
             // bits pour les clés symétriques (ou clés secrètes)
             CMSTypedData msg     = new CMSProcessableByteArray(buffer);
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            CMSEnvelopedData envData = gen.generate(msg, new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES256_CBC)
+            CMSEnvelopedData envData = gen.generate(msg, new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES128_CBC)
                     .setProvider("BC").build());
             System.out.println("Size crypted File: " + envData.getEncoded().length);
             byte[] pkcs7envelopedData = envData.getEncoded();
@@ -120,7 +120,7 @@ public class AESUtils {
             throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         System.out.println("USE KEY : " + keyPair.toString());
-        System.out.println("PK : " + keyPair.getPkB64());
+        System.out.println("PK : " + keyPair.getPrivateKey());
         if(file.exists()) {
             byte[] pkcs7envelopedData = new byte[(int) file.length()];
             DataInputStream in = null;
@@ -147,7 +147,7 @@ public class AESUtils {
 
             byte[] contents = new byte[0];
             try {
-                Recipient recipient = new JceKeyTransEnvelopedRecipient(keyPair.getPrivateKey()).setProvider("BC");
+                Recipient recipient = new JceKeyTransEnvelopedRecipient(keyPair.getPrivateKey()).setProvider("BC");//TODO: ici l'erreur ???
                 System.out.println("Encryption Algo OID : ");
                 System.out.println(rinfo.getKeyEncryptionAlgOID());
                 contents = rinfo.getContent(recipient);
