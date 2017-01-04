@@ -10,13 +10,17 @@ import java.security.cert.X509Certificate;
 public class KeyPair {
 
     private X509Certificate certificate;
+
+
+    private String alias;
     private PrivateKey privateKey;
     private String X509CertificateB64 = null;
     private String pkB64 = null;
 
-    public KeyPair(X509Certificate certificate, PrivateKey privateKey) {
+    public KeyPair(X509Certificate certificate, PrivateKey privateKey, String alias) {
         this.certificate = certificate;
         this.privateKey = privateKey;
+        this.alias = alias;
     }
 
     public X509Certificate getCertificate() {
@@ -33,6 +37,14 @@ public class KeyPair {
 
     public void setPrivateKey(PrivateKey privateKey) {
         this.privateKey = privateKey;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     @Override

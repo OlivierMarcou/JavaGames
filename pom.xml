@@ -172,6 +172,7 @@
                 <configuration>
                     <finalName>CryptoDoc</finalName>
                     <outputDirectory>.</outputDirectory>
+                    <!--<outputDirectory>/usr/share/tomcat8/webapps/tenderlink-rest/tenderlink/jnlp</outputDirectory>-->
                     <archive>
                         <addMavenDescriptor>true</addMavenDescriptor>
                         <manifestEntries>

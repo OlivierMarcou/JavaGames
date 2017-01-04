@@ -1,7 +1,6 @@
 package com.oodrive.omnikles.depotclient;
 
 import java.io.*;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -14,6 +13,8 @@ import java.util.List;
  * Created by olivier on 21/11/16.
  */
 public class CryptoService {
+
+    CertificatesManager cm = new CertificatesManager();
 
     public File crypteByCertificats(File file, List<String> certificats) throws IOException {
         if(file.exists()) {
@@ -35,61 +36,42 @@ public class CryptoService {
     }
 
     public List<KeyPair> getInstalledCertificats(){
-        CertificatesManager cm = new CertificatesManager();
-        List<KeyPair> certificats =  new ArrayList<>();
-        try {
-            KeyStore ks = cm.getKeyStore();
-            certificats = cm.loadKeyPairsFromKeystore(ks, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return certificats;
+        return cm.getInstalledCertificats();
+    }
+    public KeyPair getKeyPairWithPrivateKey(String alias, String password){
+        return cm.getKeyPairWithPrivateKey(alias, password);
     }
 
-    public String decryptWindows(File file, KeyPair certificate) throws FileNotFoundException {
+    public List<KeyPair> getKeyPairList( char[] password, File p12Filename) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+        return cm.getKeyPairList(p12Filename, password);
+    }
+
+    public void decryptWindows(File file, KeyPair certificate) throws FileNotFoundException {
         if(file.exists()){
-            String decrypte = null;
             try {
-                decrypte = AESUtils.decryptByPk(file, certificate);
+                AESUtils.decryptByPk(file, certificate);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return decrypte;
         }else{
             throw new FileNotFoundException("Fichier introuvable : "+ file.getAbsolutePath());
         }
     }
 
-    public String decryptP12(File file, String p12Filename, char[] password)
+    public void decryptP12(File file, String p12Filename, char[] password)
             throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
         File p12File = new File(p12Filename);
+
         if(file.exists() ){
-            String decrypte = null;
-            List<KeyPair> certificats = getKeyPair(password, p12File);
+            List<KeyPair> certificats = cm.getKeyPairList(p12File, password);
             try {
-                decrypte = AESUtils.decryptByPk(file, certificats.get(0));
+                AESUtils.decryptByPk(file, certificats.get(0));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return decrypte;
         }else{
             throw new FileNotFoundException("Fichier introuvable : "+ file.getAbsolutePath());
         }
     }
 
-    public List<KeyPair> getKeyPair(char[] password, File p12File)
-            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
-        if(p12File.exists()) {
-            CertificatesManager cm = new CertificatesManager();
-            KeyStore p12 = KeyStore.getInstance("pkcs12");
-            p12.load(new FileInputStream(p12File), password);
-
-            try {
-                return cm.loadKeyPairsFromKeystore(p12, password);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
 }

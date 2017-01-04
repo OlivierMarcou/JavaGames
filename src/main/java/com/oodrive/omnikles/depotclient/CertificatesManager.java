@@ -31,6 +31,8 @@ public class CertificatesManager {
 	public KeyStore getKeyStore() throws Exception {
 		KeyStore ks = null;
 		Security.addProvider(new BouncyCastleProvider());
+//		SunMSCAPI providerMSCAPI = new SunMSCAPI();
+//		Security.addProvider(providerMSCAPI);
 		try {
 			if(isLinux){
 				ks = KeyStore.getInstance("jks");
@@ -39,7 +41,7 @@ public class CertificatesManager {
 				ks.load(inks, "changeit".toCharArray());
 			}
 			if(isWindows){
-				ks = KeyStore.getInstance("Windows-MY", Security.getProvider("SunMSCAPI"));
+				ks = KeyStore.getInstance("Windows-MY");
 				ks.load(null, null);
 			}
 		} catch (Exception e) {
@@ -51,28 +53,92 @@ public class CertificatesManager {
 
 	public List<KeyPair> loadKeyPairsFromKeystore(KeyStore keyStore, char[] password) {
 		List<KeyPair> keyPairs = null;
+        keyPairs = new ArrayList<KeyPair>();
+		Enumeration aliases = null;
 		try {
-			keyPairs = new ArrayList<KeyPair>();
-			Enumeration aliases = keyStore.aliases();
-			while (aliases.hasMoreElements()) {
+			aliases = keyStore.aliases();
+		} catch (KeyStoreException e) {
+			e.printStackTrace();
+		}
+		while (aliases.hasMoreElements()) {
 				String keyAlias = aliases.nextElement().toString();
-				Key keytmp = keyStore.getKey(keyAlias, password);
-				if (keytmp instanceof PrivateKey) {
-                    System.out.println("key alias : " + keyAlias);
-					java.security.cert.Certificate[] certificateChain = keyStore
-							.getCertificateChain(keyAlias);
-					X509Certificate signerCertificate = (X509Certificate) certificateChain[0];
-					keyPairs.add(new KeyPair(signerCertificate,
-							(PrivateKey) keytmp));
-					System.out.println("Algo : " + keytmp.getAlgorithm());
-					System.out.println("key pk : " + keytmp.getEncoded());
-				}else{
-					System.out.println("class : " + keytmp.getClass().getCanonicalName());
-				}
+			Key keytmp = null;
+			try {
+				keytmp = keyStore.getKey(keyAlias, password);
+			} catch (KeyStoreException e) {
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			} catch (UnrecoverableKeyException e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			System.out.println("error " + e.getMessage());
+			if (keytmp != null) {
+				System.out.println(
+						"Get private key (" + keytmp +
+								", encode : " + keytmp.getEncoded() +
+								", \n Algorithm : " + keytmp.getAlgorithm() +
+								", Format : " + keytmp.getFormat());
+				System.out.println("key alias : " + keyAlias);
+			}
+			try {
+				java.security.cert.Certificate[] certificateChain;
+				certificateChain = keyStore.getCertificateChain(keyAlias);
+				if(certificateChain != null && certificateChain.length > 0) {
+					X509Certificate signerCertificate = (X509Certificate) certificateChain[0];
+					keyPairs.add(new KeyPair(signerCertificate, (PrivateKey) keytmp, keyAlias));
+				}
+			} catch (KeyStoreException e) {
+				e.printStackTrace();
+			}
 		}
 		return keyPairs;
+	}
+
+	public List<KeyPair> getKeyPairList(File p12File, char[] password)
+			throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+		if(p12File.exists()) {
+			KeyStore p12 = KeyStore.getInstance("pkcs12");
+			p12.load(new FileInputStream(p12File), password);
+
+			try {
+				return loadKeyPairsFromKeystore(p12, password);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+
+	public List<KeyPair> getInstalledCertificats(){
+		List<KeyPair> certificats =  new ArrayList<>();
+		try {
+			KeyStore ks = getKeyStore();
+			certificats = loadKeyPairsFromKeystore(ks, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return certificats;
+	}
+
+	public KeyPair getKeyPairWithPrivateKey(String alias, String password){
+		System.out.println("Alias : " + alias);
+		System.out.println("Password : " + password);
+		try {
+			KeyStore ks = getKeyStore();
+			PrivateKey privateKey = (PrivateKey) ks.getKey(alias, password.toCharArray());
+			ks.getCertificate(alias);
+			java.security.cert.Certificate[] certificateChain = null;
+			try {
+				certificateChain = ks.getCertificateChain(alias);
+			} catch (KeyStoreException e) {
+				e.printStackTrace();
+			}
+			X509Certificate signerCertificate = (X509Certificate) certificateChain[0];
+			return new KeyPair(signerCertificate, privateKey, alias);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

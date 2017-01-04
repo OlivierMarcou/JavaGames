@@ -5,11 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,17 +24,9 @@ public class MainWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Start Decrypt !");
-
-            SslConnexion ssl = new SslConnexion();
-            File f = ssl.sslDownloadFile(parameters.get("urlCryptedFile"), parameters.get("sessionid"), parameters.get("filename"));
-            String resultat = null;
-            KeyPair selectedCertificat = (KeyPair)jCertificats.getSelectedItem();
-            try {
-                resultat = cs.decryptWindows(f, selectedCertificat);
-            } catch (FileNotFoundException e1) {
-                e1.printStackTrace();
-            }
-            System.out.println("Decrypted : " + resultat);
+            JDialog message = new CodePinWindow(parameters.get("urlCryptedFile"),
+                    parameters.get("sessionid"),
+                    parameters.get("filename"), (KeyPair)jCertificats.getSelectedItem());
         }
     };
 
@@ -46,82 +34,7 @@ public class MainWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Start Decrypt !");
-
-
-            String p12Namefile = fileChooser();
-            JDialog message = new JDialog();
-
-            message.setSize(300, 200);
-            Container content = message.getContentPane();
-            content.setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
-
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridx=0;
-            c.gridy=0;
-            c.gridwidth=1;
-            content.add(new JLabel ( "Password : "), c);
-
-            JTextArea txtPassword = new JTextArea ();
-            txtPassword.setColumns(25);
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridx=1;
-            c.gridy=0;
-            c.gridwidth=1;
-            content.add(txtPassword, c);
-
-            JButton go = new JButton("Valider");
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridx=0;
-            c.gridy=1;
-            c.gridwidth=1;
-            content.add(go, c);
-
-            JButton annul = new JButton("Annuler");
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridx=1;
-            c.gridy=1;
-            c.gridwidth=1;
-            content.add(annul, c);
-
-            go.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if(!txtPassword.getText().trim().isEmpty()){
-                        try {
-                            List<KeyPair> certificats = cs.getKeyPair(txtPassword.getText().trim().toCharArray(), new File(p12Namefile));
-                            KeyPair selectedCertificat = certificats.get(0);
-                            String resultat = null;
-                            try {
-                                SslConnexion ssl = new SslConnexion();
-                                File f = ssl.sslDownloadFile(parameters.get("urlCryptedFile"), parameters.get("sessionid"), parameters.get("filename"));
-                                resultat = cs.decryptWindows(f, selectedCertificat);
-                            } catch (FileNotFoundException e1) {
-                                e1.printStackTrace();
-                            }
-                            message.setVisible(false);
-                            System.out.println("Decrypted : " + resultat);
-                        } catch (KeyStoreException e1) {
-                            e1.printStackTrace();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        } catch (NoSuchAlgorithmException e1) {
-                            e1.printStackTrace();
-                        } catch (CertificateException e1) {
-                            e1.printStackTrace();
-                        }
-                        message.setVisible(false);
-                    }
-                }
-            });
-            annul.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    message.setVisible(false);
-                }
-            });
-            message.setAlwaysOnTop(true);
-            message.setVisible(true);
+            JDialog message = new PasswordP12Window(parameters.get("urlCryptedFile"), parameters.get("sessionid"), parameters.get("filename"));
         }
     };
 
@@ -180,7 +93,6 @@ public class MainWindow extends JFrame {
         for(KeyPair certificat:certificats)
             jCertificats.addItem(certificat);
     }
-
 
     public String fileChooser() {
         String filename = null;

@@ -11,7 +11,10 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.List;
@@ -116,11 +119,13 @@ public class AESUtils {
         return "echec";
     }
     
-    public static String decryptByPk(File file, KeyPair keyPair)
+    public static void decryptByPk(File file, KeyPair keyPair)
             throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+//		Security.addProvider(new sun.security.mscapi.SunMSCAPI());
+//		SunMSCAPI mscapi = new SunMSCAPI();
         System.out.println("USE KEY : " + keyPair.toString());
-        System.out.println("PK : " + keyPair.getPrivateKey());
+//        System.out.println("PK length : " + keyPair.getPrivateKey().getEncoded());
         if(file.exists()) {
             byte[] pkcs7envelopedData = new byte[(int) file.length()];
             DataInputStream in = null;
@@ -142,12 +147,11 @@ public class AESUtils {
             }
             Collection recip = ced.getRecipientInfos().getRecipients();
 
-            KeyTransRecipientInformation rinfo = (KeyTransRecipientInformation)
-                    recip.iterator().next();
+            KeyTransRecipientInformation rinfo = (KeyTransRecipientInformation) recip.iterator().next();
 
             byte[] contents = new byte[0];
             try {
-                Recipient recipient = new JceKeyTransEnvelopedRecipient(keyPair.getPrivateKey()).setProvider("BC");//TODO: ici l'erreur ???
+                Recipient recipient = new JceKeyTransEnvelopedRecipient(keyPair.getPrivateKey()).setProvider("BC");
                 System.out.println("Encryption Algo OID : ");
                 System.out.println(rinfo.getKeyEncryptionAlgOID());
                 contents = rinfo.getContent(recipient);
@@ -157,18 +161,17 @@ public class AESUtils {
 
             FileOutputStream envfos = null;
             try {
-                envfos = new FileOutputStream(System.getProperty("user.home")
-                        + File.separatorChar + "fichier_decrypte_" + file.getName());
+                String pathDestiantion = System.getProperty("user.home")
+                        + File.separatorChar + "fichier_decrypte_" + file.getName();
+                envfos = new FileOutputStream(pathDestiantion);
                 envfos.write(contents);
                 envfos.close();
+                System.out.println("File save : " + pathDestiantion);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return contents.toString();
-        }else{
-            return null;
         }
     }
 

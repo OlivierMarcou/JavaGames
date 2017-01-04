@@ -43,13 +43,14 @@ public class CryptoDocTest {
 //        List<KeyPair> certificats = cs.getInstalledCertificats();
 //        for(KeyPair certificat:certificats)
 //            jCertificats.addItem(certificat);
+        mainWindow.init(parameters);
         File f = depotTest();
         cs.decryptP12(f, "test.p12", "ok".toCharArray());
     }
 
     public static File depotTest() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
 
-        List<KeyPair> certificats = cs.getKeyPair("ok".toCharArray(), new File("test.p12"));
+        List<KeyPair> certificats = cs.getKeyPairList("ok".toCharArray(), new File("test.p12"));
         String selectFile = mainWindow.fileChooser();
         System.out.println(selectFile);
         String result = certificats.get(0).getX509CertificateB64();
