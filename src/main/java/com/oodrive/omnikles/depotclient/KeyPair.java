@@ -3,6 +3,9 @@ package com.oodrive.omnikles.depotclient;
 import sun.misc.BASE64Encoder;
 import sun.security.provider.X509Factory;
 
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
@@ -49,7 +52,20 @@ public class KeyPair {
 
     @Override
     public String toString(){
-        return String.valueOf(certificate.getIssuerDN() );
+        String dn = String.valueOf(certificate.getSubjectDN());
+        LdapName ln = null;
+        try {
+            ln = new LdapName(dn);
+        } catch (InvalidNameException e) {
+            e.printStackTrace();
+        }
+
+        for(Rdn rdn : ln.getRdns()) {
+            if(rdn.getType().equalsIgnoreCase("CN")) {
+                return rdn.toString();
+            }
+        }
+        return null;
     }
 
     public String getX509CertificateB64(){
@@ -64,7 +80,7 @@ public class KeyPair {
     }
 
     public String getPkB64(){
-        if(pkB64 == null){
+        if(pkB64 == null && privateKey != null && privateKey.getEncoded() != null){
             BASE64Encoder encoder = new BASE64Encoder();
             pkB64 = X509Factory.BEGIN_CERT + "\n" + encoder.encodeBuffer(privateKey.getEncoded()) + X509Factory.END_CERT;
         }

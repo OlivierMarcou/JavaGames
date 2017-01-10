@@ -1,4 +1,6 @@
-package com.oodrive.omnikles.depotclient;
+import com.oodrive.omnikles.depotclient.CryptoService;
+import com.oodrive.omnikles.depotclient.KeyPair;
+import com.oodrive.omnikles.depotclient.SslConnexion;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,11 +13,11 @@ import java.security.PrivateKey;
 /**
  * Created by olivier on 04/01/17.
  */
-public class CodePinWindow extends JDialog{
+public class CodePinWindowTest extends JDialog{
 
     private CryptoService cs = new CryptoService();
 
-    CodePinWindow(String urlCryptedFile, String sessionid, String filename, KeyPair selectedCertificat){
+    CodePinWindowTest(File selectedFile, KeyPair selectedCertificat){
 
         setSize(300, 200);
         Container content = getContentPane();
@@ -53,24 +55,22 @@ public class CodePinWindow extends JDialog{
         go.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                if(!txtPassword.getText().trim().isEmpty()){
+                if(!txtPassword.getText().trim().isEmpty()){
 
 
                     SslConnexion ssl = new SslConnexion();
-                    File f = ssl.sslDownloadFile(urlCryptedFile, sessionid, filename);
                     //Initialise la clé privé avec le code pin
-                    PrivateKey pk = null;
-                    KeyPair kp = cs.getKeyPairWithPrivateKey(selectedCertificat.getAlias(), txtPassword.getText().trim());
-                    selectedCertificat.setPrivateKey(kp.getPrivateKey());
+                    PrivateKey pk = null; cs.getKeyPairWithPrivateKey(selectedCertificat.getAlias(), txtPassword.getText().trim());
+                    selectedCertificat.setPrivateKey(pk);
                     try {
-                        cs.decryptWindows(f, selectedCertificat);
+                        cs.decryptWindows(selectedFile, selectedCertificat);
                         System.out.println("Decrypted ! ");
                         setVisible(false);
                     } catch (FileNotFoundException e1) {
                         e1.printStackTrace();
                         setVisible(false);
                     }
-//                }
+                }
             }
         });
         annul.addActionListener(new ActionListener() {

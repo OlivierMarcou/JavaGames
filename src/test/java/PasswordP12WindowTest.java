@@ -1,4 +1,5 @@
-package com.oodrive.omnikles.depotclient;
+import com.oodrive.omnikles.depotclient.CryptoService;
+import com.oodrive.omnikles.depotclient.KeyPair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,11 +15,11 @@ import java.security.cert.CertificateException;
 /**
  * Created by olivier on 04/01/17.
  */
-public class PasswordP12Window extends JDialog{
+public class PasswordP12WindowTest extends JDialog{
 
     private CryptoService cs = new CryptoService();
 
-    PasswordP12Window(String urlCryptedFile, String sessionid, String filename){
+    PasswordP12WindowTest(File selectedFile){
         String p12Namefile = fileChooser();
 
         setSize(300, 200);
@@ -62,9 +63,7 @@ public class PasswordP12Window extends JDialog{
                         java.util.List<KeyPair> certificats = cs.getKeyPairList(txtPassword.getText().trim().toCharArray(), new File(p12Namefile));
                         KeyPair selectedCertificat = certificats.get(0);
                         try {
-                            SslConnexion ssl = new SslConnexion();
-                            File f = ssl.sslDownloadFile(urlCryptedFile, sessionid, filename);
-                            cs.decryptWindows(f, selectedCertificat);
+                            cs.decryptWindows(selectedFile, selectedCertificat);
                             System.out.println("Decrypted ! ");
                         } catch (FileNotFoundException e1) {
                             e1.printStackTrace();
@@ -98,7 +97,7 @@ public class PasswordP12Window extends JDialog{
         String dir = null;
         JFileChooser c = new JFileChooser(System.getenv("HOME"));
         c.setAcceptAllFileFilterUsed(false);
-        int rVal = c.showOpenDialog(PasswordP12Window.this);
+        int rVal = c.showOpenDialog(PasswordP12WindowTest.this);
         if (rVal == JFileChooser.APPROVE_OPTION) {
             filename = c.getSelectedFile().getName();
             dir = c.getCurrentDirectory().toString();

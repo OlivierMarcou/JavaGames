@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class MainWindow extends JFrame {
 
-    private JLabel jSelectCertificat = new JLabel("Selectionner votre certificat : ");
-    private JComboBox<KeyPair> jCertificats = new JComboBox<>();
-    private JButton jSelected = new JButton("Selectionner");
+    private JLabel lblSelectCertificat = new JLabel("Selectionner votre certificat : ");
+    private JComboBox<KeyPair> listCertificats = new JComboBox<>();
+    private JButton btnSelected = new JButton("Selectionner");
     private CryptoService cs = new CryptoService();
     private HashMap<String, String> parameters = new HashMap<>();
 
@@ -26,7 +26,7 @@ public class MainWindow extends JFrame {
             System.out.println("Start Decrypt !");
             JDialog message = new CodePinWindow(parameters.get("urlCryptedFile"),
                     parameters.get("sessionid"),
-                    parameters.get("filename"), (KeyPair)jCertificats.getSelectedItem());
+                    parameters.get("filename"), (KeyPair)listCertificats.getSelectedItem());
         }
     };
 
@@ -52,46 +52,55 @@ public class MainWindow extends JFrame {
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=2;
-        content.add(jSelectCertificat, c);
+        content.add(lblSelectCertificat, c);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=2;
-        content.add(jCertificats, c);
+        content.add(listCertificats, c);
 
         JButton btnP12 = new JButton("Or Upload P12 File !");
         btnP12.addActionListener(decryptActionP12);
 
-        jCertificats.addActionListener(new ActionListener() {
+        listCertificats.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 myBox(evt);
             }
         });
-        jSelected.addActionListener(decryptAction);
+        btnSelected.addActionListener(decryptAction);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=1;
-        content.add(jSelected, c);
+        content.add(btnSelected, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=1;
         c.gridy=2;
         c.gridwidth=1;
         content.add(btnP12, c);
+
     }
 
     protected void myBox(ActionEvent evt) {
-        if (jCertificats.getSelectedItem() != null) {
-            System.out.println(jCertificats.getSelectedItem().toString());
+        if (listCertificats.getSelectedItem() != null) {
+            System.out.println("DN : " + listCertificats.getSelectedItem().toString());
+            KeyPair certif = (KeyPair) listCertificats.getSelectedItem();
+            try {
+                System.out.println("PK : " + cs.getKeyPairWithPrivateKey(certif.getAlias(), null).getPkB64());
+            }catch(NullPointerException e){
+
+            }
         }
     }
 
     public void init(HashMap<String, String> parameters){
         this.parameters = parameters;
         List<KeyPair> certificats = cs.getInstalledCertificats();
-        for(KeyPair certificat:certificats)
-            jCertificats.addItem(certificat);
+        for(KeyPair certificat:certificats){
+            listCertificats.addItem(certificat);
+            System.out.println(certificat.getPkB64());
+        }
     }
 
     public String fileChooser() {

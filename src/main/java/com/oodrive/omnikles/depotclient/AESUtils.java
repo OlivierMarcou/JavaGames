@@ -122,8 +122,7 @@ public class AESUtils {
     public static void decryptByPk(File file, KeyPair keyPair)
             throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-//		Security.addProvider(new sun.security.mscapi.SunMSCAPI());
-//		SunMSCAPI mscapi = new SunMSCAPI();
+
         System.out.println("USE KEY : " + keyPair.toString());
 //        System.out.println("PK length : " + keyPair.getPrivateKey().getEncoded());
         if(file.exists()) {

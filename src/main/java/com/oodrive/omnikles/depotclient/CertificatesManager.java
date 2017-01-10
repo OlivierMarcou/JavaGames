@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.depotclient;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import sun.security.mscapi.SunMSCAPI;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,18 +31,18 @@ public class CertificatesManager {
 
 	public KeyStore getKeyStore() throws Exception {
 		KeyStore ks = null;
-		Security.addProvider(new BouncyCastleProvider());
-//		SunMSCAPI providerMSCAPI = new SunMSCAPI();
-//		Security.addProvider(providerMSCAPI);
 		try {
 			if(isLinux){
+				Security.addProvider(new BouncyCastleProvider());
 				ks = KeyStore.getInstance("jks");
 				File test=new File(System.getProperty("java.home")+ "/lib/security/cacerts");
 				FileInputStream inks = new FileInputStream(test);
 				ks.load(inks, "changeit".toCharArray());
 			}
 			if(isWindows){
-				ks = KeyStore.getInstance("Windows-MY");
+				SunMSCAPI providerMSCAPI = new SunMSCAPI();
+				Security.addProvider(providerMSCAPI);
+				ks = KeyStore.getInstance("Windows-MY", providerMSCAPI);
 				ks.load(null, null);
 			}
 		} catch (Exception e) {
@@ -62,14 +63,19 @@ public class CertificatesManager {
 		}
 		while (aliases.hasMoreElements()) {
 				String keyAlias = aliases.nextElement().toString();
-			Key keytmp = null;
+			PrivateKey keytmp = null;
 			try {
-				keytmp = keyStore.getKey(keyAlias, password);
+
+				KeyStore.PrivateKeyEntry pkEntry = (KeyStore.PrivateKeyEntry)
+				keyStore.getEntry(keyAlias,  new KeyStore.PasswordProtection(password));
+				keytmp = pkEntry.getPrivateKey();
 			} catch (KeyStoreException e) {
 				e.printStackTrace();
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			} catch (UnrecoverableKeyException e) {
+				e.printStackTrace();
+			} catch (UnrecoverableEntryException e) {
 				e.printStackTrace();
 			}
 			if (keytmp != null) {
@@ -81,11 +87,9 @@ public class CertificatesManager {
 				System.out.println("key alias : " + keyAlias);
 			}
 			try {
-				java.security.cert.Certificate[] certificateChain;
-				certificateChain = keyStore.getCertificateChain(keyAlias);
-				if(certificateChain != null && certificateChain.length > 0) {
-					X509Certificate signerCertificate = (X509Certificate) certificateChain[0];
-					keyPairs.add(new KeyPair(signerCertificate, (PrivateKey) keytmp, keyAlias));
+				X509Certificate certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
+				if(certificate != null) {
+					keyPairs.add(new KeyPair(certificate, (PrivateKey) keytmp, keyAlias));
 				}
 			} catch (KeyStoreException e) {
 				e.printStackTrace();
@@ -122,23 +126,64 @@ public class CertificatesManager {
 	}
 
 	public KeyPair getKeyPairWithPrivateKey(String alias, String password){
-		System.out.println("Alias : " + alias);
-		System.out.println("Password : " + password);
 		try {
-			KeyStore ks = getKeyStore();
-			PrivateKey privateKey = (PrivateKey) ks.getKey(alias, password.toCharArray());
-			ks.getCertificate(alias);
-			java.security.cert.Certificate[] certificateChain = null;
-			try {
-				certificateChain = ks.getCertificateChain(alias);
-			} catch (KeyStoreException e) {
-				e.printStackTrace();
-			}
-			X509Certificate signerCertificate = (X509Certificate) certificateChain[0];
-			return new KeyPair(signerCertificate, privateKey, alias);
-		} catch (Exception e) {
-			e.printStackTrace();
+		KeyStore ks = null;
+
+		if(isLinux){
+			Security.addProvider(new BouncyCastleProvider());
+			ks = KeyStore.getInstance("jks");
+			File test=new File(System.getProperty("java.home")+ "/lib/security/cacerts");
+			FileInputStream inks = new FileInputStream(test);
+			ks.load(inks, "changeit".toCharArray());
 		}
+		if(isWindows){
+			SunMSCAPI providerMSCAPI = new SunMSCAPI();
+			Security.addProvider(providerMSCAPI);
+			ks = KeyStore.getInstance("Windows-MY", providerMSCAPI);
+			ks.load(null, null);
+		}
+
+		ks.load(null, null);
+			X509Certificate certificate = (X509Certificate)ks.getCertificate(alias);
+			System.out.println("Alias: " + alias);
+			System.out.println("  Subject: " + certificate.getSubjectDN());
+			System.out.println("  Issued By: " + certificate.getIssuerDN());
+			if (ks.isKeyEntry(alias)) {
+				System.out.println("  Has private key ... ");
+				KeyStore.PrivateKeyEntry pkEntry = (KeyStore.PrivateKeyEntry)
+				ks.getEntry(alias, new KeyStore.PasswordProtection(password.toCharArray()));
+				PrivateKey myPrivateKey = pkEntry.getPrivateKey();
+				System.out.println("encoded " + myPrivateKey.getEncoded());
+				return new KeyPair(certificate, myPrivateKey, alias);
+			}
+		} catch (Exception ioe) {
+			System.err.println(ioe.getMessage());
+		}
+
+//		System.out.println("Alias : " + alias);
+//		System.out.println("Password : " + password);
+//		try {
+//			KeyStore ks = KeyStore.getInstance("Windows-MY");
+//			ks.load(null, null) ;
+//			java.util.Enumeration en = ks.aliases() ;
+//
+//			while (en.hasMoreElements()) {
+//				String aliasKey = (String)en.nextElement() ;
+//				java.security.cert.Certificate c = ks.getCertificate(aliasKey) ;
+//
+//				if (aliasKey.equals(alias) ) {
+//					System.out.println("    Certificat : " + c.toString() ) ;
+//					PrivateKey key = (PrivateKey)ks.getKey(aliasKey, password.toCharArray());
+////					Certificate[] chain = ks.getCertificateChain(aliasKey);
+//
+//					X509Certificate certificate = (X509Certificate) ks.getCertificate(aliasKey);
+//					return new KeyPair(certificate,key,aliasKey);
+//				}
+//			}
+//
+//		} catch (Exception ioe) {
+//			System.err.println(ioe.getMessage());
+//		}
 		return null;
 	}
 }

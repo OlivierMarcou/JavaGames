@@ -19,6 +19,7 @@ import java.util.List;
 public class CryptoDocTest {
 
     private static MainWindow mainWindow = new MainWindow();
+    private static TestWindow testWindow = new TestWindow();
     private static CryptoService cs = new CryptoService();
 
     public static void main(String[] args) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
@@ -35,8 +36,9 @@ public class CryptoDocTest {
             System.out.println(keyValue[0] + " " + keyValue[1]);
             parameters.put(keyValue[0], keyValue[1]);
         }
-        initDebug(parameters);
-        mainWindow.setVisible(true);
+        testWindow.setVisible(true);
+//        initDebug(parameters);
+//        mainWindow.setVisible(true);
     }
 
     public static void initDebug(HashMap<String, String> parameters) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
