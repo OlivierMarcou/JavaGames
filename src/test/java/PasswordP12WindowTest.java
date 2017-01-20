@@ -1,5 +1,5 @@
 import com.oodrive.omnikles.depotclient.CryptoService;
-import com.oodrive.omnikles.depotclient.KeyPair;
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 
 import javax.swing.*;
 import java.awt.*;

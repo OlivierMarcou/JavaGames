@@ -1,5 +1,7 @@
 package com.oodrive.omnikles.depotclient;
 
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,7 +12,6 @@ import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-
 /**
  * Created by olivier on 04/01/17.
  */

@@ -1,12 +1,24 @@
 package com.oodrive.omnikles.depotclient;
 
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
+import com.oodrive.omnikles.depotclient.services.AESService;
+import com.oodrive.omnikles.depotclient.utils.ZipUtils;
+import org.bouncycastle.crypto.CryptoException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.security.PrivateKey;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidParameterSpecException;
+import java.util.zip.ZipFile;
 
 /**
  * Created by olivier on 04/01/17.
@@ -54,23 +66,39 @@ public class CodePinWindow extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
 //                if(!txtPassword.getText().trim().isEmpty()){
+                SslConnexion ssl = new SslConnexion();
+                File f = ssl.sslDownloadFile(urlCryptedFile, sessionid, filename);
+                //Initialise la clé privé avec le code pin
+                KeyPair kp = null;
+                try {
+                    kp = cs.getKeyPairWithPrivateKey(selectedCertificat.getAlias(), txtPassword.getText().trim());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                 selectedCertificat.setPrivateKey(kp.getPrivateKey());
+                KeyPair keyPair = selectedCertificat;
+                AESService aesService = new AESService();
 
-
-                    SslConnexion ssl = new SslConnexion();
-                    File f = ssl.sslDownloadFile(urlCryptedFile, sessionid, filename);
-                    //Initialise la clé privé avec le code pin
-                    PrivateKey pk = null;
-                    KeyPair kp = cs.getKeyPairWithPrivateKey(selectedCertificat.getAlias(), txtPassword.getText().trim());
-                    selectedCertificat.setPrivateKey(kp.getPrivateKey());
-                    try {
-                        cs.decryptWindows(f, selectedCertificat);
-                        System.out.println("Decrypted ! ");
-                        setVisible(false);
-                    } catch (FileNotFoundException e1) {
-                        e1.printStackTrace();
-                        setVisible(false);
+                byte[] secret = new byte[0];
+                try {
+                    byte[] content  = ZipUtils.getContentFile(new ZipFile(f),"ENVELOPPE.key.p7m");
+                    if(keyPair != null) {
+                        secret = aesService.decodeSecretKeyByCertificat(content, keyPair);
+                    }else {
+                        System.out.println("aucun certificat selectionné." );
                     }
-//                }
+                } catch (IOException exx) {
+                    exx.printStackTrace();
+                }
+//        if(aesService.secret.getEncoded() != secret)
+//            throw new InvalidKeyException("les deux clef ne sont pas indentiques !");
+
+                try {
+                    aesService.decryptFileWithSecretKey( new File("ENVELOPPE.crypt"), new File("ENVELOPPE.decrypt"), secret);
+                } catch (NoSuchPaddingException |NoSuchAlgorithmException |InvalidAlgorithmParameterException|InvalidKeyException
+                        |IOException |BadPaddingException |IllegalBlockSizeException |InvalidParameterSpecException |CryptoException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         annul.addActionListener(new ActionListener() {

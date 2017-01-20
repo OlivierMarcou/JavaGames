@@ -1,12 +1,20 @@
 package com.oodrive.omnikles.depotclient;
 
-import java.io.*;
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
+import com.oodrive.omnikles.depotclient.services.AESService;
+import com.oodrive.omnikles.depotclient.utils.CertificatesUtils;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.List;
 
 /**
@@ -14,43 +22,60 @@ import java.util.List;
  */
 public class CryptoService {
 
-    CertificatesManager cm = new CertificatesManager();
+    AESService as = new AESService();
 
     public File crypteByCertificats(File file, List<String> certificats) throws IOException {
         if(file.exists()) {
+
+
+            List<KeyPair> certs = CertificatesUtils.getInstalledCertificats();
+            System.out.println("utils");
+
+            File zipFile = null;
             try {
-                final CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-                List<X509Certificate> certificatsX509 = new ArrayList<>();
-                for(String certificat:certificats) {
-                    InputStream is = new ByteArrayInputStream(certificat.getBytes());
-                    certificatsX509.add((X509Certificate) certFactory.generateCertificate(is));
-                }
-                return AESUtils.encrypt(file, certificatsX509);
-            } catch (Exception e) {
+                zipFile = as.zipKeyFile(certs,"enveloppe.zip.crypt");
+            } catch (IOException e) {
                 e.printStackTrace();
             }
+            try {
+                as.encryptFileWithSecretKey(file, zipFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (InvalidParameterSpecException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+            }
+            return zipFile;
         }else{
             throw new FileNotFoundException("fichier introuvable : "+ file.getAbsolutePath());
         }
-        return null;
     }
 
     public List<KeyPair> getInstalledCertificats(){
-        return cm.getInstalledCertificats();
+        return CertificatesUtils.getInstalledCertificats();
     }
 
-    public KeyPair getKeyPairWithPrivateKey(String alias, String password){
-        return cm.getKeyPairWithPrivateKey(alias, password);
+    public KeyPair getKeyPairWithPrivateKey(String alias, String password) throws Exception {
+        return CertificatesUtils.getKeyPairWithAlias(alias, password);
     }
 
     public List<KeyPair> getKeyPairList( char[] password, File p12Filename) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
-        return cm.getKeyPairList(p12Filename, password);
+        return CertificatesUtils.getKeyPairList(p12Filename, password);
     }
 
     public void decryptWindows(File file, KeyPair certificate) throws FileNotFoundException {
         if(file.exists()){
             try {
-                AESUtils.decryptByPk(file, certificate);
+                as.decryptByPk(file, certificate);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -64,9 +89,9 @@ public class CryptoService {
         File p12File = new File(p12Filename);
 
         if(file.exists() ){
-            List<KeyPair> certificats = cm.getKeyPairList(p12File, password);
+            List<KeyPair> certificats = CertificatesUtils.getKeyPairList(p12File, password);
             try {
-                AESUtils.decryptByPk(file, certificats.get(0));
+                as.decryptByPk(file, certificats.get(0));
             } catch (Exception e) {
                 e.printStackTrace();
             }

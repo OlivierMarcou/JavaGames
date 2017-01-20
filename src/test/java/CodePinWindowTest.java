@@ -1,5 +1,5 @@
 import com.oodrive.omnikles.depotclient.CryptoService;
-import com.oodrive.omnikles.depotclient.KeyPair;
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.SslConnexion;
 
 import javax.swing.*;
@@ -60,7 +60,12 @@ public class CodePinWindowTest extends JDialog{
 
                     SslConnexion ssl = new SslConnexion();
                     //Initialise la clé privé avec le code pin
-                    PrivateKey pk = null; cs.getKeyPairWithPrivateKey(selectedCertificat.getAlias(), txtPassword.getText().trim());
+                    PrivateKey pk = null;
+                    try {
+                        cs.getKeyPairWithPrivateKey(selectedCertificat.getAlias(), txtPassword.getText().trim());
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
                     selectedCertificat.setPrivateKey(pk);
                     try {
                         cs.decryptWindows(selectedFile, selectedCertificat);

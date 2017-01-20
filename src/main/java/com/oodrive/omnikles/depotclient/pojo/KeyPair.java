@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.depotclient;
+package com.oodrive.omnikles.depotclient.pojo;
 
 import sun.misc.BASE64Encoder;
 import sun.security.provider.X509Factory;
@@ -24,6 +24,8 @@ public class KeyPair {
         this.certificate = certificate;
         this.privateKey = privateKey;
         this.alias = alias;
+        initX509CertificateB64();
+        initPkB64();
     }
 
     public X509Certificate getCertificate() {
@@ -68,25 +70,29 @@ public class KeyPair {
         return null;
     }
 
-    public String getX509CertificateB64(){
-        if(X509CertificateB64 == null){
+    private void initX509CertificateB64(){
+        BASE64Encoder encoder = new BASE64Encoder();
+        try {
+            X509CertificateB64 = X509Factory.BEGIN_CERT + "\n" + encoder.encodeBuffer(certificate.getEncoded()) + X509Factory.END_CERT;
+        } catch (CertificateEncodingException e) {
+        }
+    }
+
+
+    private void initPkB64(){
+        if( privateKey != null && privateKey.getEncoded() != null){
             BASE64Encoder encoder = new BASE64Encoder();
-            try {
-                X509CertificateB64 = X509Factory.BEGIN_CERT + "\n" + encoder.encodeBuffer(certificate.getEncoded()) + X509Factory.END_CERT;
-            } catch (CertificateEncodingException e) {
-            }
-            }
+            pkB64 = X509Factory.BEGIN_CERT + "\n" + encoder.encodeBuffer(privateKey.getEncoded()) + X509Factory.END_CERT;
+        }
+    }
+
+    public String getX509CertificateB64(){
         return X509CertificateB64;
     }
 
     public String getPkB64(){
-        if(pkB64 == null && privateKey != null && privateKey.getEncoded() != null){
-            BASE64Encoder encoder = new BASE64Encoder();
-            pkB64 = X509Factory.BEGIN_CERT + "\n" + encoder.encodeBuffer(privateKey.getEncoded()) + X509Factory.END_CERT;
-        }
         return pkB64;
     }
-
     public int getSizeB64(){
         return getX509CertificateB64().length();
     }

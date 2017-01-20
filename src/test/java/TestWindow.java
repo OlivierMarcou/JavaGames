@@ -1,5 +1,5 @@
 import com.oodrive.omnikles.depotclient.CryptoService;
-import com.oodrive.omnikles.depotclient.KeyPair;
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -165,12 +165,6 @@ public class TestWindow extends JFrame {
     protected void myBox(ActionEvent evt) {
         if (listCertificats.getSelectedItem() != null) {
             System.out.println(listCertificats.getSelectedItem().toString());
-            KeyPair certif = (KeyPair) listCertificats.getSelectedItem();
-            try {
-                System.out.println("PK : " + cs.getKeyPairWithPrivateKey(certif.getAlias(), null).getPkB64());
-            }catch(NullPointerException e){
-
-            }
         }
     }
 

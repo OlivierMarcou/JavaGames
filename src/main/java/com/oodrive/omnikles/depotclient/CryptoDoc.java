@@ -5,7 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Properties;
@@ -21,7 +24,7 @@ public class CryptoDoc {
     private static CloseWindow closeWindow = new CloseWindow();
     private static MainWindow mainWindow = new MainWindow();
 
-    public static void main(String[] args) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public static void main(String[] args) throws InvalidKeyException, javax.security.cert.CertificateException, IOException {
         System.out.println("WebStart CryptoDoc - version : " + getAppVersion());
         System.out.println(System.getProperty("user.home"));
         HashMap<String, String> parameters = new HashMap<>();
@@ -42,6 +45,11 @@ public class CryptoDoc {
         if(parameters.get("action").equals("decrypt")){
             openDepot(parameters);
         }
+
+    }
+
+    public static void mainold(String[] args) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+
     }
 
     private static void openDepot(HashMap<String, String> parameters) throws MalformedURLException, FileNotFoundException {

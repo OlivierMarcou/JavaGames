@@ -1,5 +1,7 @@
 package com.oodrive.omnikles.depotclient;
 
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -85,12 +87,6 @@ public class MainWindow extends JFrame {
     protected void myBox(ActionEvent evt) {
         if (listCertificats.getSelectedItem() != null) {
             System.out.println("DN : " + listCertificats.getSelectedItem().toString());
-            KeyPair certif = (KeyPair) listCertificats.getSelectedItem();
-            try {
-                System.out.println("PK : " + cs.getKeyPairWithPrivateKey(certif.getAlias(), null).getPkB64());
-            }catch(NullPointerException e){
-
-            }
         }
     }
 

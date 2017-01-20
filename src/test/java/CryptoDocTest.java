@@ -1,6 +1,6 @@
 import com.oodrive.omnikles.depotclient.CryptoService;
-import com.oodrive.omnikles.depotclient.KeyPair;
 import com.oodrive.omnikles.depotclient.MainWindow;
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 
 import java.io.File;
 import java.io.IOException;
