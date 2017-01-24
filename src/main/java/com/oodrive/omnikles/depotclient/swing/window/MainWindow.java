@@ -1,6 +1,10 @@
-package com.oodrive.omnikles.depotclient;
+package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
+import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
+import com.oodrive.omnikles.depotclient.service.CryptoService;
+import com.oodrive.omnikles.depotclient.service.SslConnexionService;
+import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -17,18 +20,17 @@ import java.util.List;
 public class MainWindow extends JFrame {
 
     private JLabel lblSelectCertificat = new JLabel("Selectionner votre certificat : ");
-    private JComboBox<KeyPair> listCertificats = new JComboBox<>();
+    private CertificatsComboBox listCertificat = new CertificatsComboBox();
     private JButton btnSelected = new JButton("Selectionner");
     private CryptoService cs = new CryptoService();
-    private HashMap<String, String> parameters = new HashMap<>();
 
     private ActionListener decryptAction = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Start Decrypt !");
-            JDialog message = new CodePinWindow(parameters.get("urlCryptedFile"),
-                    parameters.get("sessionid"),
-                    parameters.get("filename"), (KeyPair)listCertificats.getSelectedItem());
+            JDialog message = new CodePinWindow(CryptoDocConfiguration.parameters.get("urlCryptedFile"),
+                    CryptoDocConfiguration.parameters.get("sessionid"),
+                    CryptoDocConfiguration.parameters.get("filename"));
         }
     };
 
@@ -36,7 +38,9 @@ public class MainWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Start Decrypt !");
-            JDialog message = new PasswordP12Window(parameters.get("urlCryptedFile"), parameters.get("sessionid"), parameters.get("filename"));
+            JDialog message = new PasswordP12Window(CryptoDocConfiguration.parameters.get("urlCryptedFile"),
+                    CryptoDocConfiguration.parameters.get("sessionid"),
+                    CryptoDocConfiguration.parameters.get("filename"));
         }
     };
 
@@ -59,16 +63,11 @@ public class MainWindow extends JFrame {
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=2;
-        content.add(listCertificats, c);
+        content.add(listCertificat, c);
 
         JButton btnP12 = new JButton("Or Upload P12 File !");
         btnP12.addActionListener(decryptActionP12);
 
-        listCertificats.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                myBox(evt);
-            }
-        });
         btnSelected.addActionListener(decryptAction);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
@@ -84,17 +83,10 @@ public class MainWindow extends JFrame {
 
     }
 
-    protected void myBox(ActionEvent evt) {
-        if (listCertificats.getSelectedItem() != null) {
-            System.out.println("DN : " + listCertificats.getSelectedItem().toString());
-        }
-    }
-
-    public void init(HashMap<String, String> parameters){
-        this.parameters = parameters;
+    public void init(){
         List<KeyPair> certificats = cs.getInstalledCertificats();
         for(KeyPair certificat:certificats){
-            listCertificats.addItem(certificat);
+            listCertificat.addItem(certificat);
             System.out.println(certificat.getPkB64());
         }
     }
@@ -108,7 +100,7 @@ public class MainWindow extends JFrame {
         if (rVal == JFileChooser.APPROVE_OPTION) {
             filename = c.getSelectedFile().getName();
             dir = c.getCurrentDirectory().toString();
-            return dir+"/"+filename;
+            return dir + File.separatorChar + filename;
         }
         if (rVal == JFileChooser.CANCEL_OPTION) {
             filename = null ;
@@ -118,14 +110,14 @@ public class MainWindow extends JFrame {
     }
 
     public void depot() throws IOException {
-        SslConnexion ssl = new SslConnexion();
-        List<String> certificats = ssl.getCertificatsWithJSessionId(parameters.get("urlCertificat"), parameters.get("sessionid"));
+        SslConnexionService ssl = new SslConnexionService();
+        List<String> certificats = ssl.getCertificatsWithJSessionId(CryptoDocConfiguration.parameters.get("urlCertificat"), CryptoDocConfiguration.parameters.get("sessionid"));
         if(certificats == null || certificats.size() <= 0)
-            throw new NullPointerException("Aucun certificat trouvé pour : " + parameters.get("urlCertificat"));
+            throw new NullPointerException("Aucun certificat trouvé pour : " + CryptoDocConfiguration.parameters.get("urlCertificat"));
         String selectFile = fileChooser();
         System.out.println(selectFile);
         File cryptedFile = cs.crypteByCertificats(new File(selectFile), certificats);
-        ssl.sslUploadFile(cryptedFile, parameters.get("urlDepot"), parameters.get("sessionid"));
+        ssl.sslUploadFile(cryptedFile, CryptoDocConfiguration.parameters.get("urlDepot"), CryptoDocConfiguration.parameters.get("sessionid"));
     }
 
 }

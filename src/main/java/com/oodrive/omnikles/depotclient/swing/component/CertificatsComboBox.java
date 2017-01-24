@@ -1,0 +1,31 @@
+package com.oodrive.omnikles.depotclient.swing.component;
+
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/**
+ * Created by olivier on 24/01/17.
+ */
+public class CertificatsComboBox extends JComboBox<KeyPair> implements ActionListener {
+
+    public static KeyPair selectedKeyPair = null;
+
+    public CertificatsComboBox(){
+        addActionListener(this);
+    }
+
+    protected void initSelected(ActionEvent evt) {
+        if (getSelectedItem() != null) {
+            selectedKeyPair = (KeyPair) getSelectedItem();
+            System.out.println("DN : " + getSelectedItem().toString());
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        initSelected(e);
+    }
+}

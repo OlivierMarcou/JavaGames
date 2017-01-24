@@ -1,6 +1,6 @@
-import com.oodrive.omnikles.depotclient.CryptoService;
-import com.oodrive.omnikles.depotclient.pojo.KeyPair;
-import com.oodrive.omnikles.depotclient.SslConnexion;
+import com.oodrive.omnikles.depotclient.service.CryptoService;
+import com.oodrive.omnikles.depotclient.service.SslConnexionService;
+import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,7 @@ public class CodePinWindowTest extends JDialog{
 
     private CryptoService cs = new CryptoService();
 
-    CodePinWindowTest(File selectedFile, KeyPair selectedCertificat){
+    CodePinWindowTest(File selectedFile){
 
         setSize(300, 200);
         Container content = getContentPane();
@@ -58,17 +58,17 @@ public class CodePinWindowTest extends JDialog{
                 if(!txtPassword.getText().trim().isEmpty()){
 
 
-                    SslConnexion ssl = new SslConnexion();
+                    SslConnexionService ssl = new SslConnexionService();
                     //Initialise la clé privé avec le code pin
                     PrivateKey pk = null;
                     try {
-                        cs.getKeyPairWithPrivateKey(selectedCertificat.getAlias(), txtPassword.getText().trim());
+                        cs.getKeyPairWithPrivateKey(CertificatsComboBox.selectedKeyPair.getAlias(), txtPassword.getText().trim());
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
-                    selectedCertificat.setPrivateKey(pk);
+                    CertificatsComboBox.selectedKeyPair.setPrivateKey(pk);
                     try {
-                        cs.decryptWindows(selectedFile, selectedCertificat);
+                        cs.decryptWindows(selectedFile, CertificatsComboBox.selectedKeyPair);
                         System.out.println("Decrypted ! ");
                         setVisible(false);
                     } catch (FileNotFoundException e1) {

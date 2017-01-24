@@ -1,6 +1,8 @@
-package com.oodrive.omnikles.depotclient;
+package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
+import com.oodrive.omnikles.depotclient.service.CryptoService;
+import com.oodrive.omnikles.depotclient.service.SslConnexionService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +21,7 @@ public class PasswordP12Window extends JDialog{
 
     private CryptoService cs = new CryptoService();
 
-    PasswordP12Window(String urlCryptedFile, String sessionid, String filename){
+    public PasswordP12Window(String urlCryptedFile, String sessionid, String filename){
         String p12Namefile = fileChooser();
 
         setSize(300, 200);
@@ -48,12 +50,12 @@ public class PasswordP12Window extends JDialog{
         c.gridwidth=1;
         content.add(go, c);
 
-        JButton annul = new JButton("Annuler");
+        JButton btnAnnul = new JButton("Annuler");
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=1;
         c.gridy=1;
         c.gridwidth=1;
-        content.add(annul, c);
+        content.add(btnAnnul, c);
 
         go.addActionListener(new ActionListener() {
             @Override
@@ -63,7 +65,7 @@ public class PasswordP12Window extends JDialog{
                         java.util.List<KeyPair> certificats = cs.getKeyPairList(txtPassword.getText().trim().toCharArray(), new File(p12Namefile));
                         KeyPair selectedCertificat = certificats.get(0);
                         try {
-                            SslConnexion ssl = new SslConnexion();
+                            SslConnexionService ssl = new SslConnexionService();
                             File f = ssl.sslDownloadFile(urlCryptedFile, sessionid, filename);
                             cs.decryptWindows(f, selectedCertificat);
                             System.out.println("Decrypted ! ");
@@ -84,7 +86,7 @@ public class PasswordP12Window extends JDialog{
 //                }
             }
         });
-        annul.addActionListener(new ActionListener() {
+        btnAnnul.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
@@ -103,7 +105,7 @@ public class PasswordP12Window extends JDialog{
         if (rVal == JFileChooser.APPROVE_OPTION) {
             filename = c.getSelectedFile().getName();
             dir = c.getCurrentDirectory().toString();
-            return dir+"/"+filename;
+            return dir + File.separatorChar + filename;
         }
         if (rVal == JFileChooser.CANCEL_OPTION) {
             filename = null ;

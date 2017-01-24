@@ -1,5 +1,6 @@
-package com.oodrive.omnikles.depotclient;
+package com.oodrive.omnikles.depotclient.service;
 
+import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -26,12 +27,12 @@ import java.util.List;
 /**
  * Created by olivier on 21/11/16.
  */
-public class SslConnexion {
+public class SslConnexionService {
 
     private boolean debug = true;
 
     public List<String> getCertificatsWithJSessionId(String urlCertificat, String JSessionId){
-        System.out.println("getCertificatWithJSessionId method");
+        System.out.println("getCertificatsWithJSessionId method");
         HttpEntity entity = getResponseHttpGet(urlCertificat, JSessionId).getEntity();
 
         String jsonCertificat = getStringResponse(entity);
@@ -41,8 +42,8 @@ public class SslConnexion {
     }
 
     public File sslDownloadFile(String url, String JSessionId, String filename){
-        System.out.println("getCertificatWithJSessionId method");
-        File file = new File(System.getProperty("user.home") + File.separatorChar + filename);
+        System.out.println("sslDownloadFile method");
+        File file = new File(CryptoDocConfiguration.activFolder + File.separatorChar + filename);
         try {
             HttpEntity entity = getResponseHttpGet(url, JSessionId).getEntity();
             BufferedInputStream bis = new BufferedInputStream(entity.getContent());

@@ -1,7 +1,7 @@
-package com.oodrive.omnikles.depotclient;
+package com.oodrive.omnikles.depotclient.service;
 
+import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
-import com.oodrive.omnikles.depotclient.services.AESService;
 import com.oodrive.omnikles.depotclient.utils.CertificatesUtils;
 
 import javax.crypto.BadPaddingException;
@@ -33,7 +33,9 @@ public class CryptoService {
 
             File zipFile = null;
             try {
-                zipFile = as.zipKeyFile(certs,"enveloppe.zip.crypt");
+                zipFile = as.zipKeyFile(certs, CryptoDocConfiguration.activFolder
+                        + File.separatorChar
+                        + CryptoDocConfiguration.FILENAME_ZIP);
             } catch (IOException e) {
                 e.printStackTrace();
             }

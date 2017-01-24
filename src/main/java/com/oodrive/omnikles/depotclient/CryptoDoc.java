@@ -1,16 +1,15 @@
 package com.oodrive.omnikles.depotclient;
 
+import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
+import com.oodrive.omnikles.depotclient.swing.window.CloseWindow;
+import com.oodrive.omnikles.depotclient.swing.window.MainWindow;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.cert.CertificateException;
-import java.util.HashMap;
 import java.util.Properties;
 
 
@@ -27,38 +26,24 @@ public class CryptoDoc {
     public static void main(String[] args) throws InvalidKeyException, javax.security.cert.CertificateException, IOException {
         System.out.println("WebStart CryptoDoc - version : " + getAppVersion());
         System.out.println(System.getProperty("user.home"));
-        HashMap<String, String> parameters = new HashMap<>();
-
-        String[] keyValue = new String[2];
-        for (String parameter: args ){
-            int indexEqual = parameter.trim().indexOf("=");
-            keyValue[0] = parameter.substring(0, indexEqual);
-            keyValue[0].replaceFirst("-","");
-            keyValue[1] = parameter.substring(indexEqual+1);
-            System.out.println(keyValue[0] + " " + keyValue[1]);
-            parameters.put(keyValue[0], keyValue[1]);
-        }
-        if(parameters.get("action").equals("depot")) {
-            depot(parameters);
+        CryptoDocConfiguration.initParameters(args);
+        if(CryptoDocConfiguration.parameters.get("action").equals("depot")) {
+            depot();
         }
 
-        if(parameters.get("action").equals("decrypt")){
-            openDepot(parameters);
+        if(CryptoDocConfiguration.parameters.get("action").equals("decrypt")){
+            openDepot();
         }
 
     }
 
-    public static void mainold(String[] args) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, IllegalAccessException, InstantiationException, ClassNotFoundException {
-
-    }
-
-    private static void openDepot(HashMap<String, String> parameters) throws MalformedURLException, FileNotFoundException {
-        mainWindow.init(parameters);
+    private static void openDepot() throws MalformedURLException, FileNotFoundException {
+        mainWindow.init();
         mainWindow.setVisible(true);
     }
 
-    private static void depot(HashMap<String, String> parameters) throws IOException {
-        mainWindow.init(parameters);
+    private static void depot() throws IOException {
+        mainWindow.init();
         mainWindow.setVisible(false);
         mainWindow.depot();
         closeWindow.setVisible(true);

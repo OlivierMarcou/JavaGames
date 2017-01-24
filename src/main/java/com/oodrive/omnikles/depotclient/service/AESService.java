@@ -1,5 +1,6 @@
-package com.oodrive.omnikles.depotclient.services;
+package com.oodrive.omnikles.depotclient.service;
 
+import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.utils.ZipUtils;
 import org.apache.commons.io.FileUtils;
@@ -60,17 +61,23 @@ public class AESService {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         KeySpec spec = new PBEKeySpec(password, salt, 65536, 128);
         SecretKey tmp = factory.generateSecret(spec);
-        secret = new SecretKeySpec(tmp.getEncoded(), "AES");
+        secret = new SecretKeySpec(tmp.getEncoded(), CryptoDocConfiguration.CRYPTED_KEY_ALGORITHME);
     }
 
+    //s'appelerai à terme : encryptFilesWithSecretKey(File[] files, File zipFile)
     public void encryptFileWithSecretKey(File file, File zipFile)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidParameterSpecException, IOException, BadPaddingException, IllegalBlockSizeException {
 
-        Cipher cipher = Cipher.getInstance("AES");
+        Cipher cipher = Cipher.getInstance(CryptoDocConfiguration.CRYPTED_KEY_ALGORITHME);
         cipher.init(Cipher.ENCRYPT_MODE, secret);
 
+        //TODO : ajouter ici une liste de fichier à crypter, les zipper et ensuite crypter le zip
+        // une fois le zip crypté on l'ajoute au zip de l'enveloppe.
+
         FileInputStream fin1 = new FileInputStream(file);
-        File cryptedFile = new File("ENVELOPPE.crypt");
+        File cryptedFile = new File(CryptoDocConfiguration.activFolder
+                + File.separatorChar
+                + CryptoDocConfiguration.FILENAME_CRYPTED_ZIP);
         FileOutputStream fout = new FileOutputStream(cryptedFile);
 
         byte[] block = new byte[(int) file.length()];
@@ -101,7 +108,7 @@ public class AESService {
             e.printStackTrace();
         }
         try {
-            Cipher dcipher = Cipher.getInstance("RSA","SunMSCAPI");
+            Cipher dcipher = Cipher.getInstance(CryptoDocConfiguration.CIPHER_ALGORITHME, CryptoDocConfiguration.WINDOWS_PROVIDER_KEYSTORE);
             dcipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
             return dcipher.doFinal(encryptedSecretKey);
         } catch (IllegalBlockSizeException e) {
@@ -125,7 +132,7 @@ public class AESService {
 
         String content = null;
         try {
-            content = FileUtils.readFileToString(fileEncryptKey,"UTF-8");
+            content = FileUtils.readFileToString(fileEncryptKey, CryptoDocConfiguration.JSON_ENCODING);
             try {
                 return new JSONObject(content);
             } catch (JSONException e) {
@@ -138,50 +145,32 @@ public class AESService {
     }
 
     public void decryptFileWithSecretKey(File encryptFile, File decryptedFile, byte[] secret)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IOException, BadPaddingException, IllegalBlockSizeException, InvalidParameterSpecException, CryptoException {
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
+            InvalidKeyException, IOException, BadPaddingException, IllegalBlockSizeException,
+            InvalidParameterSpecException, CryptoException {
 
         try {
-            SecretKey secretKey = new SecretKeySpec(secret, "AES");
-            Cipher cipher = Cipher.getInstance("AES");
+            SecretKey secretKey = new SecretKeySpec(secret, CryptoDocConfiguration.CRYPTED_KEY_ALGORITHME);
+            Cipher cipher = Cipher.getInstance(CryptoDocConfiguration.CRYPTED_KEY_ALGORITHME);
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
 
-//        AlgorithmParameters params = cipher.getParameters();
-//        byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
-//        cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
+            FileInputStream inputStream = new FileInputStream(encryptFile);
+            byte[] inputBytes = new byte[(int) encryptFile.length()];
+            inputStream.read(inputBytes);
 
-        FileInputStream inputStream = new FileInputStream(encryptFile);
-        byte[] inputBytes = new byte[(int) encryptFile.length()];
-        inputStream.read(inputBytes);
+            byte[] outputBytes = cipher.doFinal(inputBytes);
 
-        byte[] outputBytes = cipher.doFinal(inputBytes);
+            FileOutputStream outputStream = new FileOutputStream(decryptedFile);
+            outputStream.write(outputBytes);
 
-        FileOutputStream outputStream = new FileOutputStream(decryptedFile);
-        outputStream.write(outputBytes);
-
-        inputStream.close();
-        outputStream.close();
+            inputStream.close();
+            outputStream.close();
 
         } catch (NoSuchPaddingException | NoSuchAlgorithmException
                 | InvalidKeyException | BadPaddingException
                 | IllegalBlockSizeException | IOException ex) {
             throw new CryptoException("Error encrypting/decrypting file", ex);
         }
-        /*
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-
-        AlgorithmParameters params = cipher.getParameters();
-        byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
-        cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(iv));
-
-        FileInputStream fin1 = new FileInputStream(encryptFile);
-        FileOutputStream fout = new FileOutputStream(decryptedFile);
-
-        byte[] block = new byte[secret.getEncoded().length];
-        int i;
-        while ((i = fin1.read(block)) != -1) {
-            byte[] inputfile= cipher.doFinal(block);
-            fout.write(inputfile);
-        }*/
     }
 
     public void addFileKeyToZip(File fileSecretKey, File destinationZip, boolean isNew){
@@ -197,7 +186,7 @@ public class AESService {
 
     public File zipKeyFile(List<KeyPair> certificats, String zipDestinationName) throws IOException {
         BASE64Encoder encoder = new BASE64Encoder();
-        File enveloppe = new File("ENVELOPPE.key.p7m");
+        File enveloppe = new File(CryptoDocConfiguration.FILENAME_CRYPTED_KEYS);
         enveloppe.delete();
         HashMap<String, String> dualKeys = new HashMap<>();
         JSONObject json = new JSONObject();
@@ -215,7 +204,7 @@ public class AESService {
         }catch (JSONException e) {
             e.printStackTrace();
         }
-        FileUtils.writeStringToFile(enveloppe, json.toString(), "UTF-8", true);
+        FileUtils.writeStringToFile(enveloppe, json.toString(), CryptoDocConfiguration.JSON_ENCODING, true);
         addFileKeyToZip(enveloppe, new File(zipDestinationName), true);
         return new File (zipDestinationName);
     }
@@ -224,7 +213,8 @@ public class AESService {
         byte [] decripted  = null;
         try {
             if (keyPair.getPrivateKey() != null) {
-                Cipher cipher = Cipher.getInstance("RSA", Security.getProvider("SunMSCAPI"));
+                Cipher cipher = Cipher.getInstance(CryptoDocConfiguration.CIPHER_ALGORITHME,
+                        Security.getProvider(CryptoDocConfiguration.WINDOWS_PROVIDER_KEYSTORE));
                 cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
                 cipher.update(key);
                 decripted = cipher.doFinal();
@@ -247,8 +237,8 @@ public class AESService {
         }
         FileOutputStream envfos = null;
         try {
-            envfos = new FileOutputStream(System.getProperty("user.home")
-                    + File.separatorChar + "fichier_decrypte_"+filename );
+            envfos = new FileOutputStream(CryptoDocConfiguration.activFolder
+                    + File.separatorChar + CryptoDocConfiguration.PREFIX_DECRYPTED_FILENAME + filename );
             envfos.write(decripted);
             envfos.close();
         } catch (FileNotFoundException e) {
@@ -262,7 +252,8 @@ public class AESService {
     }
 
    public void decryptByPk(File file, KeyPair keyPair)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
+            throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
+           BadPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         Security.addProvider(new SunMSCAPI());
 
@@ -295,7 +286,8 @@ public class AESService {
             while(ite.hasNext()){
                 try {
                     KeyTransRecipientInformation rinfo = ite.next();
-                    Recipient recipient = new JceKeyTransEnvelopedRecipient(keyPair.getPrivateKey()).setProvider("SunMSCAPI");
+                    Recipient recipient = new JceKeyTransEnvelopedRecipient(
+                            keyPair.getPrivateKey()).setProvider(CryptoDocConfiguration.WINDOWS_PROVIDER_KEYSTORE);
                     System.out.println("Encryption Algo : ");
                     System.out.println(rinfo.getKeyEncryptionAlgorithm());
                     System.out.println(rinfo.getKeyEncryptionAlgParams());
@@ -307,8 +299,8 @@ public class AESService {
 
             FileOutputStream envfos = null;
             try {
-                String pathDestiantion = System.getProperty("user.home")
-                        + File.separatorChar + "fichier_decrypte_" + file.getName();
+                String pathDestiantion = CryptoDocConfiguration.activFolder
+                        + File.separatorChar + CryptoDocConfiguration.PREFIX_DECRYPTED_FILENAME + file.getName();
                 envfos = new FileOutputStream(pathDestiantion);
                 envfos.write(contents);
                 envfos.close();
@@ -334,7 +326,8 @@ public class AESService {
             CMSEnvelopedDataGenerator gen = new CMSEnvelopedDataGenerator();
             // La variable cert correspond au certificat du destinataire
             // La clé publique de ce certificat servira à chiffrer la clé symétrique
-            Cipher cipher = Cipher.getInstance("RSA","SunMSCAPI");
+            Cipher cipher = Cipher.getInstance(CryptoDocConfiguration.CIPHER_ALGORITHME,
+                    CryptoDocConfiguration.WINDOWS_PROVIDER_KEYSTORE);
             cipher.init(Cipher.ENCRYPT_MODE, x509Certificate);
             // Encrypt the message
             return cipher.doFinal(data);
@@ -362,7 +355,8 @@ public class AESService {
             }
             try {
                 if (keyPair.getPrivateKey() != null) {
-                    Cipher cipher = Cipher.getInstance("RSA", Security.getProvider("SunMSCAPI"));
+                    Cipher cipher = Cipher.getInstance(CryptoDocConfiguration.CIPHER_ALGORITHME,
+                            Security.getProvider(CryptoDocConfiguration.WINDOWS_PROVIDER_KEYSTORE));
                     cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
                     cipher.update(pkcs7envelopedData);
                     decripted = cipher.doFinal();
@@ -385,8 +379,8 @@ public class AESService {
             }
             FileOutputStream envfos = null;
             try {
-                envfos = new FileOutputStream(System.getProperty("user.home")
-                        + File.separatorChar + "fichier_decrypte_" + file.getName());
+                envfos = new FileOutputStream(CryptoDocConfiguration.activFolder
+                        + File.separatorChar + CryptoDocConfiguration.PREFIX_DECRYPTED_FILENAME + file.getName());
                 envfos.write(decripted);
                 envfos.close();
             } catch (FileNotFoundException e) {

@@ -1,5 +1,6 @@
-import com.oodrive.omnikles.depotclient.CryptoService;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
+import com.oodrive.omnikles.depotclient.service.CryptoService;
+import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +23,7 @@ public class TestWindow extends JFrame {
     private JTextField txtSelectCryptedFile = new JTextField("");
     private File selectedCryptedFile;
     private File selectedFile;
-    private JComboBox<KeyPair> listCertificats = new JComboBox<>();
+    private CertificatsComboBox listCertificats = new CertificatsComboBox();
     private JButton btnSelectedCertif = new JButton("Decrypter avec le certif selectionner");
     private CryptoService cs = new CryptoService();
     private JButton btnP12 = new JButton("Or Upload P12 File !");
@@ -35,7 +36,7 @@ public class TestWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Start Decrypt !");
-            JDialog message = new CodePinWindowTest(selectedCryptedFile, (KeyPair)listCertificats.getSelectedItem());
+            JDialog message = new CodePinWindowTest(selectedCryptedFile);
         }
     };
 
@@ -61,15 +62,6 @@ public class TestWindow extends JFrame {
             }
         }
     };
-
-//    private ActionListener cryptActionP12 = new ActionListener() {
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            System.out.println("Start Decrypt !");
-//            JDialog message = new PasswordP12WindowTest(selectedFile);
-//        }
-//    };
-
 
     private ActionListener selectCryptedFile = new ActionListener() {
         @Override
@@ -171,14 +163,14 @@ public class TestWindow extends JFrame {
     public String fileChooser(String title) {
         String filename = null;
         String dir = null;
-        JFileChooser c = new JFileChooser(System.getenv("HOME"));
+        JFileChooser c = new JFileChooser(System.getenv("user.home"));
         c.setDialogTitle(title);
         c.setAcceptAllFileFilterUsed(false);
         int rVal = c.showOpenDialog(TestWindow.this);
         if (rVal == JFileChooser.APPROVE_OPTION) {
             filename = c.getSelectedFile().getName();
             dir = c.getCurrentDirectory().toString();
-            return dir+"/"+filename;
+            return dir + File.separatorChar + filename;
         }
         if (rVal == JFileChooser.CANCEL_OPTION) {
             filename = null ;

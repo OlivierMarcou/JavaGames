@@ -1,5 +1,6 @@
-import com.oodrive.omnikles.depotclient.CryptoService;
-import com.oodrive.omnikles.depotclient.MainWindow;
+import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
+import com.oodrive.omnikles.depotclient.service.CryptoService;
+import com.oodrive.omnikles.depotclient.swing.window.MainWindow;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 
 import java.io.File;
@@ -25,33 +26,18 @@ public class CryptoDocTest {
     public static void main(String[] args) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
         System.out.println("WebStart CryptoDoc !");
         System.out.println(System.getProperty("user.home"));
-        HashMap<String, String> parameters = new HashMap<>();
+        CryptoDocConfiguration.initParameters(args);
 
-        String[] keyValue = new String[2];
-        for (String parameter: args ){
-            int indexEqual = parameter.trim().indexOf("=");
-            keyValue[0] = parameter.substring(0, indexEqual);
-            keyValue[0].replaceFirst("-","");
-            keyValue[1] = parameter.substring(indexEqual+1);
-            System.out.println(keyValue[0] + " " + keyValue[1]);
-            parameters.put(keyValue[0], keyValue[1]);
-        }
         testWindow.setVisible(true);
-//        initDebug(parameters);
-//        mainWindow.setVisible(true);
     }
 
     public static void initDebug(HashMap<String, String> parameters) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
-//        List<KeyPair> certificats = cs.getInstalledCertificats();
-//        for(KeyPair certificat:certificats)
-//            jCertificats.addItem(certificat);
-        mainWindow.init(parameters);
+        mainWindow.init();
         File f = depotTest();
         cs.decryptP12(f, "test.p12", "ok".toCharArray());
     }
 
     public static File depotTest() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
-
         List<KeyPair> certificats = cs.getKeyPairList("ok".toCharArray(), new File("test.p12"));
         String selectFile = mainWindow.fileChooser();
         System.out.println(selectFile);

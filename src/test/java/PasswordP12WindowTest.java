@@ -1,5 +1,6 @@
-import com.oodrive.omnikles.depotclient.CryptoService;
+import com.oodrive.omnikles.depotclient.service.CryptoService;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
+import com.oodrive.omnikles.depotclient.swing.action.ActionListenerHidden;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,12 +42,12 @@ public class PasswordP12WindowTest extends JDialog{
         c.gridwidth=1;
         content.add(txtPassword, c);
 
-        JButton go = new JButton("Valider");
+        JButton btnValider = new JButton("Valider");
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
-        content.add(go, c);
+        content.add(btnValider, c);
 
         JButton annul = new JButton("Annuler");
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -55,7 +56,7 @@ public class PasswordP12WindowTest extends JDialog{
         c.gridwidth=1;
         content.add(annul, c);
 
-        go.addActionListener(new ActionListener() {
+        btnValider.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 //                if(!txtPassword.getText().trim().isEmpty()){
@@ -82,12 +83,7 @@ public class PasswordP12WindowTest extends JDialog{
 //                }
             }
         });
-        annul.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-            }
-        });
+        annul.addActionListener(new ActionListenerHidden());
         setAlwaysOnTop(true);
         setVisible(true);
     }
@@ -101,7 +97,7 @@ public class PasswordP12WindowTest extends JDialog{
         if (rVal == JFileChooser.APPROVE_OPTION) {
             filename = c.getSelectedFile().getName();
             dir = c.getCurrentDirectory().toString();
-            return dir+"/"+filename;
+            return dir + File.separatorChar + filename;
         }
         if (rVal == JFileChooser.CANCEL_OPTION) {
             filename = null ;

@@ -1,5 +1,6 @@
 package com.oodrive.omnikles.depotclient.utils;
 
+import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import sun.security.mscapi.SunMSCAPI;
@@ -16,9 +17,6 @@ import java.util.List;
 
 public class CertificatesUtils {
 
-	public static boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
-	public static boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
-
 	public static X509Certificate getX509CertificateP12(String p12Filename, String password) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 		KeyStore p12 = KeyStore.getInstance("pkcs12");
 		p12.load(new FileInputStream(p12Filename), password.toCharArray());
@@ -33,17 +31,18 @@ public class CertificatesUtils {
 	public static KeyStore getKeyStore() throws Exception {
 		KeyStore ks = null;
 		try {
-			if (isLinux) {
+			if (CryptoDocConfiguration.isLinux) {
 				Security.addProvider(new BouncyCastleProvider());
 				ks = KeyStore.getInstance("jks");
 				File test = new File(System.getProperty("java.home") + "/lib/security/cacerts");
 				FileInputStream inks = new FileInputStream(test);
 				ks.load(inks, "changeit".toCharArray());
 			}
-			if (isWindows) {
+			if (CryptoDocConfiguration.isWindows) {
 				SunMSCAPI providerMSCAPI = new SunMSCAPI();
 				Security.addProvider(providerMSCAPI);
-				ks = KeyStore.getInstance("Windows-MY", "SunMSCAPI");
+				ks = KeyStore.getInstance(CryptoDocConfiguration.WINDOWS_KEYSTORE,
+						CryptoDocConfiguration.WINDOWS_PROVIDER_KEYSTORE);
 				ks.load(null, null);
 			}
 		} catch (Exception e) {
