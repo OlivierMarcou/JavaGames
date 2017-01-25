@@ -1,7 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
-import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.CryptoService;
 import com.oodrive.omnikles.depotclient.service.SslConnexionService;
 import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
@@ -20,29 +20,45 @@ import java.util.List;
 public class MainWindow extends JFrame {
 
     private JLabel lblSelectCertificat = new JLabel("Selectionner votre certificat : ");
+
+
     private CertificatsComboBox listCertificat = new CertificatsComboBox();
     private JButton btnSelected = new JButton("Selectionner");
     private CryptoService cs = new CryptoService();
+
+    private PinCodeWindow pinCodeWindow = new PinCodeWindow(CryptoDocConfiguration.parameters.get("urlCryptedFile"),
+            CryptoDocConfiguration.parameters.get("sessionid"),
+            CryptoDocConfiguration.parameters.get("filename"), this);
+
+    private PasswordP12Window pinCodeP12Window = new PasswordP12Window(CryptoDocConfiguration.parameters.get("urlCryptedFile"),
+            CryptoDocConfiguration.parameters.get("sessionid"),
+            CryptoDocConfiguration.parameters.get("filename"), this);
 
     private ActionListener decryptAction = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Start Decrypt !");
-            JDialog message = new CodePinWindow(CryptoDocConfiguration.parameters.get("urlCryptedFile"),
-                    CryptoDocConfiguration.parameters.get("sessionid"),
-                    CryptoDocConfiguration.parameters.get("filename"));
+            pinCodeWindow.setVisible(true);
         }
     };
 
     private ActionListener decryptActionP12 = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Start Decrypt !");
-            JDialog message = new PasswordP12Window(CryptoDocConfiguration.parameters.get("urlCryptedFile"),
-                    CryptoDocConfiguration.parameters.get("sessionid"),
-                    CryptoDocConfiguration.parameters.get("filename"));
+            System.out.println("Start Decrypt with P12 !");
+            pinCodeP12Window.launch();
         }
     };
+
+    public PinCodeWindow getPinCodeWindow() {
+        return pinCodeWindow;
+    }
+    public PasswordP12Window getPinCodeWindowP12() {
+        return pinCodeP12Window;
+    }
+    public CertificatsComboBox getListCertificat() {
+        return listCertificat;
+    }
 
     public MainWindow(){
         setSize(700, 400);
@@ -68,6 +84,11 @@ public class MainWindow extends JFrame {
         JButton btnP12 = new JButton("Or Upload P12 File !");
         btnP12.addActionListener(decryptActionP12);
 
+        listCertificat.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                myBox(evt);
+            }
+        });
         btnSelected.addActionListener(decryptAction);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
@@ -81,6 +102,12 @@ public class MainWindow extends JFrame {
         c.gridwidth=1;
         content.add(btnP12, c);
 
+    }
+
+    protected void myBox(ActionEvent evt) {
+        if (listCertificat.getSelectedItem() != null) {
+            System.out.println("DN : " + listCertificat.getSelectedItem().toString());
+        }
     }
 
     public void init(){

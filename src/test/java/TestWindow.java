@@ -21,8 +21,17 @@ public class TestWindow extends JFrame {
     private JButton btnSelectCryptedFile = new JButton("Parcourir");
     private JLabel lblSelectCryptedFile = new JLabel("Fichier à décrypter : ");
     private JTextField txtSelectCryptedFile = new JTextField("");
-    private File selectedCryptedFile;
+    public File selectedCryptedFile;
     private File selectedFile;
+
+    CodePinWindowTest pinCodeWindowtest = new CodePinWindowTest(selectedCryptedFile, this);
+
+    PasswordP12WindowTest pinCodeWindowtestP12 = new PasswordP12WindowTest(selectedCryptedFile);
+
+    public CertificatsComboBox getListCertificats() {
+        return listCertificats;
+    }
+
     private CertificatsComboBox listCertificats = new CertificatsComboBox();
     private JButton btnSelectedCertif = new JButton("Decrypter avec le certif selectionner");
     private CryptoService cs = new CryptoService();
@@ -36,7 +45,7 @@ public class TestWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Start Decrypt !");
-            JDialog message = new CodePinWindowTest(selectedCryptedFile);
+            pinCodeWindowtest.setVisible(true);
         }
     };
 
@@ -44,14 +53,14 @@ public class TestWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Start Decrypt !");
-            JDialog message = new PasswordP12WindowTest(selectedCryptedFile);
+            pinCodeWindowtestP12.launch();
         }
     };
 
     private ActionListener cryptAction = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Start Decrypt !");
+            System.out.println("Start Decrypt p12 !");
             List<String> listKeyPair = new ArrayList<>();
             listKeyPair.add(((KeyPair) listCertificats.getSelectedItem()).getX509CertificateB64());
             try {
@@ -67,7 +76,7 @@ public class TestWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Select crypted File !");
-            selectedCryptedFile = new File(fileChooser("Fichier crypté"));
+            selectedCryptedFile = new File(fileChooser("Select crypted File !"));
             txtSelectCryptedFile.setText(selectedCryptedFile.getName());
         }
     };
@@ -76,7 +85,7 @@ public class TestWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Select crypted File !");
-            selectedFile = new File(fileChooser("Fichier à crypter"));
+            selectedFile = new File(fileChooser("Select File."));
             txtSelectFile.setText(selectedFile.getName());
         }
     };
@@ -107,12 +116,8 @@ public class TestWindow extends JFrame {
         c.fill = GridBagConstraints.HORIZONTAL;        c.gridx=1;        c.gridy=1;        c.gridwidth=1;
         content.add(pnlDecrypter, c);
 
-
-
         c.fill = GridBagConstraints.HORIZONTAL;        c.gridx=0;        c.gridy=0;        c.gridwidth=2;
         pnlCertificat.add(listCertificats, c);
-
-
 
         c.fill = GridBagConstraints.HORIZONTAL;        c.gridx=0;        c.gridy=0;        c.gridwidth=2;
         pnlDecrypter.add(lblSelectCryptedFile, c);
@@ -126,7 +131,6 @@ public class TestWindow extends JFrame {
         c.fill = GridBagConstraints.HORIZONTAL;        c.gridx=1;        c.gridy=2;        c.gridwidth=1;
         pnlDecrypter.add(btnP12, c);
 
-
         txtSelectFile.setColumns(20);
         c.fill = GridBagConstraints.HORIZONTAL;        c.gridx=0;        c.gridy=0;        c.gridwidth=1;
         pnlCrypter.add(lblSelectFile, c);
@@ -134,7 +138,6 @@ public class TestWindow extends JFrame {
         pnlCrypter.add(txtSelectFile, c);
         c.fill = GridBagConstraints.HORIZONTAL;        c.gridx=0;        c.gridy=0;        c.gridwidth=2;
         pnlCrypter.add(btnSelectFile, c);
-
 
         btnP12.addActionListener(decryptActionP12);
 

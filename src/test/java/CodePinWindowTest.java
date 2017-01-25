@@ -1,14 +1,12 @@
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.CryptoService;
 import com.oodrive.omnikles.depotclient.service.SslConnexionService;
-import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.security.PrivateKey;
 
 /**
  * Created by olivier on 04/01/17.
@@ -17,8 +15,7 @@ public class CodePinWindowTest extends JDialog{
 
     private CryptoService cs = new CryptoService();
 
-    CodePinWindowTest(File selectedFile){
-
+    CodePinWindowTest(File selectedFile, TestWindow parent ){
         setSize(300, 200);
         Container content = getContentPane();
                 content.setLayout(new GridBagLayout());
@@ -56,23 +53,16 @@ public class CodePinWindowTest extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(!txtPassword.getText().trim().isEmpty()){
-
-
                     SslConnexionService ssl = new SslConnexionService();
                     //Initialise la clé privé avec le code pin
-                    PrivateKey pk = null;
+                    KeyPair kp = ((KeyPair)parent.getListCertificats().getSelectedItem());
                     try {
-                        cs.getKeyPairWithPrivateKey(CertificatsComboBox.selectedKeyPair.getAlias(), txtPassword.getText().trim());
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                    CertificatsComboBox.selectedKeyPair.setPrivateKey(pk);
-                    try {
-                        cs.decryptWindows(selectedFile, CertificatsComboBox.selectedKeyPair);
+                        kp = cs.getKeyPairWithPrivateKey(kp.getAlias(), txtPassword.getText().trim());
+                        cs.decryptWindows(selectedFile, kp);
                         System.out.println("Decrypted ! ");
                         setVisible(false);
-                    } catch (FileNotFoundException e1) {
-                        e1.printStackTrace();
+                    } catch (Exception e1) {
+                        e1.printStackTrace();;
                         setVisible(false);
                     }
                 }
@@ -85,7 +75,7 @@ public class CodePinWindowTest extends JDialog{
             }
         });
         setAlwaysOnTop(true);
-        setVisible(true);
+
     }
 
 }

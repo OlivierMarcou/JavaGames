@@ -1,8 +1,9 @@
 import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
+import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.CryptoService;
 import com.oodrive.omnikles.depotclient.swing.window.MainWindow;
-import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyStoreException;
@@ -38,8 +39,9 @@ public class CryptoDocTest {
     }
 
     public static File depotTest() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
+
         List<KeyPair> certificats = cs.getKeyPairList("ok".toCharArray(), new File("test.p12"));
-        String selectFile = mainWindow.fileChooser();
+        String selectFile = fileChooser("Selectioner le fichier à déposer.", mainWindow);
         System.out.println(selectFile);
         String result = certificats.get(0).getX509CertificateB64();
         System.out.println(result);
@@ -47,5 +49,24 @@ public class CryptoDocTest {
         List<String > certs = new ArrayList<>();
         certs.add(result);
         return cs.crypteByCertificats(new File(selectFile), certs);
+    }
+
+    public static String fileChooser(String title, MainWindow mainWindow) {
+        String filename = null;
+        String dir = null;
+        JFileChooser c = new JFileChooser(System.getenv("HOME"));
+        c.setDialogTitle(title);
+        c.setAcceptAllFileFilterUsed(false);
+        int rVal = c.showOpenDialog(mainWindow);
+        if (rVal == JFileChooser.APPROVE_OPTION) {
+            filename = c.getSelectedFile().getName();
+            dir = c.getCurrentDirectory().toString();
+            return dir + File.separatorChar + filename;
+        }
+        if (rVal == JFileChooser.CANCEL_OPTION) {
+            filename = null ;
+            dir = null;
+        }
+        return null;
     }
 }

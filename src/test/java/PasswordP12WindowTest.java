@@ -1,6 +1,5 @@
-import com.oodrive.omnikles.depotclient.service.CryptoService;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
-import com.oodrive.omnikles.depotclient.swing.action.ActionListenerHidden;
+import com.oodrive.omnikles.depotclient.service.CryptoService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,13 +18,13 @@ import java.security.cert.CertificateException;
 public class PasswordP12WindowTest extends JDialog{
 
     private CryptoService cs = new CryptoService();
+    private String p12Namefile;
 
     PasswordP12WindowTest(File selectedFile){
-        String p12Namefile = fileChooser();
 
         setSize(300, 200);
         Container content = getContentPane();
-                content.setLayout(new GridBagLayout());
+        content.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -59,41 +58,50 @@ public class PasswordP12WindowTest extends JDialog{
         btnValider.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                if(!txtPassword.getText().trim().isEmpty()){
+                try {
+                    java.util.List<KeyPair> certificats = cs.getKeyPairList(txtPassword.getText().trim().toCharArray(),
+                            new File(p12Namefile));
+                    KeyPair selectedCertificat = certificats.get(0);
                     try {
-                        java.util.List<KeyPair> certificats = cs.getKeyPairList(txtPassword.getText().trim().toCharArray(), new File(p12Namefile));
-                        KeyPair selectedCertificat = certificats.get(0);
-                        try {
-                            cs.decryptWindows(selectedFile, selectedCertificat);
-                            System.out.println("Decrypted ! ");
-                        } catch (FileNotFoundException e1) {
-                            e1.printStackTrace();
-                        }
-                        setVisible(false);
-                    } catch (KeyStoreException e1) {
-                        e1.printStackTrace();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    } catch (NoSuchAlgorithmException e1) {
-                        e1.printStackTrace();
-                    } catch (CertificateException e1) {
+                        cs.decryptWindows(selectedFile, selectedCertificat);
+                        System.out.println("Decrypted ! ");
+                    } catch (FileNotFoundException e1) {
                         e1.printStackTrace();
                     }
                     setVisible(false);
-//                }
+                } catch (KeyStoreException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (NoSuchAlgorithmException e1) {
+                    e1.printStackTrace();
+                } catch (CertificateException e1) {
+                    e1.printStackTrace();
+                }
+                setVisible(false);
             }
         });
-        annul.addActionListener(new ActionListenerHidden());
+        annul.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        });
         setAlwaysOnTop(true);
+    }
+
+    public void launch(){
+        p12Namefile = fileChooser("Selectionner le fichier p12", this );
         setVisible(true);
     }
 
-    public String fileChooser() {
+    public static String fileChooser(String title, JDialog parent) {
         String filename = null;
         String dir = null;
         JFileChooser c = new JFileChooser(System.getenv("HOME"));
+        c.setDialogTitle(title);
         c.setAcceptAllFileFilterUsed(false);
-        int rVal = c.showOpenDialog(PasswordP12WindowTest.this);
+        int rVal = c.showOpenDialog(parent);
         if (rVal == JFileChooser.APPROVE_OPTION) {
             filename = c.getSelectedFile().getName();
             dir = c.getCurrentDirectory().toString();

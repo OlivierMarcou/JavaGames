@@ -1,9 +1,10 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
-import com.oodrive.omnikles.depotclient.swing.action.ActionListenerExit;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by olivier on 08/12/16.
@@ -21,7 +22,12 @@ public class CloseWindow extends JFrame{
         add(texte);
         JButton close =new JButton("FERMER");
         close.setForeground(Color.red);
-        close.addActionListener(new ActionListenerExit());
+        close.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(1);
+            }
+        });
         add(close);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(false);

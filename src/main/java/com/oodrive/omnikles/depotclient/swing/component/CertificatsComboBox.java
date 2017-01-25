@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
  */
 public class CertificatsComboBox extends JComboBox<KeyPair> implements ActionListener {
 
-    public static KeyPair selectedKeyPair = null;
 
     public CertificatsComboBox(){
         addActionListener(this);
@@ -19,7 +18,6 @@ public class CertificatsComboBox extends JComboBox<KeyPair> implements ActionLis
 
     protected void initSelected(ActionEvent evt) {
         if (getSelectedItem() != null) {
-            selectedKeyPair = (KeyPair) getSelectedItem();
             System.out.println("DN : " + getSelectedItem().toString());
         }
     }
