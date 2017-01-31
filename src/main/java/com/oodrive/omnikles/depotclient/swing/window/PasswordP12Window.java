@@ -1,5 +1,6 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
+import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.CryptoService;
 import com.oodrive.omnikles.depotclient.service.SslConnexionService;
@@ -24,7 +25,7 @@ public class PasswordP12Window extends JDialog{
     private CryptoService cs = new CryptoService();
     private String p12Namefile;
 
-    public PasswordP12Window(String urlCryptedFile, String sessionid, String filename, MainWindow parent){
+    public PasswordP12Window(MainWindow parent){
 
         setSize(300, 200);
         Container content = getContentPane();
@@ -67,7 +68,10 @@ public class PasswordP12Window extends JDialog{
                     KeyPair selectedCertificat = certificats.get(0);
                     try {
                         SslConnexionService ssl = new SslConnexionService();
-                        File f = ssl.sslDownloadFile(urlCryptedFile, sessionid, filename);
+                        File f = ssl.sslDownloadFile(
+                                CryptoDocConfiguration.parameters.get("urlCryptedFile"),
+                                CryptoDocConfiguration.parameters.get("sessionid"),
+                                CryptoDocConfiguration.parameters.get("filename"));
                         cs.decryptWindows(f, selectedCertificat);
                         System.out.println("Decrypted ! ");
                     } catch (FileNotFoundException e1) {

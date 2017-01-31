@@ -4,9 +4,7 @@ import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.swing.window.CloseWindow;
 import com.oodrive.omnikles.depotclient.swing.window.MainWindow;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
@@ -20,13 +18,17 @@ import java.util.Properties;
 
 public class CryptoDoc {
 
-    private static CloseWindow closeWindow = new CloseWindow();
-    private static MainWindow mainWindow = new MainWindow();
+    private static CloseWindow closeWindow;
+    private static MainWindow mainWindow;
 
     public static void main(String[] args) throws InvalidKeyException, javax.security.cert.CertificateException, IOException {
-        System.out.println("WebStart CryptoDoc - version : " + getAppVersion());
-        System.out.println(System.getProperty("user.home"));
+        CryptoDoc cryptoDoc = new CryptoDoc();
+        System.out.println("WebStart CryptoDoc - version : " + cryptoDoc.getAppVersion());
         CryptoDocConfiguration.initParameters(args);
+
+        mainWindow = new MainWindow();
+        closeWindow = new CloseWindow();
+        System.out.println(CryptoDocConfiguration.activFolder);
         if(CryptoDocConfiguration.parameters.get("action").equals("depot")) {
             depot();
         }
@@ -49,12 +51,10 @@ public class CryptoDoc {
         closeWindow.setVisible(true);
     }
 
-    public static String getAppVersion() throws IOException{
-
+    public String getAppVersion() throws IOException{
         String versionString = null;
         Properties mainProperties = new Properties();
-        FileInputStream file;
-        URL url =  ClassLoader.getSystemResource("cryptodoc.properties");
+        URL url = this.getClass().getResource("/cryptodoc.properties");
         if(url != null && url.getFile() != null) {
             mainProperties.load(url.openStream());
             versionString = mainProperties.getProperty("build.version");
@@ -62,5 +62,4 @@ public class CryptoDoc {
         }
         return null;
     }
-
 }

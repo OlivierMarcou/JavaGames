@@ -46,12 +46,7 @@ public class SslConnexionService {
         File file = new File(CryptoDocConfiguration.activFolder + File.separatorChar + filename);
         try {
             HttpEntity entity = getResponseHttpGet(url, JSessionId).getEntity();
-            BufferedInputStream bis = new BufferedInputStream(entity.getContent());
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-            int inByte;
-            while ((inByte = bis.read()) != -1) bos.write(inByte);
-            bis.close();
-            bos.close();
+            entity.writeTo(new FileOutputStream(file));
         }catch (FileNotFoundException e1) {
             e1.printStackTrace();
             return null;
@@ -102,6 +97,7 @@ public class SslConnexionService {
         if (debug)
             System.out.println("... Debut connexion ...");
         System.out.println("HttpClient");
+        System.out.println("url : " + url);
         CloseableHttpClient httpclientSsl = initSSL();
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("Cookie", "JSESSIONID="+JSessionId);

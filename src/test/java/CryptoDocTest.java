@@ -1,3 +1,4 @@
+import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.CryptoService;
@@ -20,14 +21,19 @@ import java.util.List;
 
 public class CryptoDocTest {
 
-    private static MainWindow mainWindow = new MainWindow();
-    private static TestWindow testWindow = new TestWindow();
-    private static CryptoService cs = new CryptoService();
+    private static MainWindow mainWindow ;
+    private static TestWindow testWindow ;
+    private static CryptoService cs;
 
     public static void main(String[] args) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
         System.out.println("WebStart CryptoDoc !");
+        CryptoDoc cryptoDoc = new CryptoDoc();
+        System.out.println( cryptoDoc.getAppVersion());
         System.out.println(System.getProperty("user.home"));
         CryptoDocConfiguration.initParameters(args);
+        mainWindow = new MainWindow();
+        testWindow = new TestWindow();
+        cs = new CryptoService();
 
         testWindow.setVisible(true);
     }

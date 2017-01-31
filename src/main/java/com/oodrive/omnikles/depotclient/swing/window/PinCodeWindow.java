@@ -49,7 +49,7 @@ public class PinCodeWindow extends JDialog{
         this.txtPassword = txtPassword;
     }
 
-    public PinCodeWindow(String urlCryptedFile, String sessionid, String filename, MainWindow parent){
+    public PinCodeWindow(MainWindow parent){
         setSize(300, 200);
         Container content = getContentPane();
                 content.setLayout(new GridBagLayout());
@@ -86,7 +86,10 @@ public class PinCodeWindow extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 SslConnexionService ssl = new SslConnexionService();
-                File f = ssl.sslDownloadFile(urlCryptedFile, sessionid, filename);
+                File f = ssl.sslDownloadFile(
+                        CryptoDocConfiguration.parameters.get("urlCryptedFile"),
+                        CryptoDocConfiguration.parameters.get("sessionid"),
+                        CryptoDocConfiguration.parameters.get("filename"));
                 //Initialise la clé privé avec le code pin
                 KeyPair kp = null;
                 try {
@@ -100,22 +103,28 @@ public class PinCodeWindow extends JDialog{
 
                 byte[] secret = new byte[0];
                 try {
+                    System.out.println("Zip name :"+f.getName());
+                    System.out.println("Zip exist :"+f.exists());
+                    System.out.println("Zip path :"+f.getPath());
+                    System.out.println("Zip size :"+f.length());
+                    System.out.println("FILENAME_CRYPTED_KEYS : " + CryptoDocConfiguration.FILENAME_CRYPTED_KEYS);
                     byte[] content  = ZipUtils.getContentFile(new ZipFile(f), CryptoDocConfiguration.FILENAME_CRYPTED_KEYS);
                     if(kp != null) {
+                        System.out.println("Begin decode sercret key ...");
                         secret = aesService.decodeSecretKeyByCertificat(content, kp);
+                        System.out.println("End decode sercret key ...");
                     }else {
                         System.out.println("aucun certificat selectionné." );
                     }
                 } catch (IOException exx) {
                     exx.printStackTrace();
                 }
-//        if(aesService.secret.getEncoded() != secret)
-//            throw new InvalidKeyException("les deux clef ne sont pas indentiques !");
-
-                try {
-                    aesService.decryptFileWithSecretKey( new File(CryptoDocConfiguration.activFolder
+                ZipUtils.unzip(CryptoDocConfiguration.FILENAME_ZIP, CryptoDocConfiguration.activFolder);
+                File cryptedFile = new File(CryptoDocConfiguration.activFolder
                                     + File.separatorChar
-                                    + CryptoDocConfiguration.FILENAME_CRYPTED_ZIP)
+                                    + CryptoDocConfiguration.FILENAME_CRYPTED_ZIP);
+                try {
+                    aesService.decryptFileWithSecretKey(cryptedFile
                             , new File(CryptoDocConfiguration.activFolder
                                     + File.separatorChar
                                     + CryptoDocConfiguration.FILENAME_DECRYPTED_ZIP), secret);

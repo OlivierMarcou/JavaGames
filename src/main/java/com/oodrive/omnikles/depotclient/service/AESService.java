@@ -148,18 +148,24 @@ public class AESService {
             throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
             InvalidKeyException, IOException, BadPaddingException, IllegalBlockSizeException,
             InvalidParameterSpecException, CryptoException {
-
+        System.out.println("Methode decryptFileWithSecretKey...");
+        System.out.println("EncryptFile existe ?" + encryptFile.exists());
         try {
             SecretKey secretKey = new SecretKeySpec(secret, CryptoDocConfiguration.CRYPTED_KEY_ALGORITHME);
+            System.out.println("SecretKey : " + secretKey.getEncoded());
+            System.out.println("CRYPTED_KEY_ALGORITHME : " + CryptoDocConfiguration.CRYPTED_KEY_ALGORITHME);
             Cipher cipher = Cipher.getInstance(CryptoDocConfiguration.CRYPTED_KEY_ALGORITHME);
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
-
+            System.out.println("Cipher init ok.");
             FileInputStream inputStream = new FileInputStream(encryptFile);
+            System.out.println("Encrypted file length" + encryptFile.length());
             byte[] inputBytes = new byte[(int) encryptFile.length()];
             inputStream.read(inputBytes);
 
+            System.out.println("inputBytes : " + inputBytes);
             byte[] outputBytes = cipher.doFinal(inputBytes);
 
+            System.out.println("decryptedFile : " + decryptedFile);
             FileOutputStream outputStream = new FileOutputStream(decryptedFile);
             outputStream.write(outputBytes);
 

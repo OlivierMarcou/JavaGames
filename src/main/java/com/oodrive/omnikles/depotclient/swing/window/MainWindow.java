@@ -26,13 +26,9 @@ public class MainWindow extends JFrame {
     private JButton btnSelected = new JButton("Selectionner");
     private CryptoService cs = new CryptoService();
 
-    private PinCodeWindow pinCodeWindow = new PinCodeWindow(CryptoDocConfiguration.parameters.get("urlCryptedFile"),
-            CryptoDocConfiguration.parameters.get("sessionid"),
-            CryptoDocConfiguration.parameters.get("filename"), this);
+    private PinCodeWindow pinCodeWindow = new PinCodeWindow( this);
 
-    private PasswordP12Window pinCodeP12Window = new PasswordP12Window(CryptoDocConfiguration.parameters.get("urlCryptedFile"),
-            CryptoDocConfiguration.parameters.get("sessionid"),
-            CryptoDocConfiguration.parameters.get("filename"), this);
+    private PasswordP12Window pinCodeP12Window = new PasswordP12Window(this);
 
     private ActionListener decryptAction = new ActionListener() {
         @Override
