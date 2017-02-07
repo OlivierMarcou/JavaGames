@@ -4,26 +4,28 @@ import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.utils.ZipUtils;
 import org.apache.commons.io.FileUtils;
-import org.bouncycastle.cms.*;
-import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
-import org.bouncycastle.crypto.CryptoException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
-import sun.security.mscapi.SunMSCAPI;
 
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.security.spec.KeySpec;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by olivier on 14/11/16.
@@ -145,9 +147,7 @@ public class AESService {
     }
 
     public void decryptFileWithSecretKey(File encryptFile, File decryptedFile, byte[] secret)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
-            InvalidKeyException, IOException, BadPaddingException, IllegalBlockSizeException,
-            InvalidParameterSpecException, CryptoException {
+            throws Exception {
         System.out.println("Methode decryptFileWithSecretKey...");
         System.out.println("EncryptFile existe ?" + encryptFile.exists());
         try {
@@ -175,7 +175,7 @@ public class AESService {
         } catch (NoSuchPaddingException | NoSuchAlgorithmException
                 | InvalidKeyException | BadPaddingException
                 | IllegalBlockSizeException | IOException ex) {
-            throw new CryptoException("Error encrypting/decrypting file", ex);
+            throw new Exception("Error encrypting/decrypting file", ex);
         }
     }
 
@@ -257,68 +257,6 @@ public class AESService {
         return "ok";
     }
 
-   public void decryptByPk(File file, KeyPair keyPair)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
-           BadPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        Security.addProvider(new SunMSCAPI());
-
-        System.out.println("USE KEY : " + keyPair.toString());
-//        System.out.println("PK length : " + keyPair.getPrivateKey().getEncoded());
-        if(file.exists()) {
-            byte[] pkcs7envelopedData = new byte[(int) file.length()];
-            DataInputStream in = null;
-            try {
-                in = new DataInputStream(new FileInputStream(file));
-                in.readFully(pkcs7envelopedData);
-                in.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            CMSEnvelopedData ced = null;
-            try {
-                ced = new CMSEnvelopedData(pkcs7envelopedData);
-            } catch (CMSException e) {
-                e.printStackTrace();
-            }
-            Collection recip = ced.getRecipientInfos().getRecipients();
-
-            byte[] contents = new byte[0];
-
-            Iterator<KeyTransRecipientInformation> ite = recip.iterator();
-            while(ite.hasNext()){
-                try {
-                    KeyTransRecipientInformation rinfo = ite.next();
-                    Recipient recipient = new JceKeyTransEnvelopedRecipient(
-                            keyPair.getPrivateKey()).setProvider(CryptoDocConfiguration.WINDOWS_PROVIDER_KEYSTORE);
-                    System.out.println("Encryption Algo : ");
-                    System.out.println(rinfo.getKeyEncryptionAlgorithm());
-                    System.out.println(rinfo.getKeyEncryptionAlgParams());
-                    contents = rinfo.getContent(recipient);
-                } catch (CMSException | IllegalArgumentException | ProviderException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            FileOutputStream envfos = null;
-            try {
-                String pathDestiantion = CryptoDocConfiguration.activFolder
-                        + File.separatorChar + CryptoDocConfiguration.PREFIX_DECRYPTED_FILENAME + file.getName();
-                envfos = new FileOutputStream(pathDestiantion);
-                envfos.write(contents);
-                envfos.close();
-                System.out.println("File save : " + pathDestiantion);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
     public byte[] encrypt(byte[] data, X509Certificate x509Certificate) {
         try {
@@ -329,7 +267,6 @@ public class AESService {
         }
         String resultat = null;
         try {
-            CMSEnvelopedDataGenerator gen = new CMSEnvelopedDataGenerator();
             // La variable cert correspond au certificat du destinataire
             // La clé publique de ce certificat servira à chiffrer la clé symétrique
             Cipher cipher = Cipher.getInstance(CryptoDocConfiguration.CIPHER_ALGORITHME,

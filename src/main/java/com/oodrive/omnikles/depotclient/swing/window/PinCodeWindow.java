@@ -6,21 +6,13 @@ import com.oodrive.omnikles.depotclient.service.AESService;
 import com.oodrive.omnikles.depotclient.service.CryptoService;
 import com.oodrive.omnikles.depotclient.service.SslConnexionService;
 import com.oodrive.omnikles.depotclient.utils.ZipUtils;
-import org.bouncycastle.crypto.CryptoException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidParameterSpecException;
 import java.util.zip.ZipFile;
 
 /**
@@ -128,9 +120,8 @@ public class PinCodeWindow extends JDialog{
                             , new File(CryptoDocConfiguration.activFolder
                                     + File.separatorChar
                                     + CryptoDocConfiguration.FILENAME_DECRYPTED_ZIP), secret);
-                } catch (NoSuchPaddingException |NoSuchAlgorithmException |InvalidAlgorithmParameterException |InvalidKeyException
-                        |IOException |BadPaddingException |IllegalBlockSizeException |InvalidParameterSpecException |CryptoException ex) {
-                    ex.printStackTrace();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
             }
         });

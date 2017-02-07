@@ -2,7 +2,6 @@ package com.oodrive.omnikles.depotclient.utils;
 
 import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import sun.security.mscapi.SunMSCAPI;
 
 import java.io.File;
@@ -32,11 +31,11 @@ public class CertificatesUtils {
 		KeyStore ks = null;
 		try {
 			if (CryptoDocConfiguration.isLinux) {
-				Security.addProvider(new BouncyCastleProvider());
-				ks = KeyStore.getInstance("jks");
-				File test = new File(System.getProperty("java.home") + "/lib/security/cacerts");
-				FileInputStream inks = new FileInputStream(test);
-				ks.load(inks, "changeit".toCharArray());
+//				Security.addProvider(new BouncyCastleProvider());
+//				ks = KeyStore.getInstance("jks");
+//				File test = new File(System.getProperty("java.home") + "/lib/security/cacerts");
+//				FileInputStream inks = new FileInputStream(test);
+//				ks.load(inks, "changeit".toCharArray());
 			}
 			if (CryptoDocConfiguration.isWindows) {
 				SunMSCAPI providerMSCAPI = new SunMSCAPI();

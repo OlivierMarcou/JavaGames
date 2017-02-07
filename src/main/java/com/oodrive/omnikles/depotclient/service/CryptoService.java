@@ -74,32 +74,4 @@ public class CryptoService {
         return CertificatesUtils.getKeyPairList(p12Filename, password);
     }
 
-    public void decryptWindows(File file, KeyPair certificate) throws FileNotFoundException {
-        if(file.exists()){
-            try {
-                as.decryptByPk(file, certificate);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else{
-            throw new FileNotFoundException("Fichier introuvable : "+ file.getAbsolutePath());
-        }
-    }
-
-    public void decryptP12(File file, String p12Filename, char[] password)
-            throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
-        File p12File = new File(p12Filename);
-
-        if(file.exists() ){
-            List<KeyPair> certificats = CertificatesUtils.getKeyPairList(p12File, password);
-            try {
-                as.decryptByPk(file, certificats.get(0));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else{
-            throw new FileNotFoundException("Fichier introuvable : "+ file.getAbsolutePath());
-        }
-    }
-
 }

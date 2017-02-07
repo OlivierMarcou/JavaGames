@@ -28,7 +28,6 @@ public class MainWindow extends JFrame {
 
     private PinCodeWindow pinCodeWindow = new PinCodeWindow( this);
 
-    private PasswordP12Window pinCodeP12Window = new PasswordP12Window(this);
 
     private ActionListener decryptAction = new ActionListener() {
         @Override
@@ -38,19 +37,9 @@ public class MainWindow extends JFrame {
         }
     };
 
-    private ActionListener decryptActionP12 = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("Start Decrypt with P12 !");
-            pinCodeP12Window.launch();
-        }
-    };
 
     public PinCodeWindow getPinCodeWindow() {
         return pinCodeWindow;
-    }
-    public PasswordP12Window getPinCodeWindowP12() {
-        return pinCodeP12Window;
     }
     public CertificatsComboBox getListCertificat() {
         return listCertificat;
@@ -77,8 +66,6 @@ public class MainWindow extends JFrame {
         c.gridwidth=2;
         content.add(listCertificat, c);
 
-        JButton btnP12 = new JButton("Or Upload P12 File !");
-        btnP12.addActionListener(decryptActionP12);
 
         listCertificat.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -92,11 +79,6 @@ public class MainWindow extends JFrame {
         c.gridwidth=1;
         content.add(btnSelected, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx=1;
-        c.gridy=2;
-        c.gridwidth=1;
-        content.add(btnP12, c);
 
     }
 
