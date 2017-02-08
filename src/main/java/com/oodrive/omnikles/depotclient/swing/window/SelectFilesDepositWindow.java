@@ -1,12 +1,15 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
+import com.oodrive.omnikles.depotclient.swing.component.InteractiveLabel;
 import com.oodrive.omnikles.depotclient.swing.component.SelectFilesPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by olivier on 02/02/17.
@@ -103,14 +106,32 @@ public class SelectFilesDepositWindow extends JFrame {
         c.gridwidth=1;
         generalPanel.add(annulBtn, c);
 
+        okBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                java.util.List<File> files = new ArrayList<>();
+                for(Component component:selectedFilePanel.getComponents())
+                    if(component.getClass() == InteractiveLabel.class){
+                        File file = null;
+                        if(((InteractiveLabel)component).getText() != null){
+                            file = new File(((InteractiveLabel)component).getText());
+                            if(file != null && file.exists()){
+                             files.add(file);
+                            }
+                        }
+                    }
+                new Step2Window(files);
+                dispose();
+            }
+        });
+
         annulBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 JOptionPane d = new JOptionPane();
                 int retour = d.showConfirmDialog(getContentPane(), CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.exit.message"),
                         CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.exit.title"), JOptionPane.YES_NO_OPTION);
-                if(retour == 0)//yes
+                if(retour == 0)
                 {
                     System.exit(1);
                 }

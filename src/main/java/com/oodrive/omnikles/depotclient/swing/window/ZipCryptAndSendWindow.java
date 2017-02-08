@@ -7,24 +7,32 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * Created by olivier on 02/02/17.
  */
-public class IntroWindow extends JFrame {
+public class ZipCryptAndSendWindow extends JFrame {
 
     private JPanel generalPanel = new JPanel();
 
-    private JLabel paragraphe1 = new JLabel("ND");
-    private JButton okBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"));
-    private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"));
+    private JLabel paragraphe1 = new JLabel();
 
-    public IntroWindow(){
-        setTitle(CryptoDoc.textProperties.getProperty("depot.page1.title"));
+    private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page4.button.annul"));
+    private java.util.List<File> files;
+
+    public ZipCryptAndSendWindow(java.util.List<File> files){
+        this.files = files;
+
+        setTitle(CryptoDoc.textProperties.getProperty("depot.page4.title"));
+        String texte = CryptoDoc.textProperties.getProperty("depot.page4.paragraphe1");
+        texte = texte.replace("<titleProcedure>", CryptoDocConfiguration.parameters.get("titleProcedure"));
+        texte = texte.replace("<organismName>", CryptoDocConfiguration.parameters.get("organismName"));
+        paragraphe1.setText(texte);
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
 
-        setLayout(new GridBagLayout());
+        setLayout(new BorderLayout());
         generalPanel.setBackground(Color.lightGray);
         generalPanel.setMaximumSize(new Dimension(790, 540));
         generalPanel.setBounds(0,0,600,540);
@@ -35,55 +43,33 @@ public class IntroWindow extends JFrame {
         generalPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        String texte = CryptoDoc.textProperties.getProperty("depot.page1.paragraphe1");
-        texte = texte.replace("<titleProcedure>", CryptoDocConfiguration.parameters.get("titleProcedure"));
-        texte = texte.replace("<organismName>", CryptoDocConfiguration.parameters.get("organismName"));
-        paragraphe1.setText(texte);
-
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx=1;
-        c.weighty=1;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=2;
         generalPanel.add(paragraphe1, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor= GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=1;
-        c.gridwidth=1;
-        generalPanel.add(okBtn, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor= GridBagConstraints.NORTHWEST;
-        c.gridx=1;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
         generalPanel.add(annulBtn, c);
 
-        okBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new SelectFilesDepositWindow();
-                dispose();
-            }
-        });
-
         annulBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 JOptionPane d = new JOptionPane();
                 int retour = d.showConfirmDialog(getContentPane(), CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.exit.message"),
                         CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.exit.title"), JOptionPane.YES_NO_OPTION);
-                if(retour == 0)
+                if(retour == 0)//yes
                 {
                     System.exit(1);
                 }
             }
         });
-
         setVisible(true);
     }
 
