@@ -17,15 +17,32 @@ public class SelectFilesDepositWindow extends JFrame {
 
     private JLabel paragraphe1 = new JLabel(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe1"));
     private JLabel paragraphe2 = new JLabel(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2"));
-    private SelectFilesPanel selectedFilePanel = new SelectFilesPanel();
+    private SelectFilesPanel selectedFilePanel = new SelectFilesPanel(this);
     private JLabel paragraphe3 = new JLabel(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe3"));
+
+    public JButton getOkBtn() {
+        return okBtn;
+    }
+
+    public void setOkBtn(JButton okBtn) {
+        this.okBtn = okBtn;
+    }
+
     private JButton okBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page2.button.ok"));
     private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page2.button.annul"));
+
+    public JLabel getInfos() {
+        return infos;
+    }
+
+    public void setInfos(JLabel infos) {
+        this.infos = infos;
+    }
+
     private JLabel infos = new JLabel(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.vide"));
 
     public SelectFilesDepositWindow(){
         setTitle(CryptoDoc.textProperties.getProperty("depot.page2.title"));
-        setVisible(true);
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
 
@@ -36,7 +53,7 @@ public class SelectFilesDepositWindow extends JFrame {
         setContentPane(generalPanel);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-
+        okBtn.setEnabled(false);
         generalPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -99,6 +116,7 @@ public class SelectFilesDepositWindow extends JFrame {
                 }
             }
         });
+        setVisible(true);
     }
 
 }

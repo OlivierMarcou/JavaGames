@@ -21,6 +21,11 @@ public class InteractiveLabel extends JLabel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
         if( getForeground() != Color.BLUE) {
             isSelected = true;
             this.setForeground(Color.BLUE);
@@ -28,11 +33,6 @@ public class InteractiveLabel extends JLabel implements MouseListener {
             this.setForeground(Color.BLACK);
             isSelected = false;
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
     }
 
     @Override

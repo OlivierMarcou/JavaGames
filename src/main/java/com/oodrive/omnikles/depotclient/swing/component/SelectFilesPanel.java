@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.component;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
+import com.oodrive.omnikles.depotclient.swing.window.SelectFilesDepositWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,10 +18,11 @@ public class SelectFilesPanel extends JPanel{
     private JButton deleteBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page2.button.delete"));
     private JPanel filenamesPanel = new JPanel();
     private JScrollPane scrollPane;
-
+    private SelectFilesDepositWindow parent;
     private int lineNumber = 0;
 
-    public SelectFilesPanel(){
+    public SelectFilesPanel(SelectFilesDepositWindow parent){
+        this.parent = parent;
         setPreferredSize(new Dimension(600, 400));
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -87,12 +89,37 @@ public class SelectFilesPanel extends JPanel{
                 filenamesPanel.remove(component);
             }
         }
+        getFilesInfos();
         filenamesPanel.revalidate();
         filenamesPanel.repaint();
     }
 
-    public int[] getFilesInfos(){
-        return new int[]{0,0};
+    public void getFilesInfos(){
+        long totalSize = 0;
+        long count = 0;
+        for(Component component:filenamesPanel.getComponents()){
+            if(component.getClass() == InteractiveLabel.class){
+                File file = null;
+                if(((InteractiveLabel)component).getText() != null){
+                    file = new File(((InteractiveLabel)component).getText());
+                    if(file != null && file.exists()){
+                        totalSize += file.length();
+                        count ++;
+                    }else
+                        filenamesPanel.remove(component);
+                }
+            }
+        }
+        String texte = CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.vide");
+        if(count > 0) {
+            parent.getOkBtn().setEnabled(true);
+            texte = CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.infos");
+            texte = texte.replace("<count>", String.valueOf(count));
+            texte = texte.replace("<size>", String.valueOf((totalSize/ 1024)/ 1024));
+        }else{
+            parent.getOkBtn().setEnabled(false);
+        }
+        parent.getInfos().setText(texte);
     }
 
     public void addFileLine(String fileName){
@@ -107,6 +134,7 @@ public class SelectFilesPanel extends JPanel{
             constraints.gridwidth = 1;
             filenamesPanel.add(text, constraints);
             lineNumber++;
+            getFilesInfos();
             filenamesPanel.revalidate();
             filenamesPanel.repaint();
         }

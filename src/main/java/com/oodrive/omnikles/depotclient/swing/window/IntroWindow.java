@@ -15,15 +15,12 @@ public class IntroWindow extends JFrame {
 
     private JPanel generalPanel = new JPanel();
 
-    private JLabel paragraphe1 = new JLabel(CryptoDoc.textProperties.getProperty("depot.page1.paragraphe1"));
-    private JLabel paragraphe2 = new JLabel(CryptoDoc.textProperties.getProperty("depot.page1.paragraphe2"));
-    private JLabel paragraphe3 = new JLabel(CryptoDoc.textProperties.getProperty("depot.page1.paragraphe3"));
+    private JLabel paragraphe1 = new JLabel("ND");
     private JButton okBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"));
     private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"));
 
     public IntroWindow(){
         setTitle(CryptoDoc.textProperties.getProperty("depot.page1.title"));
-        setVisible(true);
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
 
@@ -38,6 +35,11 @@ public class IntroWindow extends JFrame {
         generalPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        String texte = CryptoDoc.textProperties.getProperty("depot.page1.paragraphe1");
+        texte = texte.replace("<titleProcedure>", CryptoDocConfiguration.parameters.get("titleProcedure"));
+        texte = texte.replace("<organismName>", CryptoDocConfiguration.parameters.get("organismName"));
+        paragraphe1.setText(texte);
+
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx=1;
@@ -47,44 +49,17 @@ public class IntroWindow extends JFrame {
         c.gridwidth=2;
         generalPanel.add(paragraphe1, c);
 
-        JLabel titleProcedure = new JLabel(CryptoDocConfiguration.parameters.get("titleProcedure"));
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx=0;
-        c.gridy=1;
-        c.gridwidth=2;
-        generalPanel.add(titleProcedure, c);
-
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx=0;
-        c.gridy=2;
-        c.gridwidth=2;
-        generalPanel.add(paragraphe2, c);
-
-        JLabel organismName = new JLabel(CryptoDocConfiguration.parameters.get("organismName"));
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx=0;
-        c.gridy=3;
-        c.gridwidth=2;
-        generalPanel.add(organismName, c);
-
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx=0;
-        c.gridy=4;
-        c.gridwidth=2;
-        generalPanel.add(paragraphe3, c);
-
-
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor= GridBagConstraints.NORTHWEST;
         c.gridx=0;
-        c.gridy=5;
+        c.gridy=1;
         c.gridwidth=1;
         generalPanel.add(okBtn, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor= GridBagConstraints.NORTHWEST;
         c.gridx=1;
-        c.gridy=5;
+        c.gridy=1;
         c.gridwidth=1;
         generalPanel.add(annulBtn, c);
 
@@ -102,6 +77,8 @@ public class IntroWindow extends JFrame {
                 System.exit(1);
             }
         });
+
+        setVisible(true);
     }
 
 }
