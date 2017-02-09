@@ -3,6 +3,7 @@ package com.oodrive.omnikles.depotclient.service;
 import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.utils.CertificatesUtils;
+import com.oodrive.omnikles.depotclient.utils.ZipUtils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -15,6 +16,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidParameterSpecException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,23 +26,20 @@ public class CryptoService {
 
     AESService as = new AESService();
 
-    public File crypteByCertificats(File file, List<String> certificats) throws IOException {
-        if(file.exists()) {
-
-
+    public File crypteByCertificats(File depositZipFile) throws IOException {
+        if(depositZipFile.exists()) {
             List<KeyPair> certs = CertificatesUtils.getInstalledCertificats();
             System.out.println("utils");
 
-            File zipFile = null;
+            List<File> contentZip = new ArrayList<>();
+
             try {
-                zipFile = as.zipKeyFile(certs, CryptoDocConfiguration.activFolder
-                        + File.separatorChar
-                        + CryptoDocConfiguration.FILENAME_ZIP);
+                contentZip.add(as.createKeyFile(certs));
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                as.encryptFileWithSecretKey(file, zipFile);
+                contentZip.add(as.encryptFileWithSecretKey(depositZipFile));
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
@@ -56,9 +55,11 @@ public class CryptoService {
             } catch (IllegalBlockSizeException e) {
                 e.printStackTrace();
             }
-            return zipFile;
+            File enveloppeZip = new File(CryptoDocConfiguration.activFolder + File.separatorChar + CryptoDocConfiguration.FILENAME_ZIP);
+            ZipUtils.addFilesToNewZip(enveloppeZip, contentZip);
+            return enveloppeZip;
         }else{
-            throw new FileNotFoundException("fichier introuvable : "+ file.getAbsolutePath());
+            throw new FileNotFoundException("fichier introuvable : "+ depositZipFile.getAbsolutePath());
         }
     }
 

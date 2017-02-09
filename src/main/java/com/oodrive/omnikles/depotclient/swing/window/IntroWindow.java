@@ -75,8 +75,8 @@ public class IntroWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane d = new JOptionPane();
-                int retour = d.showConfirmDialog(getContentPane(), CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.exit.message"),
-                        CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.exit.title"), JOptionPane.YES_NO_OPTION);
+                int retour = d.showConfirmDialog(getContentPane(), CryptoDoc.textProperties.getProperty("depot.general.optionpanel.exit.message"),
+                        CryptoDoc.textProperties.getProperty("depot.general.optionpanel.exit.title"), JOptionPane.YES_NO_OPTION);
                 if(retour == 0)
                 {
                     System.exit(1);

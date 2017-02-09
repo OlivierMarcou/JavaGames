@@ -110,7 +110,7 @@ public class SelectFilesDepositWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 java.util.List<File> files = new ArrayList<>();
-                for(Component component:selectedFilePanel.getComponents())
+                for(Component component:selectedFilePanel.getFilenamesPanel().getComponents())
                     if(component.getClass() == InteractiveLabel.class){
                         File file = null;
                         if(((InteractiveLabel)component).getText() != null){
@@ -129,8 +129,8 @@ public class SelectFilesDepositWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane d = new JOptionPane();
-                int retour = d.showConfirmDialog(getContentPane(), CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.exit.message"),
-                        CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.exit.title"), JOptionPane.YES_NO_OPTION);
+                int retour = d.showConfirmDialog(getContentPane(), CryptoDoc.textProperties.getProperty("depot.general.optionpanel.exit.message"),
+                        CryptoDoc.textProperties.getProperty("depot.general.optionpanel.exit.title"), JOptionPane.YES_NO_OPTION);
                 if(retour == 0)
                 {
                     System.exit(1);

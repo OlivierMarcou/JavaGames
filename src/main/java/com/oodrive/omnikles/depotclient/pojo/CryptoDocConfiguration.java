@@ -10,7 +10,7 @@ public class CryptoDocConfiguration {
 
     public static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
     public static final boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
-
+    public static boolean debug = false;
     public static HashMap<String, String> parameters = new HashMap<>();
     public static String activFolder;
 
@@ -37,5 +37,7 @@ public class CryptoDocConfiguration {
             System.out.println(keyValue[0] + " " + keyValue[1]);
             parameters.put(keyValue[0], keyValue[1]);
         }
+        debug = Boolean.parseBoolean(parameters.get("debug"));
+
     }
 }

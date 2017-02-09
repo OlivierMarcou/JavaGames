@@ -16,6 +16,15 @@ public class SelectFilesPanel extends JPanel{
 
     private JButton parcourirBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page2.button.parcourir"));
     private JButton deleteBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page2.button.delete"));
+
+    public JPanel getFilenamesPanel() {
+        return filenamesPanel;
+    }
+
+    public void setFilenamesPanel(JPanel filenamesPanel) {
+        this.filenamesPanel = filenamesPanel;
+    }
+
     private JPanel filenamesPanel = new JPanel();
     private JScrollPane scrollPane;
     private SelectFilesDepositWindow parent;

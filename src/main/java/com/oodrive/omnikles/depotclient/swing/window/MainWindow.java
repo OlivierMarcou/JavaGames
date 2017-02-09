@@ -1,9 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
-import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.CryptoService;
-import com.oodrive.omnikles.depotclient.service.SslConnexionService;
 import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
 
 import javax.swing.*;
@@ -11,7 +9,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -114,15 +111,5 @@ public class MainWindow extends JFrame {
         return null;
     }
 
-    public void depot() throws IOException {
-        SslConnexionService ssl = new SslConnexionService();
-        List<String> certificats = ssl.getCertificatsWithJSessionId(CryptoDocConfiguration.parameters.get("urlCertificat"), CryptoDocConfiguration.parameters.get("sessionid"));
-        if(certificats == null || certificats.size() <= 0)
-            throw new NullPointerException("Aucun certificat trouvé pour : " + CryptoDocConfiguration.parameters.get("urlCertificat"));
-        String selectFile = fileChooser();
-        System.out.println(selectFile);
-        File cryptedFile = cs.crypteByCertificats(new File(selectFile), certificats);
-        ssl.sslUploadFile(cryptedFile, CryptoDocConfiguration.parameters.get("urlDepot"), CryptoDocConfiguration.parameters.get("sessionid"));
-    }
 
 }

@@ -2,7 +2,6 @@ package com.oodrive.omnikles.depotclient.service;
 
 import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
-import com.oodrive.omnikles.depotclient.utils.ZipUtils;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,29 +65,23 @@ public class AESService {
         secret = new SecretKeySpec(tmp.getEncoded(), CryptoDocConfiguration.CRYPTED_KEY_ALGORITHME);
     }
 
-    //s'appelerai à terme : encryptFilesWithSecretKey(File[] files, File zipFile)
-    public void encryptFileWithSecretKey(File file, File zipFile)
+    public File encryptFileWithSecretKey(File file)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidParameterSpecException, IOException, BadPaddingException, IllegalBlockSizeException {
-
         Cipher cipher = Cipher.getInstance(CryptoDocConfiguration.CRYPTED_KEY_ALGORITHME);
         cipher.init(Cipher.ENCRYPT_MODE, secret);
-
-        //TODO : ajouter ici une liste de fichier à crypter, les zipper et ensuite crypter le zip
-        // une fois le zip crypté on l'ajoute au zip de l'enveloppe.
-
         FileInputStream fin1 = new FileInputStream(file);
         File cryptedFile = new File(CryptoDocConfiguration.activFolder
                 + File.separatorChar
                 + CryptoDocConfiguration.FILENAME_CRYPTED_ZIP);
         FileOutputStream fout = new FileOutputStream(cryptedFile);
 
-        byte[] block = new byte[(int) file.length()];
+        byte[] block = new byte[2048];
         int i;
         while ((i = fin1.read(block)) != -1) {
             byte[] inputfile= cipher.doFinal(block);
             fout.write(inputfile);
         }
-        ZipUtils.addFileToZip(cryptedFile, zipFile);
+        return cryptedFile;
     }
 
     public byte[] decodeSecretKeyByCertificat(byte[] data, KeyPair keyPair) {
@@ -179,21 +172,10 @@ public class AESService {
         }
     }
 
-    public void addFileKeyToZip(File fileSecretKey, File destinationZip, boolean isNew){
-        try{
-            System.out.println("Add secret file to zip ... Start");
-            if(isNew)FileUtils.deleteQuietly(destinationZip);
-            ZipUtils.addFileToZip(fileSecretKey, destinationZip);
-            System.out.println("Add secret file to zip ... Finish");
-        }catch(IOException ex){
-            ex.printStackTrace();
-        }
-    }
-
-    public File zipKeyFile(List<KeyPair> certificats, String zipDestinationName) throws IOException {
+    public File createKeyFile(List<KeyPair> certificats) throws IOException {
         BASE64Encoder encoder = new BASE64Encoder();
-        File enveloppe = new File(CryptoDocConfiguration.FILENAME_CRYPTED_KEYS);
-        enveloppe.delete();
+        File jsonKeyFile = new File(CryptoDocConfiguration.FILENAME_CRYPTED_KEYS);
+        jsonKeyFile.delete();
         HashMap<String, String> dualKeys = new HashMap<>();
         JSONObject json = new JSONObject();
         for(KeyPair keyPair: certificats){
@@ -204,15 +186,13 @@ public class AESService {
                 dualKeys.put( keyPair.getX509CertificateB64(), encoder.encode(encryptedSecretKey));
             }
         }
-
         try {
             json.put("data",dualKeys);
         }catch (JSONException e) {
             e.printStackTrace();
         }
-        FileUtils.writeStringToFile(enveloppe, json.toString(), CryptoDocConfiguration.JSON_ENCODING, true);
-        addFileKeyToZip(enveloppe, new File(zipDestinationName), true);
-        return new File (zipDestinationName);
+        FileUtils.writeStringToFile(jsonKeyFile, json.toString(), CryptoDocConfiguration.JSON_ENCODING, true);
+        return jsonKeyFile;
     }
 
     public String decryptMessage(byte[] key, KeyPair keyPair, String filename) {
@@ -266,16 +246,26 @@ public class AESService {
         } catch (Exception ex) {
         }
         String resultat = null;
-        try {
             // La variable cert correspond au certificat du destinataire
             // La clé publique de ce certificat servira à chiffrer la clé symétrique
-            Cipher cipher = Cipher.getInstance(CryptoDocConfiguration.CIPHER_ALGORITHME,
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance(CryptoDocConfiguration.CIPHER_ALGORITHME,
                     CryptoDocConfiguration.WINDOWS_PROVIDER_KEYSTORE);
             cipher.init(Cipher.ENCRYPT_MODE, x509Certificate);
             // Encrypt the message
             return cipher.doFinal(data);
-
-        } catch (Exception e) {
+        } catch (InvalidKeyException e) {
+            System.out.println("Le certificat : "+x509Certificate.getSubjectDN() +" \n n'est pas conçu pour crypter un fichier");
+        }  catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         }
         return null;

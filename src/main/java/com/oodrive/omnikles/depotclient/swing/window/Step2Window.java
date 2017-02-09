@@ -67,6 +67,7 @@ public class Step2Window extends JFrame {
         sendBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                setVisible(false);
                 new ZipCryptAndSendWindow(files);
                 dispose();
             }
@@ -76,8 +77,8 @@ public class Step2Window extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 JOptionPane d = new JOptionPane();
-                int retour = d.showConfirmDialog(getContentPane(), CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.exit.message"),
-                        CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.exit.title"), JOptionPane.YES_NO_OPTION);
+                int retour = d.showConfirmDialog(getContentPane(), CryptoDoc.textProperties.getProperty("depot.general.optionpanel.exit.message"),
+                        CryptoDoc.textProperties.getProperty("depot.general.optionpanel.exit.title"), JOptionPane.YES_NO_OPTION);
                 if(retour == 0)//yes
                 {
                     System.exit(1);

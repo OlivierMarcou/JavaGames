@@ -78,6 +78,8 @@ public class PinCodeWindow extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 SslConnexionService ssl = new SslConnexionService();
+                //TODO : deja téléchargé, mais donner quand meme la possibilité de le refaire dans le web start
+                // changer ici pas un filechooser de sequestre
                 File f = ssl.sslDownloadFile(
                         CryptoDocConfiguration.parameters.get("urlCryptedFile"),
                         CryptoDocConfiguration.parameters.get("sessionid"),
