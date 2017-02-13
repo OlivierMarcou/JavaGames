@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.component;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.swing.window.SelectFilesDepositWindow;
 
 import javax.swing.*;
@@ -51,7 +52,7 @@ public class SelectFilesPanel extends JPanel{
         add(deleteBtn, c);
 
         filenamesPanel.setLayout(new GridBagLayout());
-        filenamesPanel.setBackground(Color.cyan);
+        filenamesPanel.setBackground(new Color(0xdddddd));
         filenamesPanel.setMaximumSize(new Dimension(580, 380));
         c.fill= GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -125,6 +126,7 @@ public class SelectFilesPanel extends JPanel{
             texte = CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.infos");
             texte = texte.replace("<count>", String.valueOf(count));
             texte = texte.replace("<size>", String.valueOf((totalSize/ 1024)/ 1024));
+            Configuration.totalSizeFiles = totalSize;
         }else{
             parent.getOkBtn().setEnabled(false);
         }

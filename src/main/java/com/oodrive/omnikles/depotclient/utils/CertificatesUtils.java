@@ -1,6 +1,6 @@
 package com.oodrive.omnikles.depotclient.utils;
 
-import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import sun.security.mscapi.SunMSCAPI;
 
@@ -30,18 +30,18 @@ public class CertificatesUtils {
 	public static KeyStore getKeyStore() throws Exception {
 		KeyStore ks = null;
 		try {
-			if (CryptoDocConfiguration.isLinux) {
+			if (Configuration.isLinux) {
 //				Security.addProvider(new BouncyCastleProvider());
 //				ks = KeyStore.getInstance("jks");
 //				File test = new File(System.getProperty("java.home") + "/lib/security/cacerts");
 //				FileInputStream inks = new FileInputStream(test);
 //				ks.load(inks, "changeit".toCharArray());
 			}
-			if (CryptoDocConfiguration.isWindows) {
+			if (Configuration.isWindows) {
 				SunMSCAPI providerMSCAPI = new SunMSCAPI();
 				Security.addProvider(providerMSCAPI);
-				ks = KeyStore.getInstance(CryptoDocConfiguration.WINDOWS_KEYSTORE,
-						CryptoDocConfiguration.WINDOWS_PROVIDER_KEYSTORE);
+				ks = KeyStore.getInstance(Configuration.WINDOWS_KEYSTORE,
+						Configuration.WINDOWS_PROVIDER_KEYSTORE);
 				ks.load(null, null);
 			}
 		} catch (Exception e) {

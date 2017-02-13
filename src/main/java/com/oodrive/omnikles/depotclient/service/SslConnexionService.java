@@ -1,6 +1,10 @@
 package com.oodrive.omnikles.depotclient.service;
 
-import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
+import com.oodrive.omnikles.depotclient.CryptoDoc;
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.depotclient.swing.component.ProgressEntityWrapper;
+import com.oodrive.omnikles.depotclient.swing.component.ProgressListener;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -29,7 +33,29 @@ import java.util.List;
  */
 public class SslConnexionService {
 
+    private AnimatedProgressBar uploadBar = null;
     private boolean debug = true;
+
+    int percentMem = -1;
+
+    private int jobNumber = 0;
+    private int maxPercent = 100 ;
+
+    public int getMaxPercent() {
+        return maxPercent;
+    }
+
+    public void setMaxPercent(int maxPercent) {
+        this.maxPercent = maxPercent;
+    }
+
+    public int getJobNumber() {
+        return jobNumber;
+    }
+
+    public void setJobNumber(int jobNumber) {
+        this.jobNumber = jobNumber;
+    }
 
     public List<String> getCertificatsWithJSessionId(String urlCertificat, String JSessionId){
         System.out.println("getCertificatsWithJSessionId method");
@@ -43,7 +69,7 @@ public class SslConnexionService {
 
     public File sslDownloadFile(String url, String JSessionId, String filename){
         System.out.println("sslDownloadFile method");
-        File file = new File(CryptoDocConfiguration.activFolder + File.separatorChar + filename);
+        File file = new File(Configuration.activFolder + File.separatorChar + filename);
         try {
             HttpEntity entity = getResponseHttpGet(url, JSessionId).getEntity();
             entity.writeTo(new FileOutputStream(file));
@@ -58,6 +84,11 @@ public class SslConnexionService {
     }
 
     public void sslUploadFile(File file, String url, String JSessionId){
+        sslUploadFile(file, url, JSessionId, null);
+    }
+
+    public void sslUploadFile(File file, String url, String JSessionId, AnimatedProgressBar animatedProgressBar){
+        this.uploadBar = animatedProgressBar;
         System.out.println("sslUploadFile method");
         HttpEntity entity = getResponseHttpPostFile(url, JSessionId, file).getEntity();
         getStringResponse(entity);
@@ -119,18 +150,31 @@ public class SslConnexionService {
             System.out.println("... Debut upload file ...");
 
         MultipartEntityBuilder builderFile = MultipartEntityBuilder.create();
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        builderFile.addBinaryBody("file", fis,
+
+        builderFile.addBinaryBody("file", file,
                 ContentType.APPLICATION_OCTET_STREAM,
                 file.getName());
         HttpEntity multipart = builderFile.build();
         HttpPost httpPost = new HttpPost(url);
-        httpPost.setEntity(multipart);
+
+        percentMem = -1;
+        ProgressListener pListener =
+            new ProgressListener() {
+                @Override
+                public void progress(long reste, long totalBytes, long transfered) {
+                    if(uploadBar != null){
+                        int percent = Math.round((transfered*maxPercent)/totalBytes);
+                        if(percentMem != percent){
+                            uploadBar.setActualIcon(percent + (maxPercent*jobNumber));
+                            percentMem = percent;
+                            uploadBar.setText(CryptoDoc.textProperties.getProperty("depot.page4.sending") +
+                                    (percent + (maxPercent*jobNumber)) + "%");
+                        }
+                    }
+                }
+            };
+
+        httpPost.setEntity(new ProgressEntityWrapper(multipart, pListener));
         httpPost.setHeader("Cookie", "JSESSIONID="+JSessionId);
 
         CloseableHttpClient httpclientSsl = initSSL();
@@ -139,7 +183,6 @@ public class SslConnexionService {
             throw new NullPointerException("HTTP client is null !");
         if(httpPost == null)
             throw new NullPointerException("POST Request is null !");
-
         CloseableHttpResponse response = null;
         try {
             System.out.println("Start request upload ");

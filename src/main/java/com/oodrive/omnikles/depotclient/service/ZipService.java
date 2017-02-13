@@ -1,5 +1,8 @@
-package com.oodrive.omnikles.depotclient.utils;
+package com.oodrive.omnikles.depotclient.service;
 
+import com.oodrive.omnikles.depotclient.CryptoDoc;
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -12,19 +15,50 @@ import java.util.zip.ZipOutputStream;
 /**
  * Created by olivier on 18/01/17.
  */
-public class ZipUtils {
+public class ZipService {
 
-    public static void unzip(String zipFilePath, String destDir) {
+    public AnimatedProgressBar getLabel() {
+        return progressBar;
+    }
+
+    private AnimatedProgressBar progressBar = null;
+
+    private int jobNumber = 0;
+    private int maxPercent = 100 ;
+
+    public int getMaxPercent() {
+        return maxPercent;
+    }
+
+    public void setMaxPercent(int maxPercent) {
+        this.maxPercent = maxPercent;
+    }
+
+    public int getJobNumber() {
+        return jobNumber;
+    }
+
+    public void setJobNumber(int jobNumber) {
+        this.jobNumber = jobNumber;
+    }
+
+    public void setProgressBar(AnimatedProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    public void unzip(String zipFilePath, String destDir) {
         File dir = new File(destDir);
         // create output directory if it doesn't exist
         if(!dir.exists()) dir.mkdirs();
         FileInputStream fis;
+        long totalSizeZip = (new File(zipFilePath)).length();
         //buffer for read and write data to file
         byte[] buffer = new byte[1024];
         try {
             fis = new FileInputStream(zipFilePath);
             ZipInputStream zis = new ZipInputStream(fis);
             ZipEntry ze = zis.getNextEntry();
+            int size = 0;
             while(ze != null){
                 String fileName = ze.getName();
                 File newFile = new File(destDir + File.separator + fileName);
@@ -35,6 +69,10 @@ public class ZipUtils {
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
                 fos.write(buffer, 0, len);
+                    if(progressBar != null){
+                        size += buffer.length;
+                        progressBar.setActualIcon(Math.round((size*100)/totalSizeZip));
+                    }
                 }
                 fos.close();
                 //close this ZipEntry
@@ -50,11 +88,13 @@ public class ZipUtils {
         }
     }
 
-    public static void addFilesToNewZip(File zip,  List<File> files ){
+    public void addFilesToNewZip(File zip,  List<File> files ){
         try {
-            FileOutputStream   fos = new FileOutputStream(zip);
+            FileOutputStream fos = new FileOutputStream(zip);
             ZipOutputStream zos = new ZipOutputStream(fos);
             byte[] buffer = new byte[2048];
+            long size = 0;
+            int percentMem = -1;
             for (File file: files) {
                 File currentFile = file;
                 if (!currentFile.isDirectory()) {
@@ -64,6 +104,16 @@ public class ZipUtils {
                     int read = 0;
                     while ((read = fis.read(buffer)) != -1) {
                         zos.write(buffer, 0, read);
+                        if(progressBar != null){
+                            size += buffer.length;
+                            int percent = Math.round((size*maxPercent)/Configuration.totalSizeFiles);
+                            if(percentMem != percent){
+                                progressBar.setActualIcon(percent + (maxPercent*jobNumber));
+                                percentMem = percent;
+                                progressBar.setText(CryptoDoc.textProperties.getProperty("depot.page4.sending") +
+                                        (percent + (maxPercent*jobNumber)) + "%");
+                            }
+                        }
                     }
                     zos.closeEntry();
                     fis.close();
@@ -76,10 +126,9 @@ public class ZipUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
-    public static byte[] getContentFile(ZipFile zip, String fileName) throws IOException {
+    public byte[] getContentFile(ZipFile zip, String fileName) throws IOException {
         System.out.println("Methode getContentFile");
         System.out.println("Arguments :" + zip.getName() + " | " + fileName);
         if(zip != null && zip.size() > 0) {

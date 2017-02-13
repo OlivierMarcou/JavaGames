@@ -1,7 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
-import com.oodrive.omnikles.depotclient.service.CryptoService;
+import com.oodrive.omnikles.depotclient.service.AESService;
 import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
 
 import javax.swing.*;
@@ -21,7 +21,7 @@ public class MainWindow extends JFrame {
 
     private CertificatsComboBox listCertificat = new CertificatsComboBox();
     private JButton btnSelected = new JButton("Selectionner");
-    private CryptoService cs = new CryptoService();
+    private AESService aes = new AESService();
 
     private PinCodeWindow pinCodeWindow = new PinCodeWindow( this);
 
@@ -86,7 +86,7 @@ public class MainWindow extends JFrame {
     }
 
     public void init(){
-        List<KeyPair> certificats = cs.getInstalledCertificats();
+        List<KeyPair> certificats = aes.getInstalledCertificats();
         for(KeyPair certificat:certificats){
             listCertificat.addItem(certificat);
             System.out.println(certificat.getPkB64());

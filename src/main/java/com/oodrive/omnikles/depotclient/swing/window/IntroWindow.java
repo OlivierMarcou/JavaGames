@@ -1,7 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
-import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +25,7 @@ public class IntroWindow extends JFrame {
         setMinimumSize(new Dimension(800, 600));
 
         setLayout(new GridBagLayout());
-        generalPanel.setBackground(Color.lightGray);
+        generalPanel.setBackground(new Color(0x97abb8));
         generalPanel.setMaximumSize(new Dimension(790, 540));
         generalPanel.setBounds(0,0,600,540);
         setContentPane(generalPanel);
@@ -36,8 +36,8 @@ public class IntroWindow extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
 
         String texte = CryptoDoc.textProperties.getProperty("depot.page1.paragraphe1");
-        texte = texte.replace("<titleProcedure>", CryptoDocConfiguration.parameters.get("titleProcedure"));
-        texte = texte.replace("<organismName>", CryptoDocConfiguration.parameters.get("organismName"));
+        texte = texte.replace("<titleProcedure>", Configuration.parameters.get("titleProcedure"));
+        texte = texte.replace("<organismName>", Configuration.parameters.get("organismName"));
         paragraphe1.setText(texte);
 
         c.fill = GridBagConstraints.HORIZONTAL;

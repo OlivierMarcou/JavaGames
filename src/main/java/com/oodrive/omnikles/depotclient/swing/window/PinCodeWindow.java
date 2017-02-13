@@ -1,11 +1,10 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
-import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.AESService;
-import com.oodrive.omnikles.depotclient.service.CryptoService;
 import com.oodrive.omnikles.depotclient.service.SslConnexionService;
-import com.oodrive.omnikles.depotclient.utils.ZipUtils;
+import com.oodrive.omnikles.depotclient.service.ZipService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,9 +19,10 @@ import java.util.zip.ZipFile;
  */
 public class PinCodeWindow extends JDialog{
 
+    private ZipService zs = new ZipService();
     private JTextField txtPassword = new JTextField();
     private MainWindow parent;
-    private CryptoService cs = new CryptoService();
+    private AESService aes = new AESService();
 
     @Override
     public MainWindow getParent() {
@@ -81,13 +81,13 @@ public class PinCodeWindow extends JDialog{
                 //TODO : deja téléchargé, mais donner quand meme la possibilité de le refaire dans le web start
                 // changer ici pas un filechooser de sequestre
                 File f = ssl.sslDownloadFile(
-                        CryptoDocConfiguration.parameters.get("urlCryptedFile"),
-                        CryptoDocConfiguration.parameters.get("sessionid"),
-                        CryptoDocConfiguration.parameters.get("filename"));
+                        Configuration.parameters.get("urlCryptedFile"),
+                        Configuration.parameters.get("sessionid"),
+                        Configuration.parameters.get("filename"));
                 //Initialise la clé privé avec le code pin
                 KeyPair kp = null;
                 try {
-                    kp = cs.getKeyPairWithPrivateKey(
+                    kp = aes.getKeyPairWithPrivateKey(
                             ((KeyPair)parent.getListCertificat().getSelectedItem()).getAlias(),
                             txtPassword.getText());
                 } catch (Exception e1) {
@@ -101,8 +101,8 @@ public class PinCodeWindow extends JDialog{
                     System.out.println("Zip exist :"+f.exists());
                     System.out.println("Zip path :"+f.getPath());
                     System.out.println("Zip size :"+f.length());
-                    System.out.println("FILENAME_CRYPTED_KEYS : " + CryptoDocConfiguration.FILENAME_CRYPTED_KEYS);
-                    byte[] content  = ZipUtils.getContentFile(new ZipFile(f), CryptoDocConfiguration.FILENAME_CRYPTED_KEYS);
+                    System.out.println("FILENAME_CRYPTED_KEYS : " + Configuration.FILENAME_CRYPTED_KEYS);
+                    byte[] content  = zs.getContentFile(new ZipFile(f), Configuration.FILENAME_CRYPTED_KEYS);
                     if(kp != null) {
                         System.out.println("Begin decode sercret key ...");
                         secret = aesService.decodeSecretKeyByCertificat(content, kp);
@@ -113,15 +113,15 @@ public class PinCodeWindow extends JDialog{
                 } catch (IOException exx) {
                     exx.printStackTrace();
                 }
-                ZipUtils.unzip(CryptoDocConfiguration.FILENAME_ZIP, CryptoDocConfiguration.activFolder);
-                File cryptedFile = new File(CryptoDocConfiguration.activFolder
+                zs.unzip(Configuration.FILENAME_ZIP, Configuration.activFolder);
+                File cryptedFile = new File(Configuration.activFolder
                                     + File.separatorChar
-                                    + CryptoDocConfiguration.FILENAME_CRYPTED_ZIP);
+                                    + Configuration.FILENAME_CRYPTED_ZIP);
                 try {
                     aesService.decryptFileWithSecretKey(cryptedFile
-                            , new File(CryptoDocConfiguration.activFolder
+                            , new File(Configuration.activFolder
                                     + File.separatorChar
-                                    + CryptoDocConfiguration.FILENAME_DECRYPTED_ZIP), secret);
+                                    + Configuration.FILENAME_DECRYPTED_ZIP), secret);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }

@@ -6,13 +6,14 @@ import java.util.HashMap;
 /**
  * Created by olivier on 24/01/17.
  */
-public class CryptoDocConfiguration {
+public class Configuration {
 
     public static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
     public static final boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
     public static boolean debug = false;
     public static HashMap<String, String> parameters = new HashMap<>();
     public static String activFolder;
+    public static long totalSizeFiles = 0;
 
     public static final String WINDOWS_KEYSTORE = "Windows-MY";
     public static final String FILENAME_ZIP = "enveloppe.zip";

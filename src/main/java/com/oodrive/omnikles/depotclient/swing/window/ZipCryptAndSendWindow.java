@@ -1,10 +1,9 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
-import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
-import com.oodrive.omnikles.depotclient.service.CryptoService;
-import com.oodrive.omnikles.depotclient.service.SslConnexionService;
-import com.oodrive.omnikles.depotclient.utils.ZipUtils;
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.depotclient.thread.DepositFilesRunnable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,30 +19,27 @@ import java.util.List;
  */
 public class ZipCryptAndSendWindow extends JFrame {
 
+    private DepositFilesRunnable zt = new DepositFilesRunnable();
     private JPanel generalPanel = new JPanel();
-
     private JLabel paragraphe1 = new JLabel();
-
     private JLabel information = new JLabel();
-
     private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page4.button.annul"));
     private List<File> files;
-
-    private CryptoService cs = new CryptoService();
+    private AnimatedProgressBar animate = null;
 
     public ZipCryptAndSendWindow(List<File> files){
         this.files = files;
 
         setTitle(CryptoDoc.textProperties.getProperty("depot.page4.title"));
         String texte = CryptoDoc.textProperties.getProperty("depot.page4.paragraphe1");
-        texte = texte.replace("<titleProcedure>", CryptoDocConfiguration.parameters.get("titleProcedure"));
-        texte = texte.replace("<organismName>", CryptoDocConfiguration.parameters.get("organismName"));
+        texte = texte.replace("<titleProcedure>", Configuration.parameters.get("titleProcedure"));
+        texte = texte.replace("<organismName>", Configuration.parameters.get("organismName"));
         paragraphe1.setText(texte);
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
 
         setLayout(new BorderLayout());
-        generalPanel.setBackground(Color.lightGray);
+        generalPanel.setBackground(new Color(0x97abb8));
         generalPanel.setMaximumSize(new Dimension(790, 540));
         generalPanel.setBounds(0,0,600,540);
         setContentPane(generalPanel);
@@ -59,16 +55,29 @@ public class ZipCryptAndSendWindow extends JFrame {
         c.gridwidth=1;
         generalPanel.add(paragraphe1, c);
 
+        try {
+            animate = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream()) ;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
         c.gridy=1;
+        c.gridwidth=1;
+        generalPanel.add(animate, c);
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx=0;
+        c.gridy=2;
         c.gridwidth=1;
         generalPanel.add(information, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
-        c.gridy=2;
+        c.gridy=3;
         c.gridwidth=1;
         generalPanel.add(annulBtn, c);
 
@@ -85,26 +94,7 @@ public class ZipCryptAndSendWindow extends JFrame {
                 }
             }
         });
-
-        if(CryptoDocConfiguration.debug) {
-            JButton debugButton = new JButton("Ré envoyer");
-            debugButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        depot();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            });
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.anchor = GridBagConstraints.NORTHWEST;
-            c.gridx=0;
-            c.gridy=3;
-            c.gridwidth=1;
-            generalPanel.add(debugButton, c);
-        }
+        animate.setVisible(false);
         setVisible(true);
         try {
             depot();
@@ -113,24 +103,20 @@ public class ZipCryptAndSendWindow extends JFrame {
         }
     }
 
-    private void depot() throws IOException {
-        SslConnexionService ssl = new SslConnexionService();
-        java.util.List<String> certificats = ssl.getCertificatsWithJSessionId(CryptoDocConfiguration.parameters.get("urlCertificat"), CryptoDocConfiguration.parameters.get("sessionid"));
-        if(certificats == null || certificats.size() <= 0)
-            throw new NullPointerException("Aucun certificat trouvé pour : " + CryptoDocConfiguration.parameters.get("urlCertificat"));
+    public void depot() throws IOException {
+
+        System.out.println("Zip tous les fichiers selectionnes");
+        animate.setVisible(true);
         Date now = new Date();
-        //Zip tous les fichiers sélectionnés
-        File zip = new File(CryptoDocConfiguration.activFolder + File.separatorChar + "deposit"+ now.getTime() +".zip");
-        System.out.println("Zip path : " + CryptoDocConfiguration.activFolder + File.separatorChar + "deposit"+ now.getTime() +".zip");
+        File zip = new File(Configuration.activFolder + File.separatorChar + "deposit"+ now.getTime() +".zip");
+        System.out.println("Zip path : " + Configuration.activFolder + File.separatorChar + "deposit"+ now.getTime() +".zip");
         for( File file: files)
             System.out.println(file.getName());
-        ZipUtils.addFilesToNewZip(zip, files);
+        zt.setProgressBar(animate);
+        zt.setFiles(files);
+        zt.setZip(zip);
+        new Thread(zt).start();
 
-        System.out.println("zip ok");
-        //crypte le zip, créé un fichier .crypt et l'ajoute dans enveloppe.zip
-        File enveloppe = cs.crypteByCertificats(zip);
-
-        ssl.sslUploadFile(enveloppe, CryptoDocConfiguration.parameters.get("urlDepot"), CryptoDocConfiguration.parameters.get("sessionid"));
     }
 
 }

@@ -1,8 +1,9 @@
 package com.oodrive.omnikles.depotclient;
 
-import com.oodrive.omnikles.depotclient.pojo.CryptoDocConfiguration;
-import com.oodrive.omnikles.depotclient.swing.window.CloseWindow;
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.service.SslConnexionService;
 import com.oodrive.omnikles.depotclient.swing.window.IntroWindow;
+import com.oodrive.omnikles.depotclient.swing.window.TestWindow;
 
 import javax.swing.*;
 import java.io.FileNotFoundException;
@@ -21,33 +22,34 @@ import java.util.Properties;
 
 public class CryptoDoc {
 
-    private static CloseWindow closeWindow;
-//    private static MainWindow mainWindow;
     public static Properties textProperties = new Properties();
 
     public CryptoDoc() throws IOException {
+        SslConnexionService sc = new SslConnexionService();
         System.out.println("WebStart CryptoDoc - version : " + getAppVersion());
-        if(CryptoDocConfiguration.parameters.get("language") == null || CryptoDocConfiguration.parameters.get("language").isEmpty()) {
-            CryptoDocConfiguration.parameters.put("language", "fr");
+        if(Configuration.parameters.get("language") == null || Configuration.parameters.get("language").isEmpty()) {
+            Configuration.parameters.put("language", "fr");
         }
-        initTextes(CryptoDocConfiguration.parameters.get("language"));
+        initTextes(Configuration.parameters.get("language"));
     }
 
     public static void main(String[] args) throws InvalidKeyException, javax.security.cert.CertificateException, IOException, ClassNotFoundException, IllegalAccessException, InstantiationException, UnsupportedLookAndFeelException {
         CryptoDoc cryptoDoc = new CryptoDoc();
+//        TestWindow test = new TestWindow();
+//        test.gossl();
+        Configuration.initParameters(args);
 
-        CryptoDocConfiguration.initParameters(args);
+        System.out.println(Configuration.activFolder);
 
-//        mainWindow = new MainWindow();
-        closeWindow = new CloseWindow();
-        System.out.println(CryptoDocConfiguration.activFolder);
-
-        if(CryptoDocConfiguration.parameters.get("action").equals("depot")) {
+        if(Configuration.parameters.get("action").equals("depot")) {
             depot();
         }
 
-        if(CryptoDocConfiguration.parameters.get("action").equals("decrypt")){
+        if(Configuration.parameters.get("action").equals("decrypt")){
             openDepot();
+        }
+        if(Configuration.parameters.get("action").equals("test")){
+            new TestWindow();
         }
 
     }
@@ -58,11 +60,7 @@ public class CryptoDoc {
     }
 
     private static void depot() throws IOException {
-        IntroWindow introWindow = new IntroWindow();
-        //        mainWindow.init();
-//        mainWindow.setVisible(false);
-//        mainWindow.depot();
-        //closeWindow.setVisible(true);
+        new IntroWindow();
     }
 
     public String getAppVersion() throws IOException{
@@ -80,7 +78,6 @@ public class CryptoDoc {
 
 
     public void initTextes(String language) throws IOException{
-        String versionString = null;
         URL url = this.getClass().getResource("/texts_" + language + ".properties");
         if(url != null && url.getFile() != null) {
             textProperties.load(new InputStreamReader((url.openStream()),"UTF-8"));

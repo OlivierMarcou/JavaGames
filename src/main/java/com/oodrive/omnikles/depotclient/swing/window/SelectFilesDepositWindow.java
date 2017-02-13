@@ -50,7 +50,7 @@ public class SelectFilesDepositWindow extends JFrame {
         setMinimumSize(new Dimension(800, 600));
 
         setLayout(new BorderLayout());
-        generalPanel.setBackground(Color.lightGray);
+        generalPanel.setBackground(new Color(0x97abb8));
         generalPanel.setMaximumSize(new Dimension(790, 540));
         generalPanel.setBounds(0,0,600,540);
         setContentPane(generalPanel);
