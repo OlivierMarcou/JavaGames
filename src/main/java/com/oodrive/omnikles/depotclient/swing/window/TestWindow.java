@@ -6,6 +6,8 @@ import com.oodrive.omnikles.depotclient.thread.TestRunnable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 import static java.lang.System.exit;
@@ -14,25 +16,46 @@ import static java.lang.System.exit;
  * Created by olivier on 09/02/17.
  */
 public class TestWindow extends JFrame {
-        AnimatedProgressBar label;
+    private AnimatedProgressBar progressBar;
+    private JButton retryBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
 
     public TestWindow(){
         setSize(800,800);
-        setLayout(new BorderLayout());
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
 
         try {
-            label = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream());
-            add(label);
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridx=0;
+            c.gridy=0;
+            c.gridwidth=1;
+            progressBar = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream());
+            add(progressBar);
         } catch (Exception e) {
             e.printStackTrace();
             exit(1);
         }
-        setVisible(true);gossl();
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx=0;
+        c.gridy=1;
+        c.gridwidth=1;
+        retryBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                testUpload();
+            }
+        });
+        add(retryBtn);
+        setVisible(true);
+        testUpload();
     }
 
-    public void gossl(){
+    public void testUpload(){
         TestRunnable test = new TestRunnable();
-        test.setProgressBar(label);
+        test.setProgressBar(progressBar);
         test.file=  fileChooser();
         new Thread(test).start();
     }

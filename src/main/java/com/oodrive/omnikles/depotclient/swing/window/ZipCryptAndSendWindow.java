@@ -24,6 +24,8 @@ public class ZipCryptAndSendWindow extends JFrame {
     private JLabel paragraphe1 = new JLabel();
     private JLabel information = new JLabel();
     private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page4.button.annul"));
+    private JButton retryBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
+
     private List<File> files;
     private AnimatedProgressBar animate = null;
 
@@ -80,6 +82,26 @@ public class ZipCryptAndSendWindow extends JFrame {
         c.gridy=3;
         c.gridwidth=1;
         generalPanel.add(annulBtn, c);
+
+        if(Configuration.debug) {
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.NORTHWEST;
+            c.gridx = 0;
+            c.gridy = 4;
+            c.gridwidth = 1;
+            generalPanel.add(retryBtn, c);
+        }
+        add(retryBtn);
+        retryBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    depot();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
 
         annulBtn.addActionListener(new ActionListener() {
             @Override

@@ -7,6 +7,7 @@ import com.oodrive.omnikles.depotclient.service.SslConnexionService;
 import com.oodrive.omnikles.depotclient.service.ZipService;
 import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -67,8 +68,12 @@ public class DepositFilesRunnable implements Runnable{
 
         SslConnexionService ssl = new SslConnexionService();
         java.util.List<String> certificats = ssl.getCertificatsWithJSessionId(Configuration.parameters.get("urlCertificat"), Configuration.parameters.get("sessionid"));
-        if(certificats == null || certificats.size() <= 0)
+        if(certificats == null || certificats.size() <= 0) {
+            JOptionPane d = new JOptionPane();
+            int retour = d.showConfirmDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail"),
+                    CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail.title"), JOptionPane.ERROR_MESSAGE);
             throw new NullPointerException("Aucun certificat trouvé pour : " + Configuration.parameters.get("urlCertificat"));
+        }
 
         File enveloppe = null;
         //crypte le zip, créé un fichier .crypt et l'ajoute dans enveloppe.zip

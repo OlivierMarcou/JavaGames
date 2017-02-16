@@ -87,11 +87,11 @@ public class SslConnexionService {
         sslUploadFile(file, url, JSessionId, null);
     }
 
-    public void sslUploadFile(File file, String url, String JSessionId, AnimatedProgressBar animatedProgressBar){
+    public String sslUploadFile(File file, String url, String JSessionId, AnimatedProgressBar animatedProgressBar){
         this.uploadBar = animatedProgressBar;
         System.out.println("sslUploadFile method");
         HttpEntity entity = getResponseHttpPostFile(url, JSessionId, file).getEntity();
-        getStringResponse(entity);
+        return getStringResponse(entity);
     }
 
 
