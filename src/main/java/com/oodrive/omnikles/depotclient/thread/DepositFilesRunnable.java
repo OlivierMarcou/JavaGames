@@ -88,7 +88,7 @@ public class DepositFilesRunnable implements Runnable{
         System.out.println("crypt ok");
         ssl.setJobNumber(3);
         ssl.setMaxPercent(25);
-        ssl.sslUploadFile(enveloppe, Configuration.parameters.get("urlDepot"), Configuration.parameters.get("sessionid"), progressBar);
+        ssl.sslUploadFileAndDownloadProof(enveloppe, Configuration.parameters.get("urlDepot"), Configuration.parameters.get("sessionid"), progressBar);
         System.out.println("send ok");
         progressBar.getIcon().setVisible(false);
         progressBar.setText(CryptoDoc.textProperties.getProperty("depot.page4.sending.result.ok"));

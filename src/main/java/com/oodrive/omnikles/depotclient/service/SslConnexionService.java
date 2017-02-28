@@ -84,14 +84,25 @@ public class SslConnexionService {
     }
 
     public void sslUploadFile(File file, String url, String JSessionId){
-        sslUploadFile(file, url, JSessionId, null);
+        System.out.println("sslUploadFile method");
+        getResponseHttpPostFile(url, JSessionId, file).getEntity();
     }
 
-    public String sslUploadFile(File file, String url, String JSessionId, AnimatedProgressBar animatedProgressBar){
+    public void sslUploadFileAndDownloadProof(File file, String url, String JSessionId, AnimatedProgressBar animatedProgressBar){
         this.uploadBar = animatedProgressBar;
         System.out.println("sslUploadFile method");
         HttpEntity entity = getResponseHttpPostFile(url, JSessionId, file).getEntity();
-        return getStringResponse(entity);
+
+        System.out.println("sslDownloadFile method");
+        System.out.println("Download File in " + Configuration.activFolder + File.separatorChar + "pod.pdf");
+        File podFile = new File(Configuration.activFolder + File.separatorChar + "pod.pdf");
+        try {
+            entity.writeTo(new FileOutputStream(podFile));
+        }catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 
 
@@ -183,7 +194,6 @@ public class SslConnexionService {
             throw new NullPointerException("HTTP client is null !");
         if(httpPost == null)
             throw new NullPointerException("POST Request is null !");
-        CloseableHttpResponse response = null;
         try {
             System.out.println("Start request upload ");
             return httpclientSsl.execute(httpPost);

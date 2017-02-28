@@ -28,7 +28,7 @@ public class TestRunnable implements Runnable{
         sc.setJobNumber(3);
         sc.setMaxPercent(25);
         if(file != null && file.exists())
-            sc.sslUploadFile(file, "http://localhost/upload/upld.php","", progressBar);
+            sc.sslUploadFileAndDownloadProof(file, "http://localhost/upload/upld.php","", progressBar);
     }
 
 }
