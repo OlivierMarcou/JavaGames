@@ -23,7 +23,6 @@ public class ZipCryptAndSendWindow extends JFrame {
     private JPanel generalPanel = new JPanel();
     private JLabel paragraphe1 = new JLabel();
     private JLabel information = new JLabel();
-    private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page4.button.annul"));
     private JButton retryBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
 
     private List<File> files;
@@ -46,7 +45,6 @@ public class ZipCryptAndSendWindow extends JFrame {
         generalPanel.setBounds(0,0,600,540);
         setContentPane(generalPanel);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
 
         generalPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -76,18 +74,11 @@ public class ZipCryptAndSendWindow extends JFrame {
         c.gridwidth=1;
         generalPanel.add(information, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=3;
-        c.gridwidth=1;
-        generalPanel.add(annulBtn, c);
-
         if(Configuration.debug) {
             c.fill = GridBagConstraints.HORIZONTAL;
             c.anchor = GridBagConstraints.NORTHWEST;
             c.gridx = 0;
-            c.gridy = 4;
+            c.gridy = 3;
             c.gridwidth = 1;
             generalPanel.add(retryBtn, c);
 
@@ -104,19 +95,6 @@ public class ZipCryptAndSendWindow extends JFrame {
             });
         }
 
-        annulBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                JOptionPane d = new JOptionPane();
-                int retour = d.showConfirmDialog(getContentPane(), CryptoDoc.textProperties.getProperty("depot.general.optionpanel.exit.message"),
-                        CryptoDoc.textProperties.getProperty("depot.general.optionpanel.exit.title"), JOptionPane.YES_NO_OPTION);
-                if(retour == 0)//yes
-                {
-                    System.exit(1);
-                }
-            }
-        });
         animate.setVisible(false);
         setVisible(true);
         try {
@@ -127,7 +105,6 @@ public class ZipCryptAndSendWindow extends JFrame {
     }
 
     public void depot() throws IOException {
-
         System.out.println("Zip tous les fichiers selectionnes");
         animate.setVisible(true);
         Date now = new Date();
@@ -139,7 +116,5 @@ public class ZipCryptAndSendWindow extends JFrame {
         zt.setFiles(files);
         zt.setZip(zip);
         new Thread(zt).start();
-
     }
-
 }

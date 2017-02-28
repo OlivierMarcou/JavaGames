@@ -88,7 +88,7 @@ public class SslConnexionService {
         getResponseHttpPostFile(url, JSessionId, file).getEntity();
     }
 
-    public void sslUploadFileAndDownloadProof(File file, String url, String JSessionId, AnimatedProgressBar animatedProgressBar){
+    public File sslUploadFileAndDownloadProof(File file, String url, String JSessionId, AnimatedProgressBar animatedProgressBar){
         this.uploadBar = animatedProgressBar;
         System.out.println("sslUploadFile method");
         HttpEntity entity = getResponseHttpPostFile(url, JSessionId, file).getEntity();
@@ -98,17 +98,17 @@ public class SslConnexionService {
         File podFile = new File(Configuration.activFolder + File.separatorChar + "pod.pdf");
         try {
             entity.writeTo(new FileOutputStream(podFile));
+            return podFile;
         }catch (FileNotFoundException e1) {
             e1.printStackTrace();
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        return null;
     }
 
 
     /* -------------------------------- PRIVATE ------------------------------*/
-
-
 
     private CloseableHttpClient initSSL(){
         SSLContextBuilder builder = new SSLContextBuilder();

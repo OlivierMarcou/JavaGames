@@ -1,5 +1,6 @@
 package com.oodrive.omnikles.depotclient.swing.component;
 
+import com.oodrive.omnikles.depotclient.CryptoDoc;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -10,7 +11,10 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -27,6 +31,11 @@ public class AnimatedProgressBar extends JPanel {
     private JLabel icon = new JLabel();
     private JLabel text = new JLabel();
     private int sizeX= 400, sizeY =40;
+    private File podFile = null;
+
+    private JButton podBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page4.sending.result.button.pod"));
+
+    private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page4.button.annul"));
 
     public JLabel getIcon() {
         return icon;
@@ -77,15 +86,12 @@ public class AnimatedProgressBar extends JPanel {
     }
 
     public void setActualIcon(int percent) {
-        int newIcon = (images.size()*percent) /100;
+        int newIcon = (images.size() * percent) / 100;
         if(images.get(newIcon)!=null){
             this.actualIcon = newIcon;
             icon.setIcon(images.get(newIcon));
-//            revalidate();
-//            repaint();
         }
     }
-
 
     public AnimatedProgressBar(InputStream imageGif){
         setBackground(new Color(0x97abb8));
@@ -103,9 +109,56 @@ public class AnimatedProgressBar extends JPanel {
         c.gridwidth=1;
         add(text, c);
 
+        c.fill = GridBagConstraints.CENTER;
+        c.gridx=0;
+        c.gridy=2;
+        c.gridwidth=1;
+        add(annulBtn, c);
+
+        podBtn.setVisible(false);
+        c.fill = GridBagConstraints.CENTER;
+        c.gridx=0;
+        c.gridy=3;
+        c.gridwidth=1;
+        add(podBtn, c);
         decoposeGif(imageGif);
         icon.setIcon(images.get(actualIcon));
+
+        annulBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane d = new JOptionPane();
+                int retour = d.showConfirmDialog(getParent(), CryptoDoc.textProperties.getProperty("depot.general.optionpanel.exit.message"),
+                        CryptoDoc.textProperties.getProperty("depot.general.optionpanel.exit.title"), JOptionPane.YES_NO_OPTION);
+                if(retour == 0)//yes
+                {
+                    System.exit(1);
+                }
+            }
+        });
+        podBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (Desktop.isDesktopSupported() && podFile != null && podFile.exists()) {
+                    try {
+                        Desktop.getDesktop().open(podFile);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
     }
+
+    public void finish(File podFile){
+        this.podFile = podFile;
+        icon.setVisible(false);
+        setText(CryptoDoc.textProperties.getProperty("depot.page4.sending.result.ok"));
+        annulBtn.setVisible(false);
+        podBtn.setVisible(true);
+    }
+
+    /* -------------------------------- PRIVATE ------------------------------*/
 
     private void decoposeGif(InputStream imageGif){
         try {
