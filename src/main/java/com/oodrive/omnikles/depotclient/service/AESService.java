@@ -168,7 +168,10 @@ public class AESService {
             fout.write(inputfile);
             if(progressBar != null){
                 size += block.length/1024;
-                int percent = Math.round((size*maxPercent)/fileSize);
+                int percent = maxPercent;
+                if(fileSize > 0) {
+                    percent = Math.round((size * maxPercent) / fileSize);
+                }
                 if(percentMem != percent){
                     progressBar.setActualIcon(percent + (maxPercent*jobNumber));
                     percentMem = percent;

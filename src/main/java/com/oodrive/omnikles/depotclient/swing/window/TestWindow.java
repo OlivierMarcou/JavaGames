@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.depotclient.thread.TestRunnable;
 
@@ -62,7 +63,7 @@ public class TestWindow extends JFrame {
 
 
     private File fileChooser() {
-        JFileChooser c = new JFileChooser(System.getenv("HOME"));
+        JFileChooser c = new JFileChooser(Configuration.activFolder);
         c.setDialogTitle(CryptoDoc.textProperties.getProperty("depot.page2.filechooser.selectfiles"));
         c.setMultiSelectionEnabled(false);
         c.setAcceptAllFileFilterUsed(false);

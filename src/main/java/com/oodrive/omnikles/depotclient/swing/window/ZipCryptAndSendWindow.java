@@ -90,18 +90,19 @@ public class ZipCryptAndSendWindow extends JFrame {
             c.gridy = 4;
             c.gridwidth = 1;
             generalPanel.add(retryBtn, c);
-        }
-        add(retryBtn);
-        retryBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    depot();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+
+            add(retryBtn);
+            retryBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        depot();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
 
         annulBtn.addActionListener(new ActionListener() {
             @Override

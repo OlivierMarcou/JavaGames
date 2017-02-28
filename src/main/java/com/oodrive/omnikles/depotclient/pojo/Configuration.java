@@ -25,6 +25,7 @@ public class Configuration {
     public static final String CRYPTED_KEY_ALGORITHME = "AES";
     public static final String WINDOWS_PROVIDER_KEYSTORE = "SunMSCAPI";
     public static final String PREFIX_DECRYPTED_FILENAME = "fichier_decrypte_";
+
     public static final void initParameters(String[] args) throws IOException {
         activFolder = System.getProperty("user.home");
         System.out.println(activFolder);
@@ -39,6 +40,6 @@ public class Configuration {
             parameters.put(keyValue[0], keyValue[1]);
         }
         debug = Boolean.parseBoolean(parameters.get("debug"));
-
     }
+
 }

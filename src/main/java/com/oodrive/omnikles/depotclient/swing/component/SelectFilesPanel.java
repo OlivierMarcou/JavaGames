@@ -152,7 +152,7 @@ public class SelectFilesPanel extends JPanel{
     }
 
     private File[] fileChooser() {
-        JFileChooser c = new JFileChooser(System.getenv("HOME"));
+        JFileChooser c = new JFileChooser(Configuration.activFolder);
         c.setDialogTitle(CryptoDoc.textProperties.getProperty("depot.page2.filechooser.selectfiles"));
         c.setMultiSelectionEnabled(true);
         c.setAcceptAllFileFilterUsed(false);

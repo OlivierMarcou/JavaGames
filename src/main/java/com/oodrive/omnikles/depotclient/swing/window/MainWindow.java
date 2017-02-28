@@ -1,5 +1,6 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.AESService;
 import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
@@ -96,7 +97,7 @@ public class MainWindow extends JFrame {
     public String fileChooser() {
         String filename = null;
         String dir = null;
-        JFileChooser c = new JFileChooser(System.getenv("HOME"));
+        JFileChooser c = new JFileChooser(Configuration.activFolder);
         c.setAcceptAllFileFilterUsed(false);
         int rVal = c.showOpenDialog(MainWindow.this);
         if (rVal == JFileChooser.APPROVE_OPTION) {

@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * Created by olivier on 02/02/17.
@@ -18,6 +19,8 @@ public class IntroWindow extends JFrame {
     private JLabel paragraphe1 = new JLabel("ND");
     private JButton okBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"));
     private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"));
+    private JButton activfolderBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.activfolder"));
+    private JTextField activFolderTxt = new JTextField();
 
     public IntroWindow(){
         setTitle(CryptoDoc.textProperties.getProperty("depot.page1.title"));
@@ -63,6 +66,21 @@ public class IntroWindow extends JFrame {
         c.gridwidth=1;
         generalPanel.add(annulBtn, c);
 
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor= GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=2;
+        c.gridwidth=1;
+        generalPanel.add(activfolderBtn, c);
+
+        activFolderTxt.setText(Configuration.activFolder);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor= GridBagConstraints.NORTHWEST;
+        c.gridx=1;
+        c.gridy=2;
+        c.gridwidth=1;
+        generalPanel.add(activFolderTxt, c);
+
         okBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -80,6 +98,25 @@ public class IntroWindow extends JFrame {
                 if(retour == 0)
                 {
                     System.exit(1);
+                }
+            }
+        });
+
+        activfolderBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String filename = null;
+                String dir = null;
+                JFileChooser c = new JFileChooser(Configuration.activFolder);
+                c.setAcceptAllFileFilterUsed(false);
+                c.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                c.setDialogTitle(CryptoDoc.textProperties.getProperty("depot.page2.filechooser.selectfolder"));
+                int rVal = c.showOpenDialog(IntroWindow.this);
+                if (rVal == JFileChooser.APPROVE_OPTION) {
+                    filename = c.getSelectedFile().getName();
+                    dir = c.getCurrentDirectory().toString();
+                    Configuration.activFolder = dir + File.separatorChar + filename;
+                    activFolderTxt.setText(Configuration.activFolder);
                 }
             }
         });
