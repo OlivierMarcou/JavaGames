@@ -37,6 +37,8 @@ public class IntroWindow extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
 
+        panel.getMyStatusBar().setPagesNumber(4);
+        panel.getMyStatusBar().setActualPage(1);
 
         String texte = CryptoDoc.textProperties.getProperty("depot.page1.paragraphe1");
         texte = texte.replace("<titleProcedure>", Configuration.parameters.get("titleProcedure"));

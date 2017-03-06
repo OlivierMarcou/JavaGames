@@ -11,7 +11,7 @@ import java.awt.*;
 public class LineProgressBar extends Canvas   {
 
     private Dimension sizeMe = new Dimension(10, 2);
-    private Color colorLine = Color.green;
+    private Color colorLine = Design.LINE_COLOR_FOOTER;
     private int etapes= 10;
     private int etapeActuelle=1;
 
@@ -29,6 +29,8 @@ public class LineProgressBar extends Canvas   {
 
     public void setEtapeActuelle(int etapeActuelle) {
         this.etapeActuelle = etapeActuelle;
+        repaint();
+        revalidate();
     }
 
 
@@ -43,12 +45,12 @@ public class LineProgressBar extends Canvas   {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
-
-        int width = (sizeMe.width/etapes)*etapeActuelle;
+        int width = 0;
+        if(etapes > 0)
+            width = (sizeMe.width / etapes) * etapeActuelle;
         g2d.setBackground(Design.BG_COLOR_FOOTER);
         g2d.setColor(colorLine);
         g2d.drawLine(0, 0, width, 0);
-
         g2d.drawLine(0, 1, width, 1);
         g2d.dispose();
     }

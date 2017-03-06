@@ -14,6 +14,7 @@ public class Configuration {
     public static HashMap<String, String> parameters = new HashMap<>();
     public static String activFolder;
     public static long totalSizeFiles = 0;
+    public static String version = null;
 
     public static final String WINDOWS_KEYSTORE = "Windows-MY";
     public static final String FILENAME_ZIP = "enveloppe.zip";

@@ -1,5 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.component;
 
+import com.oodrive.omnikles.depotclient.pojo.Configuration;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -25,19 +27,28 @@ public class FooterBar extends JMenuItem{
         setPreferredSize(sizeBar);
         setLayout(new BorderLayout());
         add(BorderLayout.NORTH, lineProgressBar);
-
+        footerEastTxt.setText( Configuration.version);
         add(BorderLayout.EAST, footerEastTxt);
         add(BorderLayout.WEST, footerWestTxt);
 
-parent.pack();
+        lineProgressBar.setEtapeActuelle(5);
     }
 
     public void setWestMessage(String message) {
-        footerWestTxt.setText("cxcxw "+message);
+        footerWestTxt.setText(" "+message);
     }
 
 
     public void setEastMessage(String message) {
-        footerEastTxt.setText("cxcxw "+message);
+        footerEastTxt.setText(" "+message);
+    }
+
+    public void setActualPage(int page){
+        lineProgressBar.setEtapeActuelle(page);
+        footerWestTxt.setText(page +" / "+ lineProgressBar.getEtapes());
+    }
+
+    public void setPagesNumber(int number){
+        lineProgressBar.setEtapes(number);
     }
 }

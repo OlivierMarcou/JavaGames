@@ -92,6 +92,7 @@ public class CryptoDoc {
         if(url != null && url.getFile() != null) {
             mainProperties.load(url.openStream());
             versionString = mainProperties.getProperty("build.version");
+            Configuration.version = mainProperties.getProperty("actual.version");
             return versionString;
         }
         return null;

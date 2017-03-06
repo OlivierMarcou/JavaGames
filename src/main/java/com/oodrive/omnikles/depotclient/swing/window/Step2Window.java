@@ -57,6 +57,9 @@ public class Step2Window extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
 
+        panel.getMyStatusBar().setPagesNumber(4);
+        panel.getMyStatusBar().setActualPage(3);
+
         paragraphe1.setForeground(Design.FG_COLOR);
         paragraphe1.setBackground(Design.BG_COLOR);
         sendBtn.setForeground(Design.FG_COLOR);

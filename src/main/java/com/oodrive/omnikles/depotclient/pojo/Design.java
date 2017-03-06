@@ -8,6 +8,7 @@ import java.awt.*;
 public class Design {
 
     public final static Color BG_COLOR_FOOTER = Color.DARK_GRAY;
+    public final static Color LINE_COLOR_FOOTER = Color.GREEN;
     public final static int HEIGHT_PROGRESS_LINE_FOOTER = 2;
 
     public final static Color BG_COLOR = Color.decode("#22A2EC");

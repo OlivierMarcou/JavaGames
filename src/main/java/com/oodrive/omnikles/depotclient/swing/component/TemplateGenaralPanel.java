@@ -11,10 +11,18 @@ import java.awt.*;
 public class TemplateGenaralPanel extends JPanel {
 
     private JFrame parent = null;
-    JPanel topPanel = new JPanel();
+    private JPanel topPanel = new JPanel();
+    private JPanel centerPanel = new JPanel();
+    private FooterBar myStatusBar = null ;
 
-    JPanel centerPanel = new JPanel();
-    FooterBar myStatusBar = null ;
+    public FooterBar getMyStatusBar() {
+        return myStatusBar;
+    }
+
+    public void setMyStatusBar(FooterBar myStatusBar) {
+        this.myStatusBar = myStatusBar;
+    }
+
 
     public JPanel getTopPanel() {
         return topPanel;
@@ -42,8 +50,6 @@ public class TemplateGenaralPanel extends JPanel {
         this.parent = parent;
         myStatusBar = new FooterBar(this.parent);
         setLayout(new BorderLayout());
-        myStatusBar.setEastMessage("east");
-        myStatusBar.setWestMessage("west");
         add(topPanel, BorderLayout.PAGE_START);
         add(centerPanel, BorderLayout.CENTER);
         add(myStatusBar, BorderLayout.PAGE_END);

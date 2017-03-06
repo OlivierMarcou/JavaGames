@@ -29,7 +29,8 @@ public class TestWindow extends JFrame {
         JPanel centerPanel = panel.getCenterPanel();
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-
+        panel.getMyStatusBar().setPagesNumber(10);
+        panel.getMyStatusBar().setActualPage((int)Math.round(Math.random()*10));
         centerPanel.setSize(600,600);
         try {
             c.fill = GridBagConstraints.HORIZONTAL;

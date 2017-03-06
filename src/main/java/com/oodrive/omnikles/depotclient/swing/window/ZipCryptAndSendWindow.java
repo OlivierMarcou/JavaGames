@@ -50,6 +50,9 @@ public class ZipCryptAndSendWindow extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
 
+        panel.getMyStatusBar().setPagesNumber(4);
+        panel.getMyStatusBar().setActualPage(4);
+
         try {
             animate = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream()) ;
         } catch (IOException e) {
