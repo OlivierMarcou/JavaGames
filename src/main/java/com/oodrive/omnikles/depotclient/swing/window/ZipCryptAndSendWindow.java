@@ -50,6 +50,12 @@ public class ZipCryptAndSendWindow extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
 
+        try {
+            animate = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream()) ;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         paragraphe1.setForeground(Design.FG_COLOR);
         paragraphe1.setBackground(Design.BG_COLOR);
         animate.setForeground(Design.FG_COLOR);
@@ -65,11 +71,6 @@ public class ZipCryptAndSendWindow extends JFrame {
         c.gridwidth=1;
         centerPanel.add(paragraphe1, c);
 
-        try {
-            animate = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream()) ;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
