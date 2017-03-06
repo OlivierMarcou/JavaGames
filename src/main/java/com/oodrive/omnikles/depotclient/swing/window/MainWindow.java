@@ -1,9 +1,11 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.AESService;
 import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
+import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,24 +48,33 @@ public class MainWindow extends JFrame {
     public MainWindow(){
         setSize(700, 400);
 
-        Container content = getContentPane();
-        content.setLayout(new GridBagLayout());
+        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        JPanel centerPanel = panel.getCenterPanel();
+        centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        setContentPane(panel);
+
+        btnSelected.setForeground(Design.FG_COLOR);
+        btnSelected.setBackground(Design.BG_COLOR);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("CryptoDoc");
 
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=2;
-        content.add(lblSelectCertificat, c);
+        centerPanel.add(lblSelectCertificat, c);
+
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=2;
-        content.add(listCertificat, c);
-
+        centerPanel.add(listCertificat, c);
 
         listCertificat.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -72,10 +83,12 @@ public class MainWindow extends JFrame {
         });
         btnSelected.addActionListener(decryptAction);
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=1;
-        content.add(btnSelected, c);
+        centerPanel.add(btnSelected, c);
 
 
     }

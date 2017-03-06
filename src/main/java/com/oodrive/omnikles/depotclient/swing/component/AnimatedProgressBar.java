@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.component;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
+import com.oodrive.omnikles.depotclient.pojo.Design;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -94,7 +95,14 @@ public class AnimatedProgressBar extends JPanel {
     }
 
     public AnimatedProgressBar(InputStream imageGif){
-        setBackground(new Color(0x97abb8));
+
+        podBtn.setForeground(Design.FG_COLOR);
+        podBtn.setBackground(Design.BG_COLOR);
+        annulBtn.setForeground(Design.FG_COLOR);
+        annulBtn.setBackground(Design.BG_COLOR);
+        text.setForeground(Design.FG_COLOR);
+        text.setBackground(Design.BG_COLOR);
+
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -110,6 +118,8 @@ public class AnimatedProgressBar extends JPanel {
         add(text, c);
 
         c.fill = GridBagConstraints.CENTER;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=1;
@@ -117,10 +127,13 @@ public class AnimatedProgressBar extends JPanel {
 
         podBtn.setVisible(false);
         c.fill = GridBagConstraints.CENTER;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=3;
         c.gridwidth=1;
         add(podBtn, c);
+
         decoposeGif(imageGif);
         icon.setIcon(images.get(actualIcon));
 

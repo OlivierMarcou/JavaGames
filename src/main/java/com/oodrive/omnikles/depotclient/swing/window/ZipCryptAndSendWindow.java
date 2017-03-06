@@ -2,7 +2,9 @@ package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 import com.oodrive.omnikles.depotclient.thread.DepositFilesRunnable;
 
 import javax.swing.*;
@@ -40,20 +42,28 @@ public class ZipCryptAndSendWindow extends JFrame {
         setMinimumSize(new Dimension(800, 600));
 
         setLayout(new BorderLayout());
-        generalPanel.setBackground(new Color(0x97abb8));
-        generalPanel.setMaximumSize(new Dimension(790, 540));
-        generalPanel.setBounds(0,0,600,540);
-        setContentPane(generalPanel);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        generalPanel.setLayout(new GridBagLayout());
+        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        JPanel centerPanel = panel.getCenterPanel();
+        centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        setContentPane(panel);
+
+        paragraphe1.setForeground(Design.FG_COLOR);
+        paragraphe1.setBackground(Design.BG_COLOR);
+        animate.setForeground(Design.FG_COLOR);
+        animate.setBackground(Design.BG_COLOR);
+        information.setForeground(Design.FG_COLOR);
+        information.setBackground(Design.BG_COLOR);
+        retryBtn.setForeground(Design.FG_COLOR);
+        retryBtn.setBackground(Design.BG_COLOR);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=1;
-        generalPanel.add(paragraphe1, c);
+        centerPanel.add(paragraphe1, c);
 
         try {
             animate = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream()) ;
@@ -63,24 +73,28 @@ public class ZipCryptAndSendWindow extends JFrame {
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
-        generalPanel.add(animate, c);
+        centerPanel.add(animate, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=1;
-        generalPanel.add(information, c);
+        centerPanel.add(information, c);
 
         if(Configuration.debug) {
             c.fill = GridBagConstraints.HORIZONTAL;
             c.anchor = GridBagConstraints.NORTHWEST;
+            c.weightx = Design.PREFERED_SIZE.getWidth();
+            c.weighty = Design.PREFERED_SIZE.getHeight();
             c.gridx = 0;
             c.gridy = 3;
             c.gridwidth = 1;
-            generalPanel.add(retryBtn, c);
+            centerPanel.add(retryBtn, c);
 
             add(retryBtn);
             retryBtn.addActionListener(new ActionListener() {

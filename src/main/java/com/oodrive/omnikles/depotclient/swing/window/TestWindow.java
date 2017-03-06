@@ -3,6 +3,7 @@ package com.oodrive.omnikles.depotclient.swing.window;
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 import com.oodrive.omnikles.depotclient.thread.TestRunnable;
 
 import javax.swing.*;
@@ -24,16 +25,19 @@ public class TestWindow extends JFrame {
         setSize(800,800);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        setLayout(new GridBagLayout());
+        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        JPanel centerPanel = panel.getCenterPanel();
+        centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        centerPanel.setSize(600,600);
         try {
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx=0;
             c.gridy=0;
             c.gridwidth=1;
             progressBar = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream());
-            add(progressBar);
+            centerPanel.add(progressBar);
         } catch (Exception e) {
             e.printStackTrace();
             exit(1);
@@ -49,7 +53,23 @@ public class TestWindow extends JFrame {
                 testUpload();
             }
         });
-        add(retryBtn);
+        centerPanel.add(retryBtn);
+
+        JButton changeLookBtn = new JButton("change");
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx=0;
+        c.gridy=2;
+        c.gridwidth=1;
+        changeLookBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                long test = Math.round(Math.random()*3);
+                System.out.println(test);
+                CryptoDoc.changeLookAndFeel((int) test, TestWindow.this );
+            }
+        });
+        centerPanel.add(changeLookBtn);
+        add(panel);
         setVisible(true);
         testUpload();
     }

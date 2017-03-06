@@ -2,6 +2,8 @@ package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.pojo.Design;
+import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +16,6 @@ import java.io.File;
  */
 public class IntroWindow extends JFrame {
 
-    private JPanel generalPanel = new JPanel();
 
     private JLabel paragraphe1 = new JLabel("ND");
     private JButton okBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"));
@@ -27,59 +28,81 @@ public class IntroWindow extends JFrame {
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
 
-        setLayout(new GridBagLayout());
-        generalPanel.setBackground(new Color(0x97abb8));
-        generalPanel.setMaximumSize(new Dimension(790, 540));
-        generalPanel.setBounds(0,0,600,540);
-        setContentPane(generalPanel);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
 
-        generalPanel.setLayout(new GridBagLayout());
+        JPanel centerPanel = panel.getCenterPanel();
+        centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        setContentPane(panel);
+
 
         String texte = CryptoDoc.textProperties.getProperty("depot.page1.paragraphe1");
         texte = texte.replace("<titleProcedure>", Configuration.parameters.get("titleProcedure"));
         texte = texte.replace("<organismName>", Configuration.parameters.get("organismName"));
         paragraphe1.setText(texte);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
+        paragraphe1.setForeground(Design.FG_COLOR);
+        okBtn.setForeground(Design.FG_COLOR);
+        annulBtn.setForeground(Design.FG_COLOR);
+        activfolderBtn.setForeground(Design.FG_COLOR);
+        activFolderTxt.setForeground(Design.FG_COLOR);
+
+        paragraphe1.setBackground(Design.BG_COLOR);
+        okBtn.setBackground(Design.BG_COLOR);
+        annulBtn.setBackground(Design.BG_COLOR);
+        activfolderBtn.setBackground(Design.BG_COLOR);
+        activFolderTxt.setBackground(Design.BG_COLOR);
+
+
+        c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx=1;
         c.weighty=1;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=2;
-        generalPanel.add(paragraphe1, c);
+        centerPanel.add(paragraphe1, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor= GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.CENTER;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
-        generalPanel.add(okBtn, c);
+        centerPanel.add(okBtn, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor= GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.CENTER;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=1;
         c.gridy=1;
         c.gridwidth=1;
-        generalPanel.add(annulBtn, c);
+        centerPanel.add(annulBtn, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor= GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.CENTER;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=1;
-        generalPanel.add(activfolderBtn, c);
+        centerPanel.add(activfolderBtn, c);
 
         activFolderTxt.setText(Configuration.activFolder);
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor= GridBagConstraints.NORTHWEST;
+        c.anchor = GridBagConstraints.CENTER;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=1;
         c.gridy=2;
         c.gridwidth=1;
-        generalPanel.add(activFolderTxt, c);
+        centerPanel.add(activFolderTxt, c);
+
+
 
         okBtn.addActionListener(new ActionListener() {
             @Override

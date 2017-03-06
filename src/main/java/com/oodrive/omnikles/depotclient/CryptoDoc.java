@@ -49,10 +49,32 @@ public class CryptoDoc {
             openDepot();
         }
         if(Configuration.parameters.get("action").equals("test")){
-            new TestWindow();
+
+            TestWindow test = new TestWindow();
+            changeLookAndFeel(2, test);
+//            test.repaint();
+//            test.revalidate();
         }
 
     }
+
+    public static void changeLookAndFeel(int index, JFrame frame){
+        try {
+            String name = UIManager.getInstalledLookAndFeels()[index].getClassName();
+            UIManager.setLookAndFeel(name);
+            SwingUtilities.updateComponentTreeUI(frame);
+            frame.pack();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private static void openDepot() throws MalformedURLException, FileNotFoundException {
 //        mainWindow.init();

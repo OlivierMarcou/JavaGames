@@ -1,8 +1,10 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
+import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.InteractiveLabel;
 import com.oodrive.omnikles.depotclient.swing.component.SelectFilesPanel;
+import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,61 +52,84 @@ public class SelectFilesDepositWindow extends JFrame {
         setMinimumSize(new Dimension(800, 600));
 
         setLayout(new BorderLayout());
-        generalPanel.setBackground(new Color(0x97abb8));
-        generalPanel.setMaximumSize(new Dimension(790, 540));
-        generalPanel.setBounds(0,0,600,540);
-        setContentPane(generalPanel);
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        okBtn.setEnabled(false);
-        generalPanel.setLayout(new GridBagLayout());
+        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        JPanel centerPanel = panel.getCenterPanel();
+        centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        setContentPane(panel);
+
+        paragraphe1.setForeground(Design.FG_COLOR);
+        paragraphe1.setBackground(Design.BG_COLOR);
+        paragraphe2.setForeground(Design.FG_COLOR);
+        paragraphe2.setBackground(Design.BG_COLOR);
+        selectedFilePanel.setForeground(Design.FG_COLOR);
+        selectedFilePanel.setBackground(Design.BG_COLOR);
+        paragraphe3.setForeground(Design.FG_COLOR);
+        paragraphe3.setBackground(Design.BG_COLOR);
+        infos.setForeground(Design.FG_COLOR);
+        infos.setBackground(Design.BG_COLOR);
+        okBtn.setForeground(Design.FG_COLOR);
+        okBtn.setBackground(Design.BG_COLOR);
+        annulBtn.setForeground(Design.FG_COLOR);
+        annulBtn.setBackground(Design.BG_COLOR);
+
+
+        okBtn.setEnabled(false);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=2;
-        generalPanel.add(paragraphe1, c);
+        centerPanel.add(paragraphe1, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=2;
-        generalPanel.add(paragraphe2, c);
+        centerPanel.add(paragraphe2, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=2;
-        generalPanel.add(selectedFilePanel, c);
+        centerPanel.add(selectedFilePanel, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=3;
         c.gridwidth=2;
-        generalPanel.add(paragraphe3, c);
+        centerPanel.add(paragraphe3, c);
 
         infos.setMinimumSize(new Dimension(20,20));
         c.fill= GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.SOUTHWEST;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=4;
         c.gridwidth=2;
-        add(infos, c);
+        centerPanel.add(infos, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=5;
         c.gridwidth=1;
-        generalPanel.add(okBtn, c);
+        centerPanel.add(okBtn, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=1;
         c.gridy=5;
         c.gridwidth=1;
-        generalPanel.add(annulBtn, c);
+        centerPanel.add(annulBtn, c);
 
         okBtn.addActionListener(new ActionListener() {
             @Override

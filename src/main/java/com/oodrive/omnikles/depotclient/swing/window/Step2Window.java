@@ -2,6 +2,8 @@ package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.pojo.Design;
+import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,34 +48,46 @@ public class Step2Window extends JFrame {
         setMinimumSize(new Dimension(800, 600));
 
         setLayout(new BorderLayout());
-        generalPanel.setBackground(new Color(0x97abb8));
-        generalPanel.setMaximumSize(new Dimension(790, 540));
-        generalPanel.setBounds(0,0,600,540);
-        setContentPane(generalPanel);
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        generalPanel.setLayout(new GridBagLayout());
+        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        JPanel centerPanel = panel.getCenterPanel();
+        centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        setContentPane(panel);
+
+        paragraphe1.setForeground(Design.FG_COLOR);
+        paragraphe1.setBackground(Design.BG_COLOR);
+        sendBtn.setForeground(Design.FG_COLOR);
+        sendBtn.setBackground(Design.BG_COLOR);
+        dontSendBtn.setForeground(Design.FG_COLOR);
+        dontSendBtn.setBackground(Design.BG_COLOR);
+
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=2;
-        generalPanel.add(paragraphe1, c);
+        centerPanel.add(paragraphe1, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
-        generalPanel.add(sendBtn, c);
+        centerPanel.add(sendBtn, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = Design.PREFERED_SIZE.getWidth();
+        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=1;
         c.gridy=1;
         c.gridwidth=1;
-        generalPanel.add(dontSendBtn, c);
+        centerPanel.add(dontSendBtn, c);
 
         sendBtn.addActionListener(new ActionListener() {
             @Override
