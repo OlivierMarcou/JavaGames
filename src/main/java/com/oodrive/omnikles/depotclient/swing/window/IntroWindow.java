@@ -3,6 +3,7 @@ package com.oodrive.omnikles.depotclient.swing.window;
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.Design;
+import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 
 import javax.swing.*;
@@ -18,9 +19,9 @@ public class IntroWindow extends JFrame {
 
 
     private JLabel paragraphe1 = new JLabel("ND");
-    private JButton okBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"));
-    private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"));
-    private JButton activfolderBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page1.button.activfolder"));
+    private ButtonTemplate okBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"));
+    private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"));
+    private ButtonTemplate activfolderBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.activfolder"));
     private JTextField activFolderTxt = new JTextField();
 
     public IntroWindow(){
@@ -46,15 +47,9 @@ public class IntroWindow extends JFrame {
         paragraphe1.setText(texte);
 
         paragraphe1.setForeground(Design.FG_COLOR);
-        okBtn.setForeground(Design.FG_COLOR);
-        annulBtn.setForeground(Design.FG_COLOR);
-        activfolderBtn.setForeground(Design.FG_COLOR);
         activFolderTxt.setForeground(Design.FG_COLOR);
 
         paragraphe1.setBackground(Design.BG_COLOR);
-        okBtn.setBackground(Design.BG_COLOR);
-        annulBtn.setBackground(Design.BG_COLOR);
-        activfolderBtn.setBackground(Design.BG_COLOR);
         activFolderTxt.setBackground(Design.BG_COLOR);
 
 

@@ -15,8 +15,8 @@ import java.io.File;
  */
 public class SelectFilesPanel extends JPanel{
 
-    private JButton parcourirBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page2.button.parcourir"));
-    private JButton deleteBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page2.button.delete"));
+    private ButtonTemplate parcourirBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.parcourir"));
+    private ButtonTemplate deleteBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.delete"));
 
     public JPanel getFilenamesPanel() {
         return filenamesPanel;

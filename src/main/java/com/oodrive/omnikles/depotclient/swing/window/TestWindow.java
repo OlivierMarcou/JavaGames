@@ -3,6 +3,7 @@ package com.oodrive.omnikles.depotclient.swing.window;
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 import com.oodrive.omnikles.depotclient.thread.TestRunnable;
 
@@ -19,7 +20,7 @@ import static java.lang.System.exit;
  */
 public class TestWindow extends JFrame {
     private AnimatedProgressBar progressBar;
-    private JButton retryBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
+    private ButtonTemplate retryBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
 
     public TestWindow(){
         setSize(800,800);
@@ -56,7 +57,7 @@ public class TestWindow extends JFrame {
         });
         centerPanel.add(retryBtn);
 
-        JButton changeLookBtn = new JButton("change");
+        ButtonTemplate changeLookBtn = new ButtonTemplate("change");
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
         c.gridy=2;

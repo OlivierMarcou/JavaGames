@@ -3,6 +3,7 @@ package com.oodrive.omnikles.depotclient.swing.window;
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.Design;
+import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 
 import javax.swing.*;
@@ -22,8 +23,8 @@ public class Step2Window extends JFrame {
 
     private JLabel paragraphe1 = new JLabel();
 
-    private JButton sendBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
-    private JButton dontSendBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page3.button.dontsend"));
+    private ButtonTemplate sendBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
+    private ButtonTemplate dontSendBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page3.button.dontsend"));
     private java.util.List<File> files;
     private int totalSize = 0;
 
@@ -62,11 +63,6 @@ public class Step2Window extends JFrame {
 
         paragraphe1.setForeground(Design.FG_COLOR);
         paragraphe1.setBackground(Design.BG_COLOR);
-        sendBtn.setForeground(Design.FG_COLOR);
-        sendBtn.setBackground(Design.BG_COLOR);
-        dontSendBtn.setForeground(Design.FG_COLOR);
-        dontSendBtn.setBackground(Design.BG_COLOR);
-
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;

@@ -4,6 +4,7 @@ import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.AESService;
+import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
 import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 
@@ -23,7 +24,7 @@ public class MainWindow extends JFrame {
 
 
     private CertificatsComboBox listCertificat = new CertificatsComboBox();
-    private JButton btnSelected = new JButton("Selectionner");
+    private ButtonTemplate btnSelected = new ButtonTemplate("Selectionner");
     private AESService aes = new AESService();
 
     private PinCodeWindow pinCodeWindow = new PinCodeWindow( this);
@@ -53,9 +54,6 @@ public class MainWindow extends JFrame {
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
-
-        btnSelected.setForeground(Design.FG_COLOR);
-        btnSelected.setBackground(Design.BG_COLOR);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("CryptoDoc");

@@ -34,9 +34,9 @@ public class AnimatedProgressBar extends JPanel {
     private int sizeX= 400, sizeY =40;
     private File podFile = null;
 
-    private JButton podBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page4.sending.result.button.pod"));
+    private ButtonTemplate podBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page4.sending.result.button.pod"));
 
-    private JButton annulBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page4.button.annul"));
+    private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page4.button.annul"));
 
     public JLabel getIcon() {
         return icon;
@@ -96,10 +96,6 @@ public class AnimatedProgressBar extends JPanel {
 
     public AnimatedProgressBar(InputStream imageGif){
 
-        podBtn.setForeground(Design.FG_COLOR);
-        podBtn.setBackground(Design.BG_COLOR);
-        annulBtn.setForeground(Design.FG_COLOR);
-        annulBtn.setBackground(Design.BG_COLOR);
         text.setForeground(Design.FG_COLOR);
         text.setBackground(Design.BG_COLOR);
 

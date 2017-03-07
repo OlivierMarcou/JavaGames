@@ -13,5 +13,6 @@ public class Design {
 
     public final static Color BG_COLOR = Color.decode("#22A2EC");
     public final static Color FG_COLOR = Color.WHITE;
+    public final static Color OVER_COLOR = Color.GREEN;
     public final static Dimension PREFERED_SIZE = new Dimension(60, 50);
 }

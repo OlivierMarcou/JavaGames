@@ -4,6 +4,7 @@ import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
 import com.oodrive.omnikles.depotclient.thread.DepositFilesRunnable;
 
@@ -25,7 +26,7 @@ public class ZipCryptAndSendWindow extends JFrame {
     private JPanel generalPanel = new JPanel();
     private JLabel paragraphe1 = new JLabel();
     private JLabel information = new JLabel();
-    private JButton retryBtn = new JButton(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
+    private ButtonTemplate retryBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
 
     private List<File> files;
     private AnimatedProgressBar animate = null;
@@ -65,8 +66,6 @@ public class ZipCryptAndSendWindow extends JFrame {
         animate.setBackground(Design.BG_COLOR);
         information.setForeground(Design.FG_COLOR);
         information.setBackground(Design.BG_COLOR);
-        retryBtn.setForeground(Design.FG_COLOR);
-        retryBtn.setBackground(Design.BG_COLOR);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx=0;
