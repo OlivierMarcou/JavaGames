@@ -114,8 +114,6 @@ public class AnimatedProgressBar extends JPanel {
         add(text, c);
 
         c.fill = GridBagConstraints.CENTER;
-        c.weightx = Design.PREFERED_SIZE.getWidth();
-        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=1;
@@ -123,8 +121,6 @@ public class AnimatedProgressBar extends JPanel {
 
         podBtn.setVisible(false);
         c.fill = GridBagConstraints.CENTER;
-        c.weightx = Design.PREFERED_SIZE.getWidth();
-        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=3;
         c.gridwidth=1;

@@ -81,8 +81,6 @@ public class MainWindow extends JFrame {
         });
         btnSelected.addActionListener(decryptAction);
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = Design.PREFERED_SIZE.getWidth();
-        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=1;

@@ -92,8 +92,6 @@ public class ZipCryptAndSendWindow extends JFrame {
         if(Configuration.debug) {
             c.fill = GridBagConstraints.HORIZONTAL;
             c.anchor = GridBagConstraints.NORTHWEST;
-            c.weightx = Design.PREFERED_SIZE.getWidth();
-            c.weighty = Design.PREFERED_SIZE.getHeight();
             c.gridx = 0;
             c.gridy = 3;
             c.gridwidth = 1;

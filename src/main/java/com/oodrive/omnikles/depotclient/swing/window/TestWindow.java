@@ -58,7 +58,7 @@ public class TestWindow extends JFrame {
         centerPanel.add(retryBtn);
 
         ButtonTemplate changeLookBtn = new ButtonTemplate("change");
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.BOTH;
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=1;

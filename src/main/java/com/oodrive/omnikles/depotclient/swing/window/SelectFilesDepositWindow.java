@@ -114,8 +114,6 @@ public class SelectFilesDepositWindow extends JFrame {
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx = Design.PREFERED_SIZE.getWidth();
-        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=0;
         c.gridy=5;
         c.gridwidth=1;
@@ -123,8 +121,6 @@ public class SelectFilesDepositWindow extends JFrame {
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx = Design.PREFERED_SIZE.getWidth();
-        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=1;
         c.gridy=5;
         c.gridwidth=1;
