@@ -1,11 +1,12 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
-import com.oodrive.omnikles.depotclient.pojo.Design;
-import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.InteractiveLabel;
 import com.oodrive.omnikles.depotclient.swing.component.SelectFilesPanel;
-import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.ButtonTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.GeneralTextTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.SummaryTextTemplate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,33 +20,23 @@ import java.util.ArrayList;
  */
 public class SelectFilesDepositWindow extends JFrame {
 
-    private JPanel generalPanel = new JPanel();
-
-    private JLabel paragraphe1 = new JLabel(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe1"));
-    private JLabel paragraphe2 = new JLabel(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2"));
+    private SummaryTextTemplate paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe1"));
+    private GeneralTextTemplate paragraphe2 = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2"));
     private SelectFilesPanel selectedFilePanel = new SelectFilesPanel(this);
-    private JLabel paragraphe3 = new JLabel(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe3"));
+    private GeneralTextTemplate paragraphe3 = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe3"));
 
     public ButtonTemplate getOkBtn() {
         return okBtn;
     }
 
-    public void setOkBtn(ButtonTemplate okBtn) {
-        this.okBtn = okBtn;
-    }
-
     private ButtonTemplate okBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.ok"));
     private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.annul"));
 
-    public JLabel getInfos() {
+    public GeneralTextTemplate getInfos() {
         return infos;
     }
 
-    public void setInfos(JLabel infos) {
-        this.infos = infos;
-    }
-
-    private JLabel infos = new JLabel(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.vide"));
+    private GeneralTextTemplate infos = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.vide"));
 
     public SelectFilesDepositWindow(){
         setTitle(CryptoDoc.textProperties.getProperty("depot.page2.title"));
@@ -64,17 +55,6 @@ public class SelectFilesDepositWindow extends JFrame {
 
         panel.getMyStatusBar().setPagesNumber(4);
         panel.getMyStatusBar().setActualPage(2);
-
-        paragraphe1.setForeground(Design.FG_COLOR);
-        paragraphe1.setBackground(Design.BG_COLOR);
-        paragraphe2.setForeground(Design.FG_COLOR);
-        paragraphe2.setBackground(Design.BG_COLOR);
-        selectedFilePanel.setForeground(Design.FG_COLOR);
-        selectedFilePanel.setBackground(Design.BG_COLOR);
-        paragraphe3.setForeground(Design.FG_COLOR);
-        paragraphe3.setBackground(Design.BG_COLOR);
-        infos.setForeground(Design.FG_COLOR);
-        infos.setBackground(Design.BG_COLOR);
 
         okBtn.setEnabled(false);
 

@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.depotclient.swing.component;
+package com.oodrive.omnikles.depotclient.swing.component.template;
 
 import com.oodrive.omnikles.depotclient.pojo.Design;
 

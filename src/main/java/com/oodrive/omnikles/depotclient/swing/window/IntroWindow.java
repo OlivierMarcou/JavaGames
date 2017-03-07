@@ -2,9 +2,9 @@ package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
-import com.oodrive.omnikles.depotclient.pojo.Design;
-import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
-import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.ButtonTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.SummaryTextTemplate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,7 @@ import java.io.File;
 public class IntroWindow extends JFrame {
 
 
-    private JLabel paragraphe1 = new JLabel("ND");
+    private SummaryTextTemplate paragraphe1 = new SummaryTextTemplate("ND");
     private ButtonTemplate okBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"));
     private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"));
     private ButtonTemplate activfolderBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.activfolder"));
@@ -45,13 +45,6 @@ public class IntroWindow extends JFrame {
         texte = texte.replace("<titleProcedure>", Configuration.parameters.get("titleProcedure"));
         texte = texte.replace("<organismName>", Configuration.parameters.get("organismName"));
         paragraphe1.setText(texte);
-
-        paragraphe1.setForeground(Design.FG_COLOR);
-        activFolderTxt.setForeground(Design.FG_COLOR);
-
-        paragraphe1.setBackground(Design.BG_COLOR);
-        activFolderTxt.setBackground(Design.BG_COLOR);
-
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;

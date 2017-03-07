@@ -16,6 +16,8 @@ public class Design {
     public final static Color OVER_COLOR = Color.GREEN;
     public final static Color BUTTON_BORDER_COLOR = Color.WHITE;
     public final static Font BUTTON_FONT =  new Font("ARIAL",Font.BOLD,14);
+    public final static Font SUMMARY_FONT =  new Font("ARIAL",Font.BOLD,14);
+    public final static Font TEXT_FONT =  new Font("ARIAL",Font.LAYOUT_LEFT_TO_RIGHT,12);
     public final static Dimension PREFERED_SIZE = new Dimension(100, 36);
     public final static Dimension MAX_SIZE = new Dimension(130, 50);
 

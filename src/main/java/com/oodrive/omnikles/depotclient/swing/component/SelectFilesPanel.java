@@ -2,6 +2,7 @@ package com.oodrive.omnikles.depotclient.swing.component;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.window.SelectFilesDepositWindow;
 
 import javax.swing.*;

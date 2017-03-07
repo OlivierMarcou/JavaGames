@@ -2,9 +2,9 @@ package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
-import com.oodrive.omnikles.depotclient.pojo.Design;
-import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
-import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.ButtonTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.SummaryTextTemplate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,23 +19,11 @@ import static java.lang.System.exit;
  */
 public class Step2Window extends JFrame {
 
-    private JPanel generalPanel = new JPanel();
-
-    private JLabel paragraphe1 = new JLabel();
-
+    private SummaryTextTemplate paragraphe1 = new SummaryTextTemplate();
     private ButtonTemplate sendBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
     private ButtonTemplate dontSendBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page3.button.dontsend"));
     private java.util.List<File> files;
     private int totalSize = 0;
-
-    public int getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(int totalSize) {
-        this.totalSize = totalSize;
-    }
-
 
     public Step2Window(java.util.List<File> files){
         this.files = files;
@@ -60,9 +48,6 @@ public class Step2Window extends JFrame {
 
         panel.getMyStatusBar().setPagesNumber(4);
         panel.getMyStatusBar().setActualPage(3);
-
-        paragraphe1.setForeground(Design.FG_COLOR);
-        paragraphe1.setBackground(Design.BG_COLOR);
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.WEST;

@@ -2,10 +2,11 @@ package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
-import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
-import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
-import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.ButtonTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.GeneralTextTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.SummaryTextTemplate;
 import com.oodrive.omnikles.depotclient.thread.DepositFilesRunnable;
 
 import javax.swing.*;
@@ -24,8 +25,8 @@ public class ZipCryptAndSendWindow extends JFrame {
 
     private DepositFilesRunnable zt = new DepositFilesRunnable();
     private JPanel generalPanel = new JPanel();
-    private JLabel paragraphe1 = new JLabel();
-    private JLabel information = new JLabel();
+    private SummaryTextTemplate paragraphe1 = new SummaryTextTemplate();
+    private GeneralTextTemplate information = new GeneralTextTemplate();
     private ButtonTemplate retryBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
 
     private List<File> files;
@@ -60,20 +61,12 @@ public class ZipCryptAndSendWindow extends JFrame {
             e.printStackTrace();
         }
 
-        paragraphe1.setForeground(Design.FG_COLOR);
-        paragraphe1.setBackground(Design.BG_COLOR);
-        animate.setForeground(Design.FG_COLOR);
-        animate.setBackground(Design.BG_COLOR);
-        information.setForeground(Design.FG_COLOR);
-        information.setBackground(Design.BG_COLOR);
-
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=1;
         centerPanel.add(paragraphe1, c);
-
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;

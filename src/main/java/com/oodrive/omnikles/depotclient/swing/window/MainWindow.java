@@ -4,9 +4,10 @@ import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.AESService;
-import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
-import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.GeneralTextTemplate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 public class MainWindow extends JFrame {
 
-    private JLabel lblSelectCertificat = new JLabel("Selectionner votre certificat : ");
+    private GeneralTextTemplate lblSelectCertificat = new GeneralTextTemplate("Selectionner votre certificat : ");
 
 
     private CertificatsComboBox listCertificat = new CertificatsComboBox();

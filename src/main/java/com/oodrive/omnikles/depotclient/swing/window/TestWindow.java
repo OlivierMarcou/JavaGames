@@ -3,8 +3,8 @@ package com.oodrive.omnikles.depotclient.swing.window;
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
-import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
-import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.ButtonTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.GenaralPanelTemplate;
 import com.oodrive.omnikles.depotclient.thread.TestRunnable;
 
 import javax.swing.*;

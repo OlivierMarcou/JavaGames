@@ -2,6 +2,8 @@ package com.oodrive.omnikles.depotclient.swing.component;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Design;
+import com.oodrive.omnikles.depotclient.swing.component.template.ButtonTemplate;
+import com.oodrive.omnikles.depotclient.swing.component.template.GeneralTextTemplate;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -30,7 +32,7 @@ public class AnimatedProgressBar extends JPanel {
     private int actualIcon = 0;
     private int animationLen = 0;
     private JLabel icon = new JLabel();
-    private JLabel text = new JLabel();
+    private GeneralTextTemplate text = new GeneralTextTemplate();
     private int sizeX= 400, sizeY =40;
     private File podFile = null;
 
@@ -50,7 +52,7 @@ public class AnimatedProgressBar extends JPanel {
         return text;
     }
 
-    public void setText(JLabel text) {
+    public void setText(GeneralTextTemplate text) {
         this.text = text;
     }
 
@@ -95,10 +97,8 @@ public class AnimatedProgressBar extends JPanel {
     }
 
     public AnimatedProgressBar(InputStream imageGif){
-
+        setForeground(Design.FG_COLOR);
         setBackground(Design.BG_COLOR);
-        text.setForeground(Design.FG_COLOR);
-        text.setBackground(Design.BG_COLOR);
         setLayout(new BorderLayout());
         add(icon, BorderLayout.NORTH);
         add(text, BorderLayout.CENTER);
