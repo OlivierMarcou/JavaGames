@@ -22,14 +22,14 @@ public class ButtonTemplate extends JButton{
     }
 
     private Color actualBackGroundColor = Design.BG_COLOR;
-    private int raduisBorder = Design.BUTTON_MARGIN;
-    private int margin = Design.BUTTON_RADUIS_BORDER;
+    private int margin = Design.BUTTON_MARGIN;
+    private int raduisBorder = Design.BUTTON_RADUIS_BORDER;
 
     private void init() {
         setForeground(Design.FG_COLOR);
         setBackground(Design.BG_COLOR);
-        setPreferredSize(Design.PREFERED_SIZE);
-        setMargin(new Insets(5,0,0,0));
+//        setPreferredSize(Design.PREFERED_SIZE);
+        setMargin(new Insets(margin,margin,margin,margin));
         setVerticalAlignment(CENTER);
         setFont(Design.BUTTON_FONT);
         setBorderPainted(false);
@@ -75,9 +75,9 @@ public class ButtonTemplate extends JButton{
         int h = getHeight();
 
         g.setColor(actualBackGroundColor);
-        g2d.fillRoundRect(margin, margin, w-margin-1, h-margin-1, raduisBorder, raduisBorder);
+        g2d.fillRoundRect(0, 0, w-1, h-1, raduisBorder, raduisBorder);
         g.setColor(Design.BUTTON_BORDER_COLOR);
-        g2d.drawRoundRect(margin, margin, w-margin-1, h-margin-1, raduisBorder, raduisBorder);
+        g2d.drawRoundRect(0, 0, w-1, h-1, raduisBorder, raduisBorder);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         super.paintComponent(g);
     }

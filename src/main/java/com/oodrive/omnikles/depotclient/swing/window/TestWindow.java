@@ -4,7 +4,7 @@ import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
-import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
+import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
 import com.oodrive.omnikles.depotclient.thread.TestRunnable;
 
 import javax.swing.*;
@@ -26,26 +26,32 @@ public class TestWindow extends JFrame {
         setSize(800,800);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        GenaralPanelTemplate panel = new GenaralPanelTemplate(this);
+
         JPanel centerPanel = panel.getCenterPanel();
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        setContentPane(panel);
+
         panel.getMyStatusBar().setPagesNumber(10);
         panel.getMyStatusBar().setActualPage((int)Math.round(Math.random()*10));
+
         centerPanel.setSize(600,600);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridx=0;
+        c.gridy=0;
+        c.gridwidth=2;
         try {
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridx=0;
-            c.gridy=0;
-            c.gridwidth=1;
             progressBar = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream());
-            centerPanel.add(progressBar);
         } catch (Exception e) {
             e.printStackTrace();
             exit(1);
         }
+        centerPanel.add(progressBar, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.WEST;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
@@ -55,13 +61,15 @@ public class TestWindow extends JFrame {
                 testUpload();
             }
         });
-        centerPanel.add(retryBtn);
+        centerPanel.add(retryBtn, c);
 
         ButtonTemplate changeLookBtn = new ButtonTemplate("change");
-        c.fill = GridBagConstraints.BOTH;
-        c.gridx=0;
-        c.gridy=2;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.EAST;
+        c.gridx=1;
+        c.gridy=1;
         c.gridwidth=1;
+        centerPanel.add(changeLookBtn, c);
         changeLookBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -70,10 +78,8 @@ public class TestWindow extends JFrame {
                 CryptoDoc.changeLookAndFeel((int) test, TestWindow.this );
             }
         });
-        centerPanel.add(changeLookBtn);
-        add(panel);
         setVisible(true);
-        testUpload();
+    //    testUpload();
     }
 
     public void testUpload(){

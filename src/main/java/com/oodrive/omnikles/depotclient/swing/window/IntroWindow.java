@@ -4,7 +4,7 @@ import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
-import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
+import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +31,7 @@ public class IntroWindow extends JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        GenaralPanelTemplate panel = new GenaralPanelTemplate(this);
 
         JPanel centerPanel = panel.getCenterPanel();
         centerPanel.setLayout(new GridBagLayout());
@@ -86,8 +86,6 @@ public class IntroWindow extends JFrame {
         activFolderTxt.setText(Configuration.activFolder);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
-        c.weightx = Design.PREFERED_SIZE.getWidth();
-        c.weighty = Design.PREFERED_SIZE.getHeight();
         c.gridx=1;
         c.gridy=2;
         c.gridwidth=1;

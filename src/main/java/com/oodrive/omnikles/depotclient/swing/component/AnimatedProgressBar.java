@@ -96,36 +96,15 @@ public class AnimatedProgressBar extends JPanel {
 
     public AnimatedProgressBar(InputStream imageGif){
 
+        setBackground(Design.BG_COLOR);
         text.setForeground(Design.FG_COLOR);
         text.setBackground(Design.BG_COLOR);
-
-        setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx=0;
-        c.gridy=0;
-        c.gridwidth=1;
-        add(icon, c);
-
-        c.fill = GridBagConstraints.CENTER;
-        c.gridx=0;
-        c.gridy=1;
-        c.gridwidth=1;
-        add(text, c);
-
-        c.fill = GridBagConstraints.CENTER;
-        c.gridx=0;
-        c.gridy=2;
-        c.gridwidth=1;
-        add(annulBtn, c);
-
+        setLayout(new BorderLayout());
+        add(icon, BorderLayout.NORTH);
+        add(text, BorderLayout.CENTER);
+        add(annulBtn, BorderLayout.SOUTH);
         podBtn.setVisible(false);
-        c.fill = GridBagConstraints.CENTER;
-        c.gridx=0;
-        c.gridy=3;
-        c.gridwidth=1;
-        add(podBtn, c);
-
+        add(podBtn, BorderLayout.SOUTH);
         decoposeGif(imageGif);
         icon.setIcon(images.get(actualIcon));
 

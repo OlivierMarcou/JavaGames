@@ -4,7 +4,7 @@ import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
-import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
+import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,7 +52,7 @@ public class Step2Window extends JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        GenaralPanelTemplate panel = new GenaralPanelTemplate(this);
         JPanel centerPanel = panel.getCenterPanel();
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -64,21 +64,22 @@ public class Step2Window extends JFrame {
         paragraphe1.setForeground(Design.FG_COLOR);
         paragraphe1.setBackground(Design.BG_COLOR);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.WEST;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=2;
         centerPanel.add(paragraphe1, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.WEST;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
         centerPanel.add(sendBtn, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.EAST;
         c.gridx=1;
         c.gridy=1;
         c.gridwidth=1;

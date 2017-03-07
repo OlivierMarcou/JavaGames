@@ -8,7 +8,7 @@ import java.awt.*;
 /**
  * Created by olivier on 03/03/17.
  */
-public class TemplateGenaralPanel extends JPanel {
+public class GenaralPanelTemplate extends JPanel {
 
     private JFrame parent = null;
     private JPanel topPanel = new JPanel();
@@ -40,7 +40,7 @@ public class TemplateGenaralPanel extends JPanel {
         this.centerPanel = centerPanel;
     }
 
-    public TemplateGenaralPanel(JFrame parent){
+    public GenaralPanelTemplate(JFrame parent){
         setBackground(Design.BG_COLOR);
         setForeground(Design.FG_COLOR);
         topPanel.setBackground(Design.BG_COLOR);

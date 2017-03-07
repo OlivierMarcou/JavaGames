@@ -19,7 +19,7 @@ public class Design {
     public final static Dimension PREFERED_SIZE = new Dimension(100, 36);
     public final static Dimension MAX_SIZE = new Dimension(130, 50);
 
-    public final static int BUTTON_MARGIN = 5;
+    public final static int BUTTON_MARGIN = 10;
     public final static int BUTTON_RADUIS_BORDER = 5;
 
 }

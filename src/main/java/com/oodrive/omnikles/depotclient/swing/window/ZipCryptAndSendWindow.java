@@ -5,7 +5,7 @@ import com.oodrive.omnikles.depotclient.pojo.Configuration;
 import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
-import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
+import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
 import com.oodrive.omnikles.depotclient.thread.DepositFilesRunnable;
 
 import javax.swing.*;
@@ -45,7 +45,7 @@ public class ZipCryptAndSendWindow extends JFrame {
         setLayout(new BorderLayout());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        GenaralPanelTemplate panel = new GenaralPanelTemplate(this);
         JPanel centerPanel = panel.getCenterPanel();
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -68,6 +68,7 @@ public class ZipCryptAndSendWindow extends JFrame {
         information.setBackground(Design.BG_COLOR);
 
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.BASELINE_LEADING;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=1;
@@ -75,23 +76,22 @@ public class ZipCryptAndSendWindow extends JFrame {
 
 
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx = Design.PREFERED_SIZE.getWidth();
-        c.weighty = Design.PREFERED_SIZE.getHeight();
+        c.anchor = GridBagConstraints.CENTER;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
         centerPanel.add(animate, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=1;
         centerPanel.add(information, c);
 
         if(Configuration.debug) {
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.anchor = GridBagConstraints.NORTHWEST;
+            c.fill = GridBagConstraints.NONE;
+            c.anchor = GridBagConstraints.CENTER;
             c.gridx = 0;
             c.gridy = 3;
             c.gridwidth = 1;

@@ -37,14 +37,16 @@ public class SelectFilesPanel extends JPanel{
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        c.fill= GridBagConstraints.HORIZONTAL;
+        c.fill= GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=1;
         parcourirBtn.setPreferredSize(new Dimension(300, 20));
         add(parcourirBtn, c);
 
-        c.fill= GridBagConstraints.HORIZONTAL;
+        c.fill= GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridx=1;
         c.gridy=0;
         c.gridwidth=1;
@@ -55,7 +57,7 @@ public class SelectFilesPanel extends JPanel{
         filenamesPanel.setBackground(new Color(0xdddddd));
         filenamesPanel.setMaximumSize(new Dimension(580, 380));
         c.fill= GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
+        c.anchor = GridBagConstraints.CENTER;
         c.weightx = 1;
         c.weighty = 1;
         c.gridx=0;

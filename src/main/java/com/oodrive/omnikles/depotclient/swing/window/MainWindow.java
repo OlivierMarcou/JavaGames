@@ -6,7 +6,7 @@ import com.oodrive.omnikles.depotclient.pojo.KeyPair;
 import com.oodrive.omnikles.depotclient.service.AESService;
 import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.CertificatsComboBox;
-import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
+import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,7 +49,7 @@ public class MainWindow extends JFrame {
     public MainWindow(){
         setSize(700, 400);
 
-        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        GenaralPanelTemplate panel = new GenaralPanelTemplate(this);
         JPanel centerPanel = panel.getCenterPanel();
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();

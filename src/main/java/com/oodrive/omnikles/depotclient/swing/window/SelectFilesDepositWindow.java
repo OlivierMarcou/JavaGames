@@ -5,7 +5,7 @@ import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.InteractiveLabel;
 import com.oodrive.omnikles.depotclient.swing.component.SelectFilesPanel;
-import com.oodrive.omnikles.depotclient.swing.component.TemplateGenaralPanel;
+import com.oodrive.omnikles.depotclient.swing.component.GenaralPanelTemplate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,7 +56,7 @@ public class SelectFilesDepositWindow extends JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        TemplateGenaralPanel panel = new TemplateGenaralPanel(this);
+        GenaralPanelTemplate panel = new GenaralPanelTemplate(this);
         JPanel centerPanel = panel.getCenterPanel();
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -78,25 +78,29 @@ public class SelectFilesDepositWindow extends JFrame {
 
         okBtn.setEnabled(false);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.WEST;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=2;
         centerPanel.add(paragraphe1, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=2;
         centerPanel.add(paragraphe2, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=2;
         centerPanel.add(selectedFilePanel, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridx=0;
         c.gridy=3;
         c.gridwidth=2;
@@ -104,23 +108,21 @@ public class SelectFilesDepositWindow extends JFrame {
 
         infos.setMinimumSize(new Dimension(20,20));
         c.fill= GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.SOUTHWEST;
-        c.weightx = Design.PREFERED_SIZE.getWidth();
-        c.weighty = Design.PREFERED_SIZE.getHeight();
+        c.anchor = GridBagConstraints.WEST;
         c.gridx=0;
         c.gridy=4;
         c.gridwidth=2;
         centerPanel.add(infos, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.WEST;
         c.gridx=0;
         c.gridy=5;
         c.gridwidth=1;
         centerPanel.add(okBtn, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.EAST;
         c.gridx=1;
         c.gridy=5;
         c.gridwidth=1;
