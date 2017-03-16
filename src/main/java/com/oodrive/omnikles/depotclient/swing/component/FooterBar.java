@@ -1,15 +1,19 @@
 package com.oodrive.omnikles.depotclient.swing.component;
 
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.pojo.Design;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
  * Created by olivier on 06/03/17.
  */
 public class FooterBar extends JMenuItem{
-    private Dimension sizeBar = new   Dimension(600, 26);
+    private Dimension sizeBar = new   Dimension(Design.WIDTH_FOOTER, Design.HEIGHT_FOOTER);
     private JFrame parent = null;
     private JLabel footerEastTxt = new JLabel();
     private JLabel footerWestTxt = new JLabel();
@@ -20,9 +24,15 @@ public class FooterBar extends JMenuItem{
         setForeground(Color.WHITE);
         footerEastTxt.setForeground(Color.WHITE);
         footerWestTxt.setForeground(Color.WHITE);
+        Border border = footerEastTxt.getBorder();
+        Border margin = new EmptyBorder(10,10,10,10);
+        footerEastTxt.setBorder(new CompoundBorder(border, margin));
+        footerWestTxt.setBorder(new CompoundBorder(border, margin));
+//        footerEastTxt.setBorder(new EmptyBorder(0, Design.CONTENT_MARGIN, 0, 0));
+//        footerWestTxt.setBorder(new EmptyBorder(0, 0, 0, Design.CONTENT_MARGIN));
 
         this.parent = parent;
-        sizeBar = new Dimension(parent.getWidth() , 26);
+        sizeBar = new Dimension(parent.getWidth() , Design.HEIGHT_FOOTER);
         lineProgressBar = new LineProgressBar(parent);
         setPreferredSize(sizeBar);
         setLayout(new BorderLayout());
@@ -45,7 +55,7 @@ public class FooterBar extends JMenuItem{
 
     public void setActualPage(int page){
         lineProgressBar.setEtapeActuelle(page);
-        footerWestTxt.setText(page +" / "+ lineProgressBar.getEtapes());
+        footerWestTxt.setText(page +"/"+ lineProgressBar.getEtapes());
     }
 
     public void setPagesNumber(int number){

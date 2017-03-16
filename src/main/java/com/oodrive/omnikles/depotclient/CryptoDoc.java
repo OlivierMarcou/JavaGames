@@ -50,7 +50,7 @@ public class CryptoDoc {
         }
         if(Configuration.parameters.get("action").equals("test")){
 
-            TestWindow test = new TestWindow();
+            IntroWindow test = new IntroWindow();
             changeLookAndFeel(2, test);
 //            test.repaint();
 //            test.revalidate();

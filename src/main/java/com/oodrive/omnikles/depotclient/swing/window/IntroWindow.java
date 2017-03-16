@@ -2,6 +2,7 @@ package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
 import com.oodrive.omnikles.depotclient.pojo.Configuration;
+import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.template.GenaralPanelTemplate;
 import com.oodrive.omnikles.depotclient.swing.component.template.SummaryTextTemplate;
@@ -35,6 +36,7 @@ public class IntroWindow extends JFrame {
 
         JPanel centerPanel = panel.getCenterPanel();
         centerPanel.setLayout(new GridBagLayout());
+        centerPanel.setBackground(Design.BG_COLOR2);
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
 

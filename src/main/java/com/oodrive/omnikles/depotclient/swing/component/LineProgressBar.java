@@ -50,8 +50,11 @@ public class LineProgressBar extends Canvas   {
             width = (sizeMe.width / etapes) * etapeActuelle;
         g2d.setBackground(Design.BG_COLOR_FOOTER);
         g2d.setColor(colorLine);
-        g2d.drawLine(0, 0, width, 0);
-        g2d.drawLine(0, 1, width, 1);
+        Stroke stroke2 = new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
+        g2d.setStroke(stroke2);
+        g2d.drawLine(0, 100, width, 100);
+//        g2d.drawLine(0, 0, width, 0);
+//        g2d.drawLine(30, 100, 450, 100);
         g2d.dispose();
     }
 

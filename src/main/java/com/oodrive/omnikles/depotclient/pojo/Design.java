@@ -8,12 +8,15 @@ import java.awt.*;
 public class Design {
 
     public final static Color BG_COLOR_FOOTER = Color.DARK_GRAY;
-    public final static Color LINE_COLOR_FOOTER = Color.GREEN;
-    public final static int HEIGHT_PROGRESS_LINE_FOOTER = 2;
+    public final static Color LINE_COLOR_FOOTER = Color.decode("#7eb500");
+    public final static int HEIGHT_PROGRESS_LINE_FOOTER = 4;
+    public final static int HEIGHT_FOOTER = 50;
+    public final static int WIDTH_FOOTER = 600;
 
-    public final static Color BG_COLOR = Color.decode("#22A2EC");
+    public final static Color BG_COLOR = Color.decode("#0098db");
+    public final static Color BG_COLOR2 = Color.decode("#CCC");
     public final static Color FG_COLOR = Color.WHITE;
-    public final static Color OVER_COLOR = Color.GREEN;
+    public final static Color OVER_COLOR = Color.decode("#7eb500");
     public final static Color BUTTON_BORDER_COLOR = Color.WHITE;
     public final static Font BUTTON_FONT =  new Font("ARIAL",Font.BOLD,14);
     public final static Font SUMMARY_FONT =  new Font("ARIAL",Font.BOLD,14);
@@ -22,6 +25,7 @@ public class Design {
     public final static Dimension MAX_SIZE = new Dimension(130, 50);
 
     public final static int BUTTON_MARGIN = 10;
-    public final static int BUTTON_RADUIS_BORDER = 5;
+    public final static int BUTTON_RADUIS_BORDER = 3;
+    public final static int CONTENT_MARGIN = 20;
 
 }

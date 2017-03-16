@@ -4,6 +4,7 @@ import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.FooterBar;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
@@ -48,6 +49,7 @@ public class GenaralPanelTemplate extends JPanel {
         topPanel.setForeground(Design.FG_COLOR);
         centerPanel.setBackground(Design.BG_COLOR);
         centerPanel.setForeground(Design.FG_COLOR);
+        centerPanel.setBorder(new EmptyBorder(Design.CONTENT_MARGIN, Design.CONTENT_MARGIN, Design.CONTENT_MARGIN, Design.CONTENT_MARGIN));
         this.parent = parent;
         myStatusBar = new FooterBar(this.parent);
         setLayout(new BorderLayout());
