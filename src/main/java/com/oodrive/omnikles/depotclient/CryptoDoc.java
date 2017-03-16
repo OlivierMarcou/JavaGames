@@ -35,8 +35,7 @@ public class CryptoDoc {
 
     public static void main(String[] args) throws InvalidKeyException, javax.security.cert.CertificateException, IOException, ClassNotFoundException, IllegalAccessException, InstantiationException, UnsupportedLookAndFeelException {
         CryptoDoc cryptoDoc = new CryptoDoc();
-//        TestWindow test = new TestWindow();
-//        test.gossl();
+
         Configuration.initParameters(args);
 
         System.out.println(Configuration.activFolder);
@@ -49,11 +48,21 @@ public class CryptoDoc {
             openDepot();
         }
         if(Configuration.parameters.get("action").equals("test")){
-
             TestWindow test = new TestWindow();
             changeLookAndFeel(2, test);
-//            test.repaint();
-//            test.revalidate();
+        }
+
+        if(Configuration.parameters.get("action").equals("class")){
+            Configuration.parameters.put("language","fr");
+            Configuration.parameters.put("titleProcedure","titleProcedure");
+            Configuration.parameters.put("organismName","organismName");
+            Configuration.parameters.put("urlCryptedFile","http://localhost/");
+            Configuration.parameters.put("sessionid","111111111");
+            Configuration.parameters.put("filename","test.pdf");
+            Configuration.parameters.put("urlCertificat","http://localhost/");
+            Configuration.parameters.put("urlDepot","http://localhost/");
+            JFrame test = (JFrame) Class.forName("com.oodrive.omnikles.depotclient.swing.window."+Configuration.parameters.get("class")).newInstance();
+            test.setVisible(true);
         }
 
     }
