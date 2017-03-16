@@ -8,6 +8,7 @@ import com.oodrive.omnikles.depotclient.swing.component.template.GenaralPanelTem
 import com.oodrive.omnikles.depotclient.swing.component.template.SummaryTextTemplate;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,23 +21,42 @@ public class IntroWindow extends JFrame {
 
 
     private SummaryTextTemplate paragraphe1 = new SummaryTextTemplate("ND");
-    private ButtonTemplate okBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"));
-    private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"));
-    private ButtonTemplate activfolderBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.activfolder"));
+    private ButtonTemplate okBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"), Design.MAX_SIZE);
+    private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"), Design.MAX_SIZE);
+    private ButtonTemplate activfolderBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.activfolder"), Design.PREFERED_SIZE);
     private JTextField activFolderTxt = new JTextField();
 
     public IntroWindow(){
         setTitle(CryptoDoc.textProperties.getProperty("depot.page1.title"));
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
+        setMaximumSize(new Dimension(800, 600));
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         GenaralPanelTemplate panel = new GenaralPanelTemplate(this);
 
         JPanel centerPanel = panel.getCenterPanel();
+//        centerPanel.setBackground(Design.BG_COLOR2);
+        JPanel emptyPanel = new JPanel();
+        emptyPanel.setBackground(Design.BG_COLOR);
+        emptyPanel.setPreferredSize(Design.CENTERPANEL_PREFERED_SIZE);
+        emptyPanel.setMinimumSize(Design.CENTERPANEL_PREFERED_SIZE_EMPTY);
+//        emptyPanel.setSize(Design.CENTERPANEL_PREFERED_SIZE);
+
+        activFolderTxt.setBackground(Design.BG_COLOR);
+        activFolderTxt.setForeground(Design.FG_COLOR);
+        activFolderTxt.setPreferredSize(Design.TEXTFIELD_SIZE);
+        activFolderTxt.setMinimumSize(Design.TEXTFIELD_SIZE);
+
+        activFolderTxt.setBorder(BorderFactory.createLineBorder(Design.FG_COLOR));
+        activFolderTxt.setBorder(BorderFactory.createCompoundBorder(
+                activFolderTxt.getBorder(),
+                Design.TEXTFIELD_BORDER_FACTORY));
+        activFolderTxt.setFont(Design.TEXTFIELD_FONT);
+
+
         centerPanel.setLayout(new GridBagLayout());
-        centerPanel.setBackground(Design.BG_COLOR2);
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
 
@@ -50,41 +70,91 @@ public class IntroWindow extends JFrame {
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx=1;
-        c.weighty=1;
+        c.weightx=3;
+        c.weighty=0;
         c.gridx=0;
         c.gridy=0;
-        c.gridwidth=2;
+        c.gridwidth=3;
+        c.insets = new Insets(10, 10, 10, 10);
         centerPanel.add(paragraphe1, c);
 
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // btn sélectionner le dossier
+
         c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.CENTER;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.weightx=0;
+        c.weighty=0;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
-        centerPanel.add(okBtn, c);
-
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridx=1;
-        c.gridy=1;
-        c.gridwidth=1;
-        centerPanel.add(annulBtn, c);
-
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridx=0;
-        c.gridy=2;
-        c.gridwidth=1;
+        c.insets = new Insets(10, 10, 10, 10);
         centerPanel.add(activfolderBtn, c);
 
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Input
         activFolderTxt.setText(Configuration.activFolder);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridx=1;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.weightx=3;
+        c.weighty=0;
+        c.gridx=0;
         c.gridy=2;
-        c.gridwidth=1;
+        c.gridwidth=3;
+        c.insets = new Insets(10, 10, 10, 10);
         centerPanel.add(activFolderTxt, c);
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // btn commencer & annuler
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.weightx=1;
+        c.weighty=0;
+        c.gridx=0;
+        c.gridy=3;
+        c.gridwidth=1;
+        c.insets = new Insets(10, 10, 10, 10);
+        centerPanel.add(emptyPanel, c);
+
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.EAST;
+        c.weightx=1;
+        c.weighty=0;
+        c.gridx=1;
+        c.gridy=3;
+        c.gridwidth=1;
+        c.insets = new Insets(10, 10, 10, -180);
+        centerPanel.add(okBtn, c);
+
+
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_END;
+        c.weightx=1;
+        c.weighty=0;
+        c.gridx=2;
+        c.gridy=3;
+        c.gridwidth=1;
+        c.insets = new Insets(10, 10, 10, 10);
+        centerPanel.add(annulBtn, c);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.weightx=0;
+        c.weighty=1;
+        c.gridx=0;
+        c.gridy=4;
+        c.gridwidth=3;
+        c.insets = new Insets(10, 10, 10, 10);
+        centerPanel.add( emptyPanel, c);
 
 
 

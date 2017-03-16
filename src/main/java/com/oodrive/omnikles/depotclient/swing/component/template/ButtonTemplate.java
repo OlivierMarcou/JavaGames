@@ -14,22 +14,28 @@ public class ButtonTemplate extends JButton{
 
     public ButtonTemplate(){
         super();
-        init();
+        init(Design.PREFERED_SIZE);
     }
     public ButtonTemplate(String texte){
         super(texte.toUpperCase());
-        init();
+        init(Design.PREFERED_SIZE);
+    }
+
+    public ButtonTemplate(String texte, Dimension resize){
+        super(texte.toUpperCase());
+        init(resize);
     }
 
     private Color actualBackGroundColor = Design.BG_COLOR;
-    private int margin = Design.BUTTON_MARGIN;
+    private Insets margin = Design.BUTTON_MARGIN;
     private int raduisBorder = Design.BUTTON_RADUIS_BORDER;
 
-    private void init() {
+    private void init(Dimension resize) {
         setForeground(Design.FG_COLOR);
         setBackground(Design.BG_COLOR);
-//        setPreferredSize(Design.PREFERED_SIZE);
-        setMargin(new Insets(margin,margin,margin,margin));
+        setPreferredSize(resize);
+        setMinimumSize(resize);
+        setMargin(margin);
         setVerticalAlignment(CENTER);
         setFont(Design.BUTTON_FONT);
         setBorderPainted(false);

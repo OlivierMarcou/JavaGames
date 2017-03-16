@@ -49,11 +49,21 @@ public class CryptoDoc {
             openDepot();
         }
         if(Configuration.parameters.get("action").equals("test")){
-
-            IntroWindow test = new IntroWindow();
+            TestWindow test = new TestWindow();
             changeLookAndFeel(2, test);
-//            test.repaint();
-//            test.revalidate();
+        }
+
+        if(Configuration.parameters.get("action").equals("class")){
+            Configuration.parameters.put("language","fr");
+            Configuration.parameters.put("titleProcedure","titleProcedure");
+            Configuration.parameters.put("organismName","organismName");
+            Configuration.parameters.put("urlCryptedFile","http://localhost/");
+            Configuration.parameters.put("sessionid","111111111");
+            Configuration.parameters.put("filename","test.pdf");
+            Configuration.parameters.put("urlCertificat","http://localhost/");
+            Configuration.parameters.put("urlDepot","http://localhost/");
+            JFrame test = (JFrame) Class.forName("com.oodrive.omnikles.depotclient.swing.window."+Configuration.parameters.get("class")).newInstance();
+            test.setVisible(true);
         }
 
     }
