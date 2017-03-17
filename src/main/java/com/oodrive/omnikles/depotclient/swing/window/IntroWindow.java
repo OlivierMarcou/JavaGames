@@ -23,7 +23,7 @@ public class IntroWindow extends JFrame {
     private SummaryTextTemplate paragraphe1 = new SummaryTextTemplate("ND");
     private ButtonTemplate okBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"), Design.MAX_SIZE);
     private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"), Design.MAX_SIZE);
-    private ButtonTemplate activfolderBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.activfolder"), Design.PREFERED_SIZE);
+    private ButtonTemplate activfolderBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.activfolder"), Design.MAX_SIZE);
     private JTextField activFolderTxt = new JTextField();
 
     public IntroWindow(){
@@ -86,7 +86,7 @@ public class IntroWindow extends JFrame {
         c.anchor = GridBagConstraints.LINE_START;
         c.weightx=0;
         c.weighty=0;
-        c.gridx=0;
+        c.gridx=2;
         c.gridy=1;
         c.gridwidth=1;
         c.insets = new Insets(10, 10, 10, 10);
@@ -129,7 +129,7 @@ public class IntroWindow extends JFrame {
         c.gridx=1;
         c.gridy=3;
         c.gridwidth=1;
-        c.insets = new Insets(10, 10, 10, -180);
+        c.insets = new Insets(10, 10, 10, -280);
         centerPanel.add(okBtn, c);
 
 

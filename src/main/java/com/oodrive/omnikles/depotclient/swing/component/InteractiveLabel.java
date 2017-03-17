@@ -1,5 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.component;
 
+import com.oodrive.omnikles.depotclient.pojo.Design;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -26,11 +28,11 @@ public class InteractiveLabel extends JLabel implements MouseListener {
     @Override
     public void mousePressed(MouseEvent e) {
 
-        if( getForeground() != Color.BLUE) {
+        if( getForeground() != Design.BG_COLOR2) {
             isSelected = true;
-            this.setForeground(Color.BLUE);
+            this.setForeground(Design.BG_COLOR2);
         }else{
-            this.setForeground(Color.BLACK);
+            this.setForeground(Design.FG_COLOR);
             isSelected = false;
         }
     }

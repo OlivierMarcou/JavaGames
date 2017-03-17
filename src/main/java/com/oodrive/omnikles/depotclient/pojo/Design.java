@@ -19,10 +19,12 @@ public class Design {
     public final static Dimension CENTERPANEL_PREFERED_SIZE =  new Dimension(800, 600);
     public final static Dimension CENTERPANEL_PREFERED_SIZE_EMPTY =  new Dimension(760, 200);
     public final static Dimension TEXTFIELD_SIZE = new Dimension(760, 40);
+    public final static Dimension FILES_NAME_SIZE = new Dimension(760, 400);
     public final static Border TEXTFIELD_BORDER_FACTORY = BorderFactory.createEmptyBorder(5, 5, 5, 5);
 
     public final static Color BG_COLOR = Color.decode("#0098db");
     public final static Color BG_COLOR2 = Color.decode("#7eb500");
+    public final static Color BG_COLOR3 = Color.decode("#d5d5d5");
     public final static Color FG_COLOR = Color.WHITE;
     public final static Color OVER_COLOR = Color.decode("#7eb500");
     public final static Color BUTTON_BORDER_COLOR = Color.WHITE;

@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.depotclient.swing.window;
 
 import com.oodrive.omnikles.depotclient.CryptoDoc;
+import com.oodrive.omnikles.depotclient.pojo.Design;
 import com.oodrive.omnikles.depotclient.swing.component.InteractiveLabel;
 import com.oodrive.omnikles.depotclient.swing.component.SelectFilesPanel;
 import com.oodrive.omnikles.depotclient.swing.component.template.ButtonTemplate;
@@ -29,8 +30,8 @@ public class SelectFilesDepositWindow extends JFrame {
         return okBtn;
     }
 
-    private ButtonTemplate okBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.ok"));
-    private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.annul"));
+    private ButtonTemplate okBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.ok"), Design.MAX_SIZE);
+    private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.annul"), Design.MAX_SIZE);
 
     public GeneralTextTemplate getInfos() {
         return infos;
@@ -49,6 +50,12 @@ public class SelectFilesDepositWindow extends JFrame {
 
         GenaralPanelTemplate panel = new GenaralPanelTemplate(this);
         JPanel centerPanel = panel.getCenterPanel();
+//        centerPanel.setBackground(Design.BG_COLOR2);
+        JPanel emptyPanel = new JPanel();
+        emptyPanel.setBackground(Design.BG_COLOR2);
+        emptyPanel.setPreferredSize(Design.CENTERPANEL_PREFERED_SIZE);
+        emptyPanel.setMinimumSize(Design.CENTERPANEL_PREFERED_SIZE_EMPTY);
+
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
@@ -59,53 +66,103 @@ public class SelectFilesDepositWindow extends JFrame {
         okBtn.setEnabled(false);
 
         c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.WEST;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx=3;
+        c.weighty=0;
         c.gridx=0;
         c.gridy=0;
-        c.gridwidth=2;
+        c.gridwidth=3;
+        c.insets = new Insets(10, 10, 10, 10);
         centerPanel.add(paragraphe1, c);
 
         c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.CENTER;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx=3;
+        c.weighty=0;
         c.gridx=0;
         c.gridy=1;
-        c.gridwidth=2;
+        c.gridwidth=3;
+        c.insets = new Insets(10, 10, 10, 10);
         centerPanel.add(paragraphe2, c);
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.CENTER;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.weightx=3;
+        c.weighty=0;
         c.gridx=0;
         c.gridy=2;
-        c.gridwidth=2;
+        c.gridwidth=3;
+        c.insets = new Insets(10, 10, 10, 10);
         centerPanel.add(selectedFilePanel, c);
-
+//        centerPanel.add(emptyPanel, c);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.CENTER;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx=3;
+        c.weighty=0;
         c.gridx=0;
         c.gridy=3;
-        c.gridwidth=2;
+        c.gridwidth=3;
+        c.insets = new Insets(10, 10, 10, 10);
         centerPanel.add(paragraphe3, c);
-
+//        centerPanel.add(emptyPanel, c);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         infos.setMinimumSize(new Dimension(20,20));
-        c.fill= GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.WEST;
+        c.fill= GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx=3;
+        c.weighty=0;
         c.gridx=0;
         c.gridy=4;
-        c.gridwidth=2;
+        c.gridwidth=3;
+        c.insets = new Insets(10, 10, 10, 10);
         centerPanel.add(infos, c);
-
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.WEST;
+//        centerPanel.add(emptyPanel, c);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//        c.fill = GridBagConstraints.NONE;
+//        c.anchor = GridBagConstraints.WEST;
+//        c.gridx=0;
+//        c.gridy=5;
+//        c.gridwidth=1;
+//        centerPanel.add(okBtn, c);
+//
+//        c.fill = GridBagConstraints.NONE;
+//        c.anchor = GridBagConstraints.EAST;
+//        c.gridx=1;
+//        c.gridy=5;
+//        c.gridwidth=1;
+//        centerPanel.add(annulBtn, c);
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.weightx=1;
+        c.weighty=0;
         c.gridx=0;
-        c.gridy=5;
+        c.gridy=6;
         c.gridwidth=1;
-        centerPanel.add(okBtn, c);
+        c.insets = new Insets(10, 10, 10, 10);
+        emptyPanel.setPreferredSize(new Dimension(440, 40));
+        emptyPanel.setMinimumSize(new Dimension(440, 40));
+        centerPanel.add(emptyPanel, c);
 
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.EAST;
+        c.weightx=1;
+        c.weighty=0;
         c.gridx=1;
-        c.gridy=5;
+        c.gridy=6;
         c.gridwidth=1;
+        c.insets = new Insets(10, 10, 10, 10);
+        centerPanel.add(okBtn, c);
+
+
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_END;
+        c.weightx=1;
+        c.weighty=0;
+        c.gridx=2;
+        c.gridy=6;
+        c.gridwidth=1;
+        c.insets = new Insets(10, 10, 10, 10);
         centerPanel.add(annulBtn, c);
 
         okBtn.addActionListener(new ActionListener() {
