@@ -273,7 +273,7 @@ public class SelectFilesPanel extends JPanel{
 
     private String getFileType(String fileName){
 
-        return false;
+        return null;
     }
 
 
