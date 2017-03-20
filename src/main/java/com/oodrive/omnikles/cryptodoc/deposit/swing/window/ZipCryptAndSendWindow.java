@@ -74,6 +74,8 @@ public class ZipCryptAndSendWindow extends JFrame {
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=1;
+        paragraphe1.setPreferredSize(new Dimension(700, 40));
+        paragraphe1.setMinimumSize(new Dimension(700, 40));
         centerPanel.add(paragraphe1, c);
 
 
