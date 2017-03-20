@@ -152,7 +152,7 @@
                         <manifest>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>com.oodrive.omnikles.depotclient.CryptoDoc</mainClass>
+                            <mainClass>com.oodrive.omnikles.cryptodoc.CryptoDoc</mainClass>
                             <addClasspath>true</addClasspath>
                             <addExtensions />
                             <classpathPrefix />

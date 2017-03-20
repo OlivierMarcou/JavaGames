@@ -17,7 +17,7 @@
         <extension name="BouncyCastle cryptography library" href="bcprov.jnlp"/>
     </resources>
     <application-desc
-         name="CryptoDoc" main-class="com.oodrive.omnikles.depotclient.CryptoDoc"
+         name="CryptoDoc" main-class="com.oodrive.omnikles.cryptodoc.CryptoDoc"
          width="300"
          height="300">
         <argument>urlCryptedFile=http://portal.omnikles.com:8082/tenderlink-rest/tenderlink/...</argument>
