@@ -8,17 +8,15 @@ import com.oodrive.omnikles.depotclient.swing.window.SelectFilesDepositWindow;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 
 /**
  * Created by olivier on 07/02/17.
  */
-public class SelectFilesPanel extends JPanel{
+public class SelectFilesPanel extends JPanel {
 
     private ButtonTemplate parcourirBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.parcourir"), Design.MAX_SIZE);
-    private ButtonTemplate deleteBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.delete"), Design.MAX_SIZE);
 
     public JPanel getFilenamesPanel() {
         return filenamesPanel;
@@ -33,7 +31,7 @@ public class SelectFilesPanel extends JPanel{
     private SelectFilesDepositWindow parent;
     private int lineNumber = 0;
 
-    public SelectFilesPanel(SelectFilesDepositWindow parent){
+    public SelectFilesPanel(SelectFilesDepositWindow parent) {
         this.parent = parent;
         setPreferredSize(new Dimension(600, 250));
         setLayout(new GridBagLayout());
@@ -41,34 +39,22 @@ public class SelectFilesPanel extends JPanel{
         GridBagConstraints c = new GridBagConstraints();
         JPanel emptyPanel = new JPanel();
         emptyPanel.setBackground(Design.BG_COLOR2);
-//        emptyPanel.setPreferredSize(Design.CENTERPANEL_PREFERED_SIZE);
-//        emptyPanel.setMinimumSize(Design.CENTERPANEL_PREFERED_SIZE_EMPTY);
 
-        c.fill= GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.LINE_START;
-        c.gridx=0;
-        c.gridy=0;
-        c.gridwidth=1;
-//        parcourirBtn.setPreferredSize(new Dimension(300, 20));
-        c.insets = new Insets(0, 10, 10, 0);
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridx = 2;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        c.insets = new Insets(0, 0, 10, 0);
         add(parcourirBtn, c);
-
-        c.fill= GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.LINE_END;
-        c.gridx=1;
-        c.gridy=0;
-        c.gridwidth=2;
-//        deleteBtn.setPreferredSize(new Dimension(300, 20));
-        c.insets = new Insets(0, 0, 10, 10);
-        add(deleteBtn, c);
 
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.LINE_END;
-        c.weightx=1;
-        c.weighty=0;
-        c.gridx=2;
-        c.gridy=0;
-        c.gridwidth=0;
+        c.weightx = 1;
+        c.weighty = 0;
+        c.gridx = 2;
+        c.gridy = 0;
+        c.gridwidth = 0;
         c.insets = new Insets(0, 0, 0, 0);
         emptyPanel.setPreferredSize(new Dimension(0, 40));
         emptyPanel.setMinimumSize(new Dimension(0, 40));
@@ -88,19 +74,19 @@ public class SelectFilesPanel extends JPanel{
                 Design.TEXTFIELD_BORDER_FACTORY));
         filenamesPanel.setFont(Design.TEXTFIELD_FONT);
         filenamesPanel.setMaximumSize(new Dimension(580, 380));
-        c.fill= GridBagConstraints.BOTH;
+        c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.LINE_START;
         c.weightx = 0;
         c.weighty = 1;
-        c.gridx=0;
-        c.gridy=1;
-        c.gridwidth=3;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 3;
         add(filenamesPanel, c);
 
         scrollPane = new JScrollPane(filenamesPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setPreferredSize(new Dimension(20,380));
+        scrollPane.setPreferredSize(new Dimension(20, 380));
         c.weightx = 1;
         c.weighty = 1;
         add(scrollPane, c);
@@ -112,124 +98,128 @@ public class SelectFilesPanel extends JPanel{
                 fileChooser();
             }
         });
-        deleteBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
 
-                JOptionPane d = new JOptionPane();
-                int retour = d.showConfirmDialog(filenamesPanel, CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.deletefile.message"),
-                        CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.deletefile.title"), JOptionPane.YES_NO_OPTION);
-                if(retour == 0)//yes
-                {
-                    removeSelected();
-                }
-            }
-        });
     }
 
-    private void removeSelected( ){
-        for(Component component:filenamesPanel.getComponents()){
-            if(component.getClass() == InteractiveLabel.class && ((InteractiveLabel)component).isSelected){
+    private void removeSelected(Component component) {
+
+                System.out.println(component.getClass());
                 filenamesPanel.remove(component);
-            }
-        }
         getFilesInfos();
         filenamesPanel.revalidate();
         filenamesPanel.repaint();
     }
 
-    public void getFilesInfos(){
+    public void getFilesInfos() {
         long totalSize = 0;
         long count = 0;
-        for(Component component:filenamesPanel.getComponents()){
-            if(component.getClass() == InteractiveLabel.class){
+        for (Component component : filenamesPanel.getComponents()) {
+            if (component.getClass() == InteractiveLabel.class) {
                 File file = null;
-                if(((InteractiveLabel)component).getText() != null){
-                    file = new File(((InteractiveLabel)component).getText());
-                    if(file != null && file.exists()){
+                if (((InteractiveLabel) component).getText() != null) {
+                    file = new File(((InteractiveLabel) component).getText());
+                    if (file != null && file.exists()) {
                         totalSize += file.length();
-                        count ++;
-                    }else
+                        count++;
+                    } else
                         filenamesPanel.remove(component);
                 }
             }
         }
         String texte = CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.vide");
-        if(count > 0) {
+        if (count > 0) {
             parent.getOkBtn().setEnabled(true);
             texte = CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.infos");
             texte = texte.replace("<count>", String.valueOf(count));
-            texte = texte.replace("<size>", String.valueOf((totalSize/ 1024)/ 1024));
+            texte = texte.replace("<size>", String.valueOf((totalSize / 1024) / 1024));
             Configuration.totalSizeFiles = totalSize;
-        }else{
+        } else {
             parent.getOkBtn().setEnabled(false);
         }
         parent.getInfos().setText(texte);
     }
 
-    public void addFileLine(File fileName){
-        if(!isAdd(fileName.getPath()) && !fileName.getPath().trim().isEmpty()) {
+    public void addFileLine(File fileName) {
+        if (!isAdd(fileName.getPath()) && !fileName.getPath().trim().isEmpty()) {
             InteractiveLabel text = new InteractiveLabel(fileName.getName(), this.filenamesPanel);
+
             GridBagConstraints constraints = new GridBagConstraints();
             GridBagConstraints fileConstraints = new GridBagConstraints();
             JPanel filePanel = new JPanel();
 
             JLabel labelIcon = new JLabel();
 //            ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/icon_pdf.png"));
-            ImageIcon icon = new ImageIcon(new ImageIcon(this.getClass().getResource("/images/icon_pdf.png")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
+            ImageIcon icon = new ImageIcon(new ImageIcon(this.getClass().getResource(getFileType(fileName.getName()))).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
             labelIcon.setIcon(icon);
 
-            JLabel labelRemoveIcon = new JLabel();
+            InteractiveLabel labelRemoveIcon = new InteractiveLabel("", this.filenamesPanel);
 //            ImageIcon removeIcon = new ImageIcon(this.getClass().getResource("/images/trash.png"));
             ImageIcon removeIcon = new ImageIcon(new ImageIcon(this.getClass().getResource("/images/trash.png")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
             labelRemoveIcon.setIcon(removeIcon);
 
+            labelRemoveIcon.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    JOptionPane d = new JOptionPane();
+                    int retour = d.showConfirmDialog(filenamesPanel, CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.deletefile.message"),
+                            CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.deletefile.title"), JOptionPane.YES_NO_OPTION);
+                    if (retour == 0)//yes
+                    {
+                        removeSelected(filePanel);
+                    }
+                }
+
+            });
+
+
             filePanel.setBackground(Design.BG_COLOR3);
-            filePanel.setPreferredSize(new Dimension(680, 40));
-            filePanel.setMinimumSize(new Dimension(680, 40));
+            filePanel.setPreferredSize(new Dimension(690, 40));
+            filePanel.setMinimumSize(new Dimension(690, 40));
 
             text.setBackground(Design.BG_COLOR);
-            text.setForeground(Design.FG_COLOR);
+            text.setForeground(Design.BG_COLOR4);
             text.setFont(Design.TEXTFIELD_FONT);
-            text.setBorder(BorderFactory.createLineBorder(Design.FG_COLOR));
-            text.setBorder(BorderFactory.createCompoundBorder(
-                    text.getBorder(),
-                    Design.TEXTFIELD_BORDER_FACTORY));
+//            text.setBorder(BorderFactory.createLineBorder(Design.FG_COLOR));
+//            text.setBorder(BorderFactory.createCompoundBorder(
+//                    text.getBorder(),
+//                    Design.TEXTFIELD_BORDER_FACTORY));
             text.setFont(Design.TEXTFIELD_FONT);
 
-            fileConstraints.fill = GridBagConstraints.BOTH;
+            fileConstraints.fill = GridBagConstraints.NONE;
             fileConstraints.anchor = GridBagConstraints.LINE_START;
-            fileConstraints.weightx=1;
-            fileConstraints.weighty=0;
-            fileConstraints.gridx=0;
-            fileConstraints.gridy=0;
-            fileConstraints.gridwidth=1;
+            fileConstraints.weightx = 1;
+            fileConstraints.weighty = 0;
+            fileConstraints.gridx = 0;
+            fileConstraints.gridy = 0;
+            fileConstraints.gridwidth = 1;
             fileConstraints.insets = new Insets(10, 10, 10, 10);
             filePanel.add(labelIcon, fileConstraints);
 
             fileConstraints.fill = GridBagConstraints.NONE;
             fileConstraints.anchor = GridBagConstraints.EAST;
-            fileConstraints.weightx=1;
-            fileConstraints.weighty=0;
-            fileConstraints.gridx=1;
-            fileConstraints.gridy=0;
-            fileConstraints.gridwidth=1;
+            fileConstraints.weightx = 1;
+            fileConstraints.weighty = 0;
+            fileConstraints.gridx = 1;
+            fileConstraints.gridy = 0;
+            fileConstraints.gridwidth = 1;
+            text.setPreferredSize(new Dimension(610, 30));
+            text.setMinimumSize(new Dimension(610, 30));
             fileConstraints.insets = new Insets(10, 10, 10, 10);
             filePanel.add(text, fileConstraints);
 
             fileConstraints.fill = GridBagConstraints.NONE;
             fileConstraints.anchor = GridBagConstraints.LINE_END;
-            fileConstraints.weightx=1;
-            fileConstraints.weighty=0;
-            fileConstraints.gridx=2;
-            fileConstraints.gridy=0;
-            fileConstraints.gridwidth=1;
+            fileConstraints.weightx = 1;
+            fileConstraints.weighty = 0;
+            fileConstraints.gridx = 2;
+            fileConstraints.gridy = 0;
+            fileConstraints.gridwidth = 1;
             fileConstraints.insets = new Insets(10, 10, 10, 10);
             filePanel.add(labelRemoveIcon, fileConstraints);
 
 
             constraints.weightx = 1;
-            constraints.fill= GridBagConstraints.NONE;
+            constraints.fill = GridBagConstraints.NONE;
             constraints.anchor = GridBagConstraints.NORTHWEST;
             constraints.gridx = 0;
             constraints.gridy = lineNumber;
@@ -252,7 +242,7 @@ public class SelectFilesPanel extends JPanel{
         c.setAcceptAllFileFilterUsed(false);
         int rVal = c.showOpenDialog(SelectFilesPanel.this);
         if (rVal == JFileChooser.APPROVE_OPTION) {
-            for(File file:c.getSelectedFiles())
+            for (File file : c.getSelectedFiles())
                 addFileLine(file);
             return c.getSelectedFiles();
         }
@@ -261,21 +251,43 @@ public class SelectFilesPanel extends JPanel{
         return null;
     }
 
-    private boolean isAdd(String fileName){
-        for(Component component:this.getComponents()){
-            if(component.getClass() == InteractiveLabel.class){
-                if(((InteractiveLabel)component).getText().equals(fileName))
+    private boolean isAdd(String fileName) {
+        for (Component component : this.getComponents()) {
+            if (component.getClass() == InteractiveLabel.class) {
+                if (((InteractiveLabel) component).getText().equals(fileName))
                     return true;
             }
         }
         return false;
     }
 
-    private String getFileType(String fileName){
+    private String getFileType(String fileName) {
+        System.out.println(fileName);
+        String[] filename_array = fileName.split("\\.");
+//        System.out.println(filename_array.length);
+        String extension = filename_array[filename_array.length - 1];
+        switch (extension.toLowerCase()) {
+            case "pdf":
+                return "/images/icon_pdf.png";
+            case "zip":
+                return "/images/icon_zip.png";
+            case "xls":
+                return "/images/icon_table.png";
+            case "docx":
+            case "doc":
+                return "/images/icon_office.png";
+            case "jpg":
+            case "jpeg":
+            case "png":
+                return "/images/icon_picture.png";
+            default:
+                return "/images/icon_file.png";
+        }
 
-        return false;
+//
+
+//        return "doc";
     }
-
 
 
 }
