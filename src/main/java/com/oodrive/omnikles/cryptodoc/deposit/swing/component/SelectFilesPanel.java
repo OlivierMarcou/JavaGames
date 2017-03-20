@@ -271,11 +271,33 @@ public class SelectFilesPanel extends JPanel{
         return false;
     }
 
-    private String getFileType(String fileName){
+    private String getFileType(String fileName) {
+        System.out.println(fileName);
+        String[] filename_array = fileName.split("\\.");
+//        System.out.println(filename_array.length);
+        String extension = filename_array[filename_array.length - 1];
+        switch (extension.toLowerCase()) {
+            case "pdf":
+                return "/images/icon_pdf.png";
+            case "zip":
+                return "/images/icon_zip.png";
+            case "xls":
+                return "/images/icon_table.png";
+            case "docx":
+            case "doc":
+                return "/images/icon_office.png";
+            case "jpg":
+            case "jpeg":
+            case "png":
+                return "/images/icon_picture.png";
+            default:
+                return "/images/icon_file.png";
+        }
 
-        return null;
+//
+
+//        return "doc";
     }
-
 
 
 }

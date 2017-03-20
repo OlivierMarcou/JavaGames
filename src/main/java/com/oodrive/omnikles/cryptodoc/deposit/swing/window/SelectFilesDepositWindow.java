@@ -119,19 +119,7 @@ public class SelectFilesDepositWindow extends JFrame {
         centerPanel.add(infos, c);
 //        centerPanel.add(emptyPanel, c);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//        c.fill = GridBagConstraints.NONE;
-//        c.anchor = GridBagConstraints.WEST;
-//        c.gridx=0;
-//        c.gridy=5;
-//        c.gridwidth=1;
-//        centerPanel.add(okBtn, c);
-//
-//        c.fill = GridBagConstraints.NONE;
-//        c.anchor = GridBagConstraints.EAST;
-//        c.gridx=1;
-//        c.gridy=5;
-//        c.gridwidth=1;
-//        centerPanel.add(annulBtn, c);
+
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.LINE_START;
         c.weightx=1;

@@ -17,7 +17,32 @@ public class InteractiveLabel extends JLabel implements MouseListener {
     InteractiveLabel(String title, JPanel parent){
         super(title);
         this.parent = parent;
-        this.addMouseListener(this);
+        this.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
     }
 
     @Override
@@ -50,6 +75,5 @@ public class InteractiveLabel extends JLabel implements MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
-
 
 }
