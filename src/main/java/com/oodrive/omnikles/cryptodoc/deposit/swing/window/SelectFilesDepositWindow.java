@@ -49,7 +49,7 @@ public class SelectFilesDepositWindow extends JFrame {
         JPanel centerPanel = panel.getCenterPanel();
 //        centerPanel.setBackground(Design.BG_COLOR2);
         JPanel emptyPanel = new JPanel();
-        emptyPanel.setBackground(Design.BG_COLOR2);
+        emptyPanel.setBackground(Design.BG_COLOR);
         emptyPanel.setPreferredSize(Design.CENTERPANEL_PREFERED_SIZE);
         emptyPanel.setMinimumSize(Design.CENTERPANEL_PREFERED_SIZE_EMPTY);
 

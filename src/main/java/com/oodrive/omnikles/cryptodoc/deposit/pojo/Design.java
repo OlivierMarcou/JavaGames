@@ -26,6 +26,9 @@ public class Design {
     public final static Color BG_COLOR2 = Color.decode("#7eb500");
     public final static Color BG_COLOR3 = Color.decode("#FFFFFF");
     public final static Color BG_COLOR4 = Color.decode("#555555");
+    public final static Color BG_COLOR6 = Color.decode("#FD70F0");
+    public final static Color BG_COLOR7 = Color.decode("#767143");
+    public final static Color BG_COLOR8 = Color.decode("#FAFD49");
     public final static Color FG_COLOR = Color.WHITE;
     public final static Color OVER_COLOR = Color.decode("#7eb500");
     public final static Color BUTTON_BORDER_COLOR = Color.WHITE;

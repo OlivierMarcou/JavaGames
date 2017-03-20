@@ -2,6 +2,7 @@ package com.oodrive.omnikles.cryptodoc.deposit.swing.window;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.deposit.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.deposit.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.deposit.swing.component.template.GenaralPanelTemplate;
@@ -52,6 +53,13 @@ public class ZipCryptAndSendWindow extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
 
+        JPanel emptyPanel = new JPanel();
+        JPanel emptyPanel2 = new JPanel();
+        emptyPanel.setBackground(Design.BG_COLOR);
+        emptyPanel2.setBackground(Design.BG_COLOR);
+        emptyPanel.setPreferredSize(Design.CENTERPANEL_PREFERED_SIZE);
+        emptyPanel.setMinimumSize(Design.CENTERPANEL_PREFERED_SIZE_EMPTY);
+
         panel.getMyStatusBar().setPagesNumber(4);
         panel.getMyStatusBar().setActualPage(4);
 
@@ -61,26 +69,59 @@ public class ZipCryptAndSendWindow extends JFrame {
             e.printStackTrace();
         }
 
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=1;
         centerPanel.add(paragraphe1, c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.CENTER;
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.weightx=1;
+        c.weighty=0;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
-        centerPanel.add(animate, c);
+        c.insets = new Insets(10, 10, 10, 10);
+        emptyPanel.setPreferredSize(new Dimension(700, 20));
+        emptyPanel.setMinimumSize(new Dimension(700, 20));
+        centerPanel.add(emptyPanel, c);
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.CENTER;
         c.gridx=0;
         c.gridy=2;
         c.gridwidth=1;
+        centerPanel.add(animate, c);
+
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridx=0;
+        c.gridy=3;
+        c.gridwidth=1;
         centerPanel.add(information, c);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.weightx=1;
+        c.weighty=0;
+        c.gridx=0;
+        c.gridy=4;
+        c.gridwidth=1;
+        c.insets = new Insets(10, 10, 10, 10);
+        emptyPanel2.setPreferredSize(new Dimension(700, 200));
+        emptyPanel2.setMinimumSize(new Dimension(700, 200));
+        centerPanel.add(emptyPanel2, c);
 
         if(Configuration.debug) {
             c.fill = GridBagConstraints.NONE;
