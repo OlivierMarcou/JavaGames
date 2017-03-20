@@ -2,36 +2,41 @@ package com.oodrive.omnikles.cryptodoc.deposit.swing.component;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.InteractiveLabel;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.deposit.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.deposit.swing.window.SelectFilesDepositWindow;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by olivier on 07/02/17.
  */
 public class SelectFilesPanel extends JPanel {
 
+    private List<File> files = new ArrayList<>();
+
     private ButtonTemplate parcourirBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page2.button.parcourir"), Design.MAX_SIZE);
-
-    public JPanel getFilenamesPanel() {
-        return filenamesPanel;
-    }
-
-    public void setFilenamesPanel(JPanel filenamesPanel) {
-        this.filenamesPanel = filenamesPanel;
-    }
 
     private JPanel filenamesPanel = new JPanel();
     private JScrollPane scrollPane;
     private SelectFilesDepositWindow parent;
     private int lineNumber = 0;
+
+    public List<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<File> files) {
+        this.files = files;
+    }
 
     public SelectFilesPanel(SelectFilesDepositWindow parent) {
         this.parent = parent;
@@ -103,9 +108,8 @@ public class SelectFilesPanel extends JPanel {
 
     }
 
-    private void removeSelected(Component component) {
-
-        System.out.println(component.getClass());
+    private void removeSelected(Component component, FileLabel label) {
+        files.remove(label.getFile());
         filenamesPanel.remove(component);
         getFilesInfos();
         filenamesPanel.revalidate();
@@ -114,25 +118,18 @@ public class SelectFilesPanel extends JPanel {
 
     public void getFilesInfos() {
         long totalSize = 0;
-        long count = 0;
-        for (Component component : filenamesPanel.getComponents()) {
-            if (component.getClass() == InteractiveLabel.class) {
-                File file = null;
-                if (((InteractiveLabel) component).getText() != null) {
-                    file = new File(((InteractiveLabel) component).getText());
-                    if (file != null && file.exists()) {
-                        totalSize += file.length();
-                        count++;
-                    } else
-                        filenamesPanel.remove(component);
-                }
-            }
+        for (File file : files) {
+            if (file != null && file.exists()) {
+                totalSize += file.length();
+            } else
+                files.remove(file);
         }
+
         String texte = CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.vide");
-        if (count > 0) {
+        if (files.size() > 0) {
             parent.getOkBtn().setEnabled(true);
             texte = CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.infos");
-            texte = texte.replace("<count>", String.valueOf(count));
+            texte = texte.replace("<count>", String.valueOf(files.size()));
             texte = texte.replace("<size>", String.valueOf((totalSize / 1024) / 1024));
             Configuration.totalSizeFiles = totalSize;
         } else {
@@ -141,9 +138,10 @@ public class SelectFilesPanel extends JPanel {
         parent.getInfos().setText(texte);
     }
 
-    public void addFileLine(File fileName) {
-        if (!isAdd(fileName.getPath()) && !fileName.getPath().trim().isEmpty()) {
-            InteractiveLabel text = new InteractiveLabel(fileName.getName(), this.filenamesPanel);
+    public void addFileLine(File file) {
+        if (file != null && file.exists() && !files.contains(file)) {
+            files.add(file);
+            JLabel text = new JLabel(file.getName());
 
             GridBagConstraints constraints = new GridBagConstraints();
             GridBagConstraints fileConstraints = new GridBagConstraints();
@@ -151,10 +149,10 @@ public class SelectFilesPanel extends JPanel {
 
             JLabel labelIcon = new JLabel();
 //            ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/icon_pdf.png"));
-            ImageIcon icon = new ImageIcon(new ImageIcon(this.getClass().getResource(getFileType(fileName.getName()))).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
+            ImageIcon icon = new ImageIcon(new ImageIcon(this.getClass().getResource(getFileType(file.getName()))).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
             labelIcon.setIcon(icon);
 
-            InteractiveLabel labelRemoveIcon = new InteractiveLabel("", this.filenamesPanel);
+            FileLabel labelRemoveIcon = new FileLabel("", file);
 //            ImageIcon removeIcon = new ImageIcon(this.getClass().getResource("/images/trash.png"));
             ImageIcon removeIcon = new ImageIcon(new ImageIcon(this.getClass().getResource("/images/trash.png")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
             labelRemoveIcon.setIcon(removeIcon);
@@ -167,12 +165,11 @@ public class SelectFilesPanel extends JPanel {
                             CryptoDoc.textProperties.getProperty("depot.page2.optionpanel.deletefile.title"), JOptionPane.YES_NO_OPTION);
                     if (retour == 0)//yes
                     {
-                        removeSelected(filePanel);
+                        removeSelected(filePanel, labelRemoveIcon);
                     }
                 }
 
             });
-
 
             filePanel.setBackground(Design.BG_COLOR3);
             filePanel.setPreferredSize(new Dimension(690, 40));
@@ -219,18 +216,15 @@ public class SelectFilesPanel extends JPanel {
             fileConstraints.insets = new Insets(10, 10, 10, 10);
             filePanel.add(labelRemoveIcon, fileConstraints);
 
-
             constraints.weightx = 1;
             constraints.fill = GridBagConstraints.NONE;
             constraints.anchor = GridBagConstraints.NORTHWEST;
             constraints.gridx = 0;
-            constraints.gridy = lineNumber;
+            constraints.gridy = files.size()-1;
             constraints.gridwidth = 1;
             constraints.insets = new Insets(5, 10, 5, 10);
 
-
             filenamesPanel.add(filePanel, constraints);
-            lineNumber++;
             getFilesInfos();
             filenamesPanel.revalidate();
             filenamesPanel.repaint();
@@ -251,16 +245,6 @@ public class SelectFilesPanel extends JPanel {
         if (rVal == JFileChooser.CANCEL_OPTION) {
         }
         return null;
-    }
-
-    private boolean isAdd(String fileName) {
-        for (Component component : this.getComponents()) {
-            if (component.getClass() == InteractiveLabel.class) {
-                if (((InteractiveLabel) component).getText().equals(fileName))
-                    return true;
-            }
-        }
-        return false;
     }
 
     private String getFileType(String fileName) {

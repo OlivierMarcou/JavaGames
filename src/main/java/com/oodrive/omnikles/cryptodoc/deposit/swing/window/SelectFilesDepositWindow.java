@@ -2,7 +2,6 @@ package com.oodrive.omnikles.cryptodoc.deposit.swing.window;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.InteractiveLabel;
 import com.oodrive.omnikles.cryptodoc.deposit.swing.component.SelectFilesPanel;
 import com.oodrive.omnikles.cryptodoc.deposit.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.deposit.swing.component.template.GenaralPanelTemplate;
@@ -13,8 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by olivier on 02/02/17.
@@ -156,18 +153,7 @@ public class SelectFilesDepositWindow extends JFrame {
         okBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                java.util.List<File> files = new ArrayList<>();
-                for(Component component:selectedFilePanel.getFilenamesPanel().getComponents())
-                    if(component.getClass() == InteractiveLabel.class){
-                        File file = null;
-                        if(((InteractiveLabel)component).getText() != null){
-                            file = new File(((InteractiveLabel)component).getText());
-                            if(file != null && file.exists()){
-                             files.add(file);
-                            }
-                        }
-                    }
-                new Step2Window(files);
+                new Step2Window(selectedFilePanel.getFiles());
                 dispose();
             }
         });
