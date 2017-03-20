@@ -34,11 +34,7 @@ public class CryptoDoc {
     }
 
     public static void main(String[] args) throws InvalidKeyException, javax.security.cert.CertificateException, IOException, ClassNotFoundException, IllegalAccessException, InstantiationException, UnsupportedLookAndFeelException {
-        CryptoDoc cryptoDoc = new CryptoDoc();
-//        TestWindow test = new TestWindow();
-//        test.gossl();
         Configuration.initParameters(args);
-
         System.out.println(Configuration.activFolder);
 
         if(Configuration.parameters.get("action").equals("depot")) {
