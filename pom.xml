@@ -140,7 +140,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <finalName>CryptoDoc</finalName>
-                    <outputDirectory>.</outputDirectory>
+                    <outputDirectory>target</outputDirectory>
                     <archive>
                         <addMavenDescriptor>true</addMavenDescriptor>
                         <manifestEntries>
