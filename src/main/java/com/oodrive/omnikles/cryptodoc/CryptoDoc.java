@@ -1,8 +1,8 @@
 package com.oodrive.omnikles.cryptodoc;
 
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.deposit.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.deposit.swing.window.IntroWindow;
+import com.oodrive.omnikles.cryptodoc.deposit.swing.window.LogWindow;
 import com.oodrive.omnikles.cryptodoc.deposit.swing.window.TestWindow;
 
 import javax.swing.*;
@@ -24,8 +24,11 @@ public class CryptoDoc {
 
     public static Properties textProperties = new Properties();
 
-    public CryptoDoc() throws IOException {
-        SslConnexionService sc = new SslConnexionService();
+    public CryptoDoc(String[] args) throws IOException {
+        Configuration.initParameters(args);
+        if(Configuration.debug){
+            new LogWindow();
+        }
         System.out.println("WebStart CryptoDoc - version : " + getAppVersion());
         if(Configuration.parameters.get("language") == null || Configuration.parameters.get("language").isEmpty()) {
             Configuration.parameters.put("language", "fr");
@@ -33,9 +36,10 @@ public class CryptoDoc {
         initTextes(Configuration.parameters.get("language"));
     }
 
-    public static void main(String[] args) throws InvalidKeyException, javax.security.cert.CertificateException, IOException, ClassNotFoundException, IllegalAccessException, InstantiationException, UnsupportedLookAndFeelException {
-        CryptoDoc cryptoDoc = new CryptoDoc();
-        Configuration.initParameters(args);
+    public static void main(String[] args) throws InvalidKeyException, javax.security.cert.CertificateException,
+            IOException, ClassNotFoundException, IllegalAccessException,
+            InstantiationException, UnsupportedLookAndFeelException {
+        CryptoDoc cryptoDoc = new CryptoDoc(args);
         System.out.println(Configuration.activFolder);
 
         if(Configuration.parameters.get("action").equals("depot")) {
