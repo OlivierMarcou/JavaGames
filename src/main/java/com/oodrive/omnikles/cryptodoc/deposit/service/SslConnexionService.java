@@ -2,9 +2,9 @@ package com.oodrive.omnikles.cryptodoc.deposit.service;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.AnimatedProgressBar;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.ProgressEntityWrapper;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.ProgressListener;
+import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.cryptodoc.swing.component.ProgressEntityWrapper;
+import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;

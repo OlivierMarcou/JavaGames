@@ -1,7 +1,7 @@
 package com.oodrive.omnikles.cryptodoc.deposit.thread;
 
 import com.oodrive.omnikles.cryptodoc.deposit.service.SslConnexionService;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 
 import java.io.File;
 

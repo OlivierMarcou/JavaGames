@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.cryptodoc.deposit.swing.component.template;
+package com.oodrive.omnikles.cryptodoc.swing.component.template;
 
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
 
@@ -7,22 +7,22 @@ import javax.swing.*;
 /**
  * Created by olivier on 07/03/17.
  */
-public class SummaryTextTemplate extends JLabel {
+public class GeneralTextTemplate extends JLabel {
 
-
-    public SummaryTextTemplate(String text){
+    public GeneralTextTemplate(String text){
         super(text);
         init();
     }
 
-    public SummaryTextTemplate(){
+    public GeneralTextTemplate(){
         super();
         init();
     }
 
     private void init(){
-        setFont(Design.SUMMARY_FONT);
+        setFont(Design.TEXT_FONT);
         setForeground(Design.FG_COLOR);
         setBackground(Design.BG_COLOR);
     }
+
 }

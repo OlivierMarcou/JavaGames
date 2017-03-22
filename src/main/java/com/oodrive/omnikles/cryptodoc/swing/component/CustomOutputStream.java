@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.cryptodoc.deposit.swing.component;
+package com.oodrive.omnikles.cryptodoc.swing.component;
 
 import javax.swing.*;
 import java.io.IOException;
