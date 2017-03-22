@@ -118,7 +118,7 @@ public class AESService {
             } catch (IllegalBlockSizeException e) {
                 e.printStackTrace();
             }
-            File enveloppeZip = new File(Configuration.activFolder + File.separatorChar + Configuration.FILENAME_ZIP);
+            File enveloppeZip = new File(Configuration.activFolder + File.separatorChar + Configuration.FILENAME_ZIP+Configuration.parameters.get("ids")+".zip");
             zs.setProgressBar(progressBar);
             zs.setJobNumber(2);
             zs.setMaxPercent(25);
