@@ -17,7 +17,7 @@ public class Configuration {
     public static String version = null;
 
     public static final String WINDOWS_KEYSTORE = "Windows-MY";
-    public static final String FILENAME_ZIP = "enveloppe.zip";
+    public static final String FILENAME_ZIP = "enveloppe";
     public static final String FILENAME_CRYPTED_ZIP = "enveloppe_zip.crypt";
     public static final String FILENAME_DECRYPTED_ZIP = "enveloppe_decrypte.zip";
     public static final String FILENAME_CRYPTED_KEYS = "enveloppe.key.p7m";
