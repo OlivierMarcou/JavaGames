@@ -21,8 +21,8 @@ public class ButtonTemplate extends JButton{
         init(Design.PREFERED_SIZE);
     }
 
-    public ButtonTemplate(String texte, Dimension resize){
-        super(texte.toUpperCase());
+    public ButtonTemplate(String text, Dimension resize){
+        super((text != null) ? text.toUpperCase():"");
         init(resize);
     }
 
