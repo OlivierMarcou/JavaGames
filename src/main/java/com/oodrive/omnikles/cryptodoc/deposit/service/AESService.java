@@ -3,7 +3,7 @@ package com.oodrive.omnikles.cryptodoc.deposit.service;
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.deposit.utils.CertificatesUtils;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;

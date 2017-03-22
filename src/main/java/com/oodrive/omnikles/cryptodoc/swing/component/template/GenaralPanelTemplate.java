@@ -1,7 +1,7 @@
-package com.oodrive.omnikles.cryptodoc.deposit.swing.component.template;
+package com.oodrive.omnikles.cryptodoc.swing.component.template;
 
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.FooterBar;
+import com.oodrive.omnikles.cryptodoc.swing.component.FooterBar;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

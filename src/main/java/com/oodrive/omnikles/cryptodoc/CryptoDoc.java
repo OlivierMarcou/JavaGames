@@ -1,9 +1,9 @@
 package com.oodrive.omnikles.cryptodoc;
 
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.window.IntroWindow;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.window.LogWindow;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.window.TestWindow;
+import com.oodrive.omnikles.cryptodoc.swing.window.IntroWindow;
+import com.oodrive.omnikles.cryptodoc.swing.window.LogWindow;
+import com.oodrive.omnikles.cryptodoc.swing.window.TestWindow;
 
 import javax.swing.*;
 import java.io.FileNotFoundException;
@@ -63,7 +63,7 @@ public class CryptoDoc {
             Configuration.parameters.put("filename","test.pdf");
             Configuration.parameters.put("urlCertificat","http://localhost/");
             Configuration.parameters.put("urlDepot","http://localhost/");
-            JFrame test = (JFrame) Class.forName("com.oodrive.omnikles.cryptodoc.deposit.swing.window."+Configuration.parameters.get("class")).newInstance();
+            JFrame test = (JFrame) Class.forName("com.oodrive.omnikles.cryptodoc.swing.window."+Configuration.parameters.get("class")).newInstance();
             test.setVisible(true);
         }
 

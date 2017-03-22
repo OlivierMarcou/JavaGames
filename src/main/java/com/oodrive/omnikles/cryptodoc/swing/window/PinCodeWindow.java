@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.cryptodoc.deposit.swing.window;
+package com.oodrive.omnikles.cryptodoc.swing.window;
 
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;

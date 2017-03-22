@@ -5,7 +5,7 @@ import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.deposit.service.AESService;
 import com.oodrive.omnikles.cryptodoc.deposit.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.deposit.service.ZipService;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 
 import javax.swing.*;
 import java.io.File;

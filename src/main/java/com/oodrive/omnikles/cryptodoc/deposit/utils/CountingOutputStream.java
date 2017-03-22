@@ -1,6 +1,6 @@
 package com.oodrive.omnikles.cryptodoc.deposit.utils;
 
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.ProgressListener;
+import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

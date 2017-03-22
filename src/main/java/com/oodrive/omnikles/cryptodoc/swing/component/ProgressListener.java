@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.cryptodoc.deposit.swing.component;
+package com.oodrive.omnikles.cryptodoc.swing.component;
 
 /**
  * Created by olivier on 09/02/17.

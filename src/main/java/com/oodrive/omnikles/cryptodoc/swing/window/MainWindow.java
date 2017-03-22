@@ -1,13 +1,13 @@
-package com.oodrive.omnikles.cryptodoc.deposit.swing.window;
+package com.oodrive.omnikles.cryptodoc.swing.window;
 
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.deposit.service.AESService;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.template.ButtonTemplate;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.CertificatsComboBox;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.template.GenaralPanelTemplate;
-import com.oodrive.omnikles.cryptodoc.deposit.swing.component.template.GeneralTextTemplate;
+import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
+import com.oodrive.omnikles.cryptodoc.swing.component.CertificatsComboBox;
+import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;
+import com.oodrive.omnikles.cryptodoc.swing.component.template.GeneralTextTemplate;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.cryptodoc.deposit.swing.window;
+package com.oodrive.omnikles.cryptodoc.swing.window;
 
 
 import javax.swing.*;
