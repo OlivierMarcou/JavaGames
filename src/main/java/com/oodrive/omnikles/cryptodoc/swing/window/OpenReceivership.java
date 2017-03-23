@@ -10,6 +10,7 @@ import com.oodrive.omnikles.cryptodoc.swing.component.template.GeneralTextTempla
 import com.oodrive.omnikles.cryptodoc.swing.component.template.SummaryTextTemplate;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -133,7 +134,7 @@ public class OpenReceivership extends JFrame {
         selectBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectDepositPanel.parseFile(fileChooser());
+                selectDepositPanel.parseFile(zipFileChooser());
                 page1Paragraphe1.setVisible(false);
                 selectBtn.setVisible(false);
 
@@ -165,11 +166,12 @@ public class OpenReceivership extends JFrame {
         });
     }
 
-    private File fileChooser() {
+    private File zipFileChooser() {
         JFileChooser c = new JFileChooser(Configuration.activFolder);
         c.setDialogTitle(CryptoDoc.textProperties.getProperty("open.page1.filechooser.selectfiles"));
         c.setMultiSelectionEnabled(false);
         c.setAcceptAllFileFilterUsed(false);
+        c.setFileFilter(new FileNameExtensionFilter("Zip File","zip"));
         int rVal = c.showOpenDialog(this);
         if (rVal == JFileChooser.APPROVE_OPTION) {
             return c.getSelectedFile();
