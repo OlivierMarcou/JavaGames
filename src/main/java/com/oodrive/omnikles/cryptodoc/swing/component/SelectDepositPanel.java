@@ -8,8 +8,6 @@ import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 
 /**
@@ -67,75 +65,22 @@ public class SelectDepositPanel extends JPanel {
         zs.unzip(zipFile.getPath(), destinationFolderpath );
         File[] contentZipFolder = new File(destinationFolderpath ).listFiles();
         for (int i = 0; i < contentZipFolder.length; i++) {
-            JLabel text = new JLabel(contentZipFolder[i].getName());
-
-            GridBagConstraints fileConstraints = new GridBagConstraints();
-            JPanel filePanel = new JPanel();
-            filePanel.setLayout(new GridBagLayout());
-
-            FileLabel labelOpenIcon = new FileLabel("", contentZipFolder[i]);
-            ImageIcon openIcon = new ImageIcon(new ImageIcon(this.getClass().getResource("/images/notopen.jpeg")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
-            labelOpenIcon.setIcon(openIcon);
-
-            labelOpenIcon.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                }
-            });
-
-            filePanel.setBackground(Design.BG_COLOR3);
-            filePanel.setPreferredSize(new Dimension(690, 40));
-            filePanel.setMinimumSize(new Dimension(690, 40));
-
-            text.setBackground(Design.BG_COLOR);
-            text.setForeground(Design.BG_COLOR4);
-            text.setFont(Design.TEXTFIELD_FONT);
-            text.setFont(Design.TEXTFIELD_FONT);
-
-            JCheckBox check = new JCheckBox();
-            fileConstraints.fill = GridBagConstraints.NONE;
-            fileConstraints.anchor = GridBagConstraints.LINE_START;
-            fileConstraints.weightx = 1;
-            fileConstraints.weighty = 0;
-            fileConstraints.gridx = 0;
-            fileConstraints.gridy = 0;
-            fileConstraints.gridwidth = 1;
-            fileConstraints.insets = new Insets(10, 10, 10, 10);
-            filePanel.add(check, fileConstraints);
-
-            fileConstraints.fill = GridBagConstraints.NONE;
-            fileConstraints.anchor = GridBagConstraints.CENTER;
-            fileConstraints.weightx = 1;
-            fileConstraints.weighty = 0;
-            fileConstraints.gridx = 1;
-            fileConstraints.gridy = 0;
-            fileConstraints.gridwidth = 1;
-//            text.setPreferredSize(new Dimension(610, 30));
-//            text.setMinimumSize(new Dimension(610, 30));
-            fileConstraints.insets = new Insets(10, 10, 10, 10);
-            filePanel.add(text, fileConstraints);
-
-            fileConstraints.fill = GridBagConstraints.NONE;
-            fileConstraints.anchor = GridBagConstraints.LINE_END;
-            fileConstraints.weightx = 1;
-            fileConstraints.weighty = 0;
-            fileConstraints.gridx = 2;
-            fileConstraints.gridy = 0;
-            fileConstraints.gridwidth = 1;
-            fileConstraints.insets = new Insets(10, 10, 10, 10);
-            filePanel.add(labelOpenIcon, fileConstraints);
-
-            GridBagConstraints listFileContraints = new GridBagConstraints();
-
-
-            fileConstraints.fill = GridBagConstraints.NONE;
-            fileConstraints.anchor = GridBagConstraints.BASELINE;
-            fileConstraints.gridx = 0;
-            fileConstraints.gridy = i;
-            scrollablePanel.add(filePanel, fileConstraints);
+            getZipLinePanel(contentZipFolder[i], i);
             getFilesInfos(contentZipFolder);
         }
         revalidate();
         repaint();
     }
+
+    private void getZipLinePanel(File file, int indexLine) {
+        JPanel filePanel = new DepositFilePanel(file);
+
+        GridBagConstraints listFileContraints = new GridBagConstraints();
+        listFileContraints.fill = GridBagConstraints.NONE;
+        listFileContraints.anchor = GridBagConstraints.BASELINE;
+        listFileContraints.gridx = 0;
+        listFileContraints.gridy = indexLine;
+        scrollablePanel.add(filePanel, listFileContraints);
+    }
+
 }
