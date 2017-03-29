@@ -17,11 +17,11 @@ import java.util.List;
  */
 public class DepositFilesRunnable implements Runnable{
 
-    private ZipService zs = new ZipService();
+    private ZipService zs = ZipService.getInstance();
     private File zip ;
     private List<File> files;
     private AnimatedProgressBar progressBar = null;
-    AESService as = new AESService();
+    AESService as = AESService.getInstance();
 
     public AnimatedProgressBar getProgressBar() {
         return progressBar;
@@ -63,7 +63,7 @@ public class DepositFilesRunnable implements Runnable{
         zs.addFilesToNewZip(zip, files);
         System.out.println("zip ok");
 
-        SslConnexionService ssl = new SslConnexionService();
+        SslConnexionService ssl = SslConnexionService.getInstance();
         java.util.List<String> certificats = ssl.getCertificatsWithJSessionId(Configuration.parameters.get("urlCertificat"), Configuration.parameters.get("sessionid"));
         if(certificats == null || certificats.size() <= 0) {
             JOptionPane d = new JOptionPane();

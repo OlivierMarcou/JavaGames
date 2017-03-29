@@ -16,14 +16,18 @@ public class DepositFilePanel extends JPanel{
 
     private File file;
     private GridBagConstraints fileConstraints = new GridBagConstraints();
-    private JLabel text = new JLabel(file.getName());
+    private JLabel text = new JLabel();
     private JCheckBox check = new JCheckBox();
     private FileLabel labelOpenIcon = null;
-    private ImageIcon openIcon = null;
-
+    private ImageIcon closeIcon = new ImageIcon(new ImageIcon(DepositFilePanel.this.getClass().getResource("/images/notopen.jpeg")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
+    private ImageIcon openIcon =  new ImageIcon(new ImageIcon(DepositFilePanel.this.getClass().getResource("/images/openletter.png")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
     private MouseListener checkedListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2 && !e.isConsumed()) {
+                e.consume();
+                labelOpenIcon.setIcon(openIcon);
+            }
         }
 
         @Override
@@ -45,10 +49,10 @@ public class DepositFilePanel extends JPanel{
     };
     public DepositFilePanel(File file) {
         this.file = file;
+        text.setText(file.getName());
         setLayout(new GridBagLayout());
         labelOpenIcon = new FileLabel("", file);
-        openIcon = new ImageIcon(new ImageIcon(DepositFilePanel.this.getClass().getResource("/images/notopen.jpeg")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
-        labelOpenIcon.setIcon(openIcon);
+        labelOpenIcon.setIcon(closeIcon);
         labelOpenIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -86,7 +90,7 @@ public class DepositFilePanel extends JPanel{
         fileConstraints.insets = new Insets(10, 10, 10, 10);
         add(text, fileConstraints);
 
-        text.addMouseListener(checkedListener);
+        addMouseListener(checkedListener);
 
         fileConstraints.fill = GridBagConstraints.NONE;
         fileConstraints.anchor = GridBagConstraints.LINE_END;

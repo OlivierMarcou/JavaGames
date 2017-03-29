@@ -24,7 +24,7 @@ public class TestRunnable implements Runnable{
 
     @Override
     public void run() {
-        SslConnexionService sc = new SslConnexionService();
+        SslConnexionService sc = SslConnexionService.getInstance();
         sc.setJobNumber(3);
         sc.setMaxPercent(25);
         if(file != null && file.exists())

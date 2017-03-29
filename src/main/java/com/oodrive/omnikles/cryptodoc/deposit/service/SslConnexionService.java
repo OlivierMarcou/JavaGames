@@ -35,13 +35,11 @@ import java.util.List;
 /**
  * Created by olivier on 21/11/16.
  */
-public class SslConnexionService {
+public class SslConnexionService{
 
     private AnimatedProgressBar uploadBar = null;
     private boolean debug = true;
-
-    int percentMem = -1;
-
+    private int percentMem = -1;
     private int jobNumber = 0;
     private int maxPercent = 100 ;
 
@@ -111,6 +109,12 @@ public class SslConnexionService {
         return null;
     }
 
+
+    public void post(String url, List<NameValuePair> parameters) throws  IOException {
+        CloseableHttpResponse httpsReponse = null;
+        httpsReponse = getResponseHttpPost(url, parameters);
+        httpsReponse.close();
+    }
 
     /* -------------------------------- PRIVATE ------------------------------*/
 
@@ -232,7 +236,7 @@ public class SslConnexionService {
         JSONObject obj = null;
         try {
             obj = new JSONObject(jsonCertificat);
-            JSONArray certificats = obj.getJSONArray("certificatesB64");
+            JSONArray certificats = obj.getJSONArray("certificats");
             List<String> certificatsB64 = new ArrayList();
             for(int i=0; i<certificats.length(); i++){
                 certificatsB64.add(certificats.get(i).toString().replaceAll("\r", ""));
@@ -242,12 +246,6 @@ public class SslConnexionService {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public void post(String url, List<NameValuePair> parameters) throws  IOException {
-        CloseableHttpResponse httpsReponse = null;
-        httpsReponse = getResponseHttpPost(url, parameters);
-        httpsReponse.close();
     }
 
     private CloseableHttpResponse getResponseHttpPost(String url, List<NameValuePair> parameters) throws  IOException {
@@ -264,4 +262,17 @@ public class SslConnexionService {
         return httpsReponse;
     }
 
+    public static SslConnexionService getInstance() {
+        if (null == instance) {
+            getUniqueInstance__();
+        }
+        return instance;
+    }
+    synchronized private static void getUniqueInstance__() {
+        instance =  new SslConnexionService();
+    }
+    private SslConnexionService() {
+    }
+
+    private static SslConnexionService instance;
 }

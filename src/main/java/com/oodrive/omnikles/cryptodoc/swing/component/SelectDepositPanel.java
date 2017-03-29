@@ -17,7 +17,7 @@ public class SelectDepositPanel extends JPanel {
 
     private JScrollPane scrollPane;
     private OpenReceivership parent;
-    private ZipService zs = new ZipService();
+    private ZipService zs = ZipService.getInstance();
     private JPanel scrollablePanel = new JPanel();
 
     public SelectDepositPanel(OpenReceivership parent) {

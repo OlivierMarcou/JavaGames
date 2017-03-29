@@ -140,4 +140,17 @@ public class ZipService {
         return null;
     }
 
+    public static ZipService getInstance() {
+        if (null == instance) {
+            getUniqueInstance__();
+        }
+        return instance;
+    }
+    synchronized private static void getUniqueInstance__() {
+        instance =  new ZipService();
+    }
+    private ZipService() {
+    }
+
+    private static ZipService instance;
 }

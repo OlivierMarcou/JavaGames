@@ -1,19 +1,25 @@
 package com.oodrive.omnikles.cryptodoc.swing.component;
 
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;
+import com.oodrive.omnikles.cryptodoc.deposit.service.AESService;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * Created by olivier on 24/01/17.
  */
 public class CertificatsComboBox extends JComboBox<KeyPair> implements ActionListener {
-
+    AESService aes = AESService.getInstance();
 
     public CertificatsComboBox(){
-        addActionListener(this);
+        List<KeyPair> certificats = aes.getInstalledCertificats();
+        for(KeyPair certificat:certificats){
+            addItem(certificat);
+            System.out.println(certificat.getPkB64());
+        }addActionListener(this);
     }
 
     protected void initSelected(ActionEvent evt) {
