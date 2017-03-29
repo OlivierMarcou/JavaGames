@@ -15,7 +15,7 @@ public class LogWindow extends JFrame {
     private JScrollPane scrollPane;
     private JTextArea textArea = new JTextArea(10, 10);
     private PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
-    private SslConnexionService ssl = new SslConnexionService();
+    private SslConnexionService ssl = SslConnexionService.getInstance();
 
     private int charNumber = 0;
     public LogWindow() {

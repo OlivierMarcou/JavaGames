@@ -19,10 +19,10 @@ import java.util.zip.ZipFile;
  */
 public class PinCodeWindow extends JDialog{
 
-    private ZipService zs = new ZipService();
+    private ZipService zs = ZipService.getInstance();
     private JTextField txtPassword = new JTextField();
     private MainWindow parent;
-    private AESService aes = new AESService();
+    private AESService aes = AESService.getInstance();
 
     @Override
     public MainWindow getParent() {
@@ -77,7 +77,7 @@ public class PinCodeWindow extends JDialog{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                SslConnexionService ssl = new SslConnexionService();
+                SslConnexionService ssl = SslConnexionService.getInstance();
                 //TODO : deja téléchargé, mais donner quand meme la possibilité de le refaire dans le web start
                 // changer ici pas un filechooser de sequestre
                 File f = ssl.sslDownloadFile(
@@ -93,7 +93,6 @@ public class PinCodeWindow extends JDialog{
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
-                AESService aesService = new AESService();
 
                 byte[] secret = new byte[0];
                 try {
@@ -105,7 +104,7 @@ public class PinCodeWindow extends JDialog{
                     byte[] content  = zs.getContentFile(new ZipFile(f), Configuration.FILENAME_CRYPTED_KEYS);
                     if(kp != null) {
                         System.out.println("Begin decode sercret key ...");
-                        secret = aesService.decodeSecretKeyByCertificat(content, kp);
+                        secret = aes.decodeSecretKeyByCertificat(content, kp);
                         System.out.println("End decode sercret key ...");
                     }else {
                         System.out.println("aucun certificat selectionné." );
@@ -118,7 +117,7 @@ public class PinCodeWindow extends JDialog{
                                     + File.separatorChar
                                     + Configuration.FILENAME_CRYPTED_ZIP);
                 try {
-                    aesService.decryptFileWithSecretKey(cryptedFile
+                    aes.decryptFileWithSecretKey(cryptedFile
                             , new File(Configuration.activFolder
                                     + File.separatorChar
                                     + Configuration.FILENAME_DECRYPTED_ZIP), secret);

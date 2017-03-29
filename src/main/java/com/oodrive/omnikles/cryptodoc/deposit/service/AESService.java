@@ -3,8 +3,8 @@ package com.oodrive.omnikles.cryptodoc.deposit.service;
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;
-import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.deposit.utils.CertificatesUtils;
+import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +52,7 @@ public class AESService {
         this.progressBar = progressBar;
     }
 
-    private ZipService zs = new ZipService();
+    private ZipService zs = ZipService.getInstance();
 
     private int jobNumber = 0;
     private int maxPercent = 100 ;
@@ -71,22 +71,6 @@ public class AESService {
 
     public void setJobNumber(int jobNumber) {
         this.jobNumber = jobNumber;
-    }
-
-    public AESService(){
-        char[] password = new char[10];
-        for (int i = 0; i<10; i++){
-            long codeAscii = Math.round( 33 + (Math.random() * (127 - 33)));
-            password[i] = ((char) codeAscii);
-        }
-        byte[] salt = new byte[] {1,5,5,6,6};
-        try {
-            generateAES256Key(password, salt);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        }
     }
 
     public File crypteByCertificats(File depositZipFile) throws IOException {
@@ -425,5 +409,33 @@ public class AESService {
         return "echec";
     }
 
+
+    public static AESService getInstance() {
+        if (null == instance) {
+            getUniqueInstance__();
+        }
+        return instance;
+    }
+    synchronized private static void getUniqueInstance__() {
+        instance =  new AESService();
+    }
+
+    private AESService() {
+        char[] password = new char[10];
+        for (int i = 0; i<10; i++){
+            long codeAscii = Math.round( 33 + (Math.random() * (127 - 33)));
+            password[i] = ((char) codeAscii);
+        }
+        byte[] salt = new byte[] {1,5,5,6,6};
+        try {
+            generateAES256Key(password, salt);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static AESService instance;
 
 }

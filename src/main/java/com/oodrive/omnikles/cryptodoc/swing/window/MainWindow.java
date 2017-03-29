@@ -26,7 +26,7 @@ public class MainWindow extends JFrame {
 
     private CertificatsComboBox listCertificat = new CertificatsComboBox();
     private ButtonTemplate btnSelected = new ButtonTemplate("Selectionner");
-    private AESService aes = new AESService();
+    private AESService aes = AESService.getInstance();
 
     private PinCodeWindow pinCodeWindow = new PinCodeWindow( this);
 
