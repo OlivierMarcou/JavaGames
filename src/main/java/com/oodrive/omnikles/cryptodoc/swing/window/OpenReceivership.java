@@ -3,6 +3,7 @@ package com.oodrive.omnikles.cryptodoc.swing.window;
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.swing.component.CertificatesComboBox;
 import com.oodrive.omnikles.cryptodoc.swing.component.SelectDepositPanel;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;
@@ -32,6 +33,8 @@ public class OpenReceivership extends JFrame {
     private GeneralTextTemplate infos = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.vide"));
     private SelectDepositPanel selectDepositPanel = new SelectDepositPanel(this);
 
+    private CertificatesComboBox listCertificate = new CertificatesComboBox();
+    private GeneralTextTemplate lblCertificates = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.list.certificate"));
     private GenaralPanelTemplate panel = null;
 
     public ButtonTemplate getOpenBtn() {
@@ -65,14 +68,7 @@ public class OpenReceivership extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
 
-        panel.getMyStatusBar().setPagesNumber(3);
-        panel.getMyStatusBar().setActualPage(1);
-
-        page2Paragraphe1.setVisible(false);
-        selectDepositPanel.setVisible(false);
-        infos.setVisible(false);
-        openBtn.setVisible(false);
-        backBtn.setVisible(false);
+        activateScreen(1);
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -111,17 +107,32 @@ public class OpenReceivership extends JFrame {
         c.gridwidth=2;
         centerPanel.add(infos, c);
 
+
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
         c.gridy=3;
+        c.gridwidth=1;
+        centerPanel.add(lblCertificates, c);
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=1;
+        c.gridy=3;
+        c.gridwidth=1;
+        centerPanel.add(listCertificate, c);
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=4;
         c.gridwidth=1;
         centerPanel.add(backBtn, c);
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=1;
-        c.gridy=3;
+        c.gridy=4;
         c.gridwidth=1;
         centerPanel.add(openBtn, c);
 
@@ -135,33 +146,13 @@ public class OpenReceivership extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectDepositPanel.parseFile(zipFileChooser());
-                page1Paragraphe1.setVisible(false);
-                selectBtn.setVisible(false);
-
-                page2Paragraphe1.setVisible(true);
-                selectDepositPanel.setVisible(true);
-                infos.setVisible(true);
-                openBtn.setVisible(true);
-                backBtn.setVisible(true);
-
-                panel.getMyStatusBar().setPagesNumber(3);
-                panel.getMyStatusBar().setActualPage(2);
+                activateScreen(2);
             }
         });
         backBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                page1Paragraphe1.setVisible(true);
-                selectBtn.setVisible(true);
-
-                page2Paragraphe1.setVisible(false);
-                selectDepositPanel.setVisible(false);
-                infos.setVisible(false);
-                openBtn.setVisible(false);
-                backBtn.setVisible(false);
-
-                panel.getMyStatusBar().setPagesNumber(3);
-                panel.getMyStatusBar().setActualPage(1);
+                activateScreen(1);
             }
         });
     }
@@ -179,5 +170,33 @@ public class OpenReceivership extends JFrame {
         if (rVal == JFileChooser.CANCEL_OPTION) {
         }
         return null;
+    }
+
+    private void activateScreen(int screennumber){
+        boolean one = true;
+        boolean two = false;
+        switch (screennumber ) {
+            case 1:
+                one = true;
+                two = false;
+                break;
+            case 2:
+                one = false;
+                two = true;
+                break;
+        }
+        page1Paragraphe1.setVisible(one);
+        selectBtn.setVisible(one);
+
+        page2Paragraphe1.setVisible(two);
+        selectDepositPanel.setVisible(two);
+        infos.setVisible(two);
+        openBtn.setVisible(two);
+        backBtn.setVisible(two);
+        lblCertificates.setVisible(two);
+        listCertificate.setVisible(two);
+
+        panel.getMyStatusBar().setPagesNumber(3);
+        panel.getMyStatusBar().setActualPage(screennumber);
     }
 }

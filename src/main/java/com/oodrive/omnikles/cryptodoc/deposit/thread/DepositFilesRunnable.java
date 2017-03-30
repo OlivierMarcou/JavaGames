@@ -64,7 +64,7 @@ public class DepositFilesRunnable implements Runnable{
         System.out.println("zip ok");
 
         SslConnexionService ssl = SslConnexionService.getInstance();
-        java.util.List<String> certificats = ssl.getCertificatsWithJSessionId(Configuration.parameters.get("urlCertificat"), Configuration.parameters.get("sessionid"));
+        java.util.List<String> certificats = ssl.getCertificatesWithJSessionId(Configuration.parameters.get("urlCertificat"), Configuration.parameters.get("sessionid"));
         if(certificats == null || certificats.size() <= 0) {
             JOptionPane d = new JOptionPane();
             int retour = d.showConfirmDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail"),
@@ -78,7 +78,7 @@ public class DepositFilesRunnable implements Runnable{
             as.setProgressBar(progressBar);
             as.setJobNumber(1);
             as.setMaxPercent(25);
-            enveloppe = as.crypteByCertificats(zip);
+            enveloppe = as.cryptedByCertificates(zip);
         } catch (IOException e) {
             e.printStackTrace();
         }

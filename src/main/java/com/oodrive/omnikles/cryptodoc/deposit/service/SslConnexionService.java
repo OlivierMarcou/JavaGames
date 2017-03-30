@@ -59,12 +59,12 @@ public class SslConnexionService{
         this.jobNumber = jobNumber;
     }
 
-    public List<String> getCertificatsWithJSessionId(String urlCertificat, String JSessionId){
-        System.out.println("getCertificatsWithJSessionId method");
-        HttpEntity entity = getResponseHttpGet(urlCertificat, JSessionId).getEntity();
+    public List<String> getCertificatesWithJSessionId(String urlCertificate, String JSessionId){
+        System.out.println("getCertificatesWithJSessionId method");
+        HttpEntity entity = getResponseHttpGet(urlCertificate, JSessionId).getEntity();
 
-        String jsonCertificat = getStringResponse(entity);
-        List<String> certificatsB64 = getJSONCertificats(jsonCertificat);
+        String jsonCertificate = getStringResponse(entity);
+        List<String> certificatsB64 = getJSONCertificates(jsonCertificate);
         if (certificatsB64 != null) return certificatsB64;
         return null;
     }
@@ -232,10 +232,10 @@ public class SslConnexionService{
         return content;
     }
 
-    private List<String> getJSONCertificats(String jsonCertificat) {
+    private List<String> getJSONCertificates(String jsonCertificate) {
         JSONObject obj = null;
         try {
-            obj = new JSONObject(jsonCertificat);
+            obj = new JSONObject(jsonCertificate);
             JSONArray certificats = obj.getJSONArray("certificats");
             List<String> certificatsB64 = new ArrayList();
             for(int i=0; i<certificats.length(); i++){

@@ -11,11 +11,11 @@ import java.util.List;
 /**
  * Created by olivier on 24/01/17.
  */
-public class CertificatsComboBox extends JComboBox<KeyPair> implements ActionListener {
+public class CertificatesComboBox extends JComboBox<KeyPair> implements ActionListener {
     AESService aes = AESService.getInstance();
 
-    public CertificatsComboBox(){
-        List<KeyPair> certificats = aes.getInstalledCertificats();
+    public CertificatesComboBox(){
+        List<KeyPair> certificats = aes.getInstalledCertificates();
         for(KeyPair certificat:certificats){
             addItem(certificat);
             System.out.println(certificat.getPkB64());

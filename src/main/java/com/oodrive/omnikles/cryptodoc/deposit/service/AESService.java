@@ -73,9 +73,9 @@ public class AESService {
         this.jobNumber = jobNumber;
     }
 
-    public File crypteByCertificats(File depositZipFile) throws IOException {
+    public File cryptedByCertificates(File depositZipFile) throws IOException {
         if(depositZipFile.exists()) {
-            List<KeyPair> certs = CertificatesUtils.getInstalledCertificats();
+            List<KeyPair> certs = CertificatesUtils.getInstalledCertificates();
             System.out.println("utils");
 
             List<File> contentZip = new ArrayList<>();
@@ -113,8 +113,8 @@ public class AESService {
         }
     }
 
-    public List<KeyPair> getInstalledCertificats(){
-        return CertificatesUtils.getInstalledCertificats();
+    public List<KeyPair> getInstalledCertificates(){
+        return CertificatesUtils.getInstalledCertificates();
     }
 
     public KeyPair getKeyPairWithPrivateKey(String alias, String password) throws Exception {
@@ -167,7 +167,7 @@ public class AESService {
         return cryptedFile;
     }
 
-    public byte[] decodeSecretKeyByCertificat(byte[] data, KeyPair keyPair) {
+    public byte[] decodeSecretKeyByCertificate(byte[] data, KeyPair keyPair) {
         byte[] encryptedSecretKey = null;
         try {
             JSONObject arr = new JSONObject(new String(data));

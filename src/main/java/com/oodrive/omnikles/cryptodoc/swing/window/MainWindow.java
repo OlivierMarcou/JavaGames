@@ -5,7 +5,7 @@ import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.deposit.service.AESService;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
-import com.oodrive.omnikles.cryptodoc.swing.component.CertificatsComboBox;
+import com.oodrive.omnikles.cryptodoc.swing.component.CertificatesComboBox;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GeneralTextTemplate;
 
@@ -21,10 +21,10 @@ import java.util.List;
  */
 public class MainWindow extends JFrame {
 
-    private GeneralTextTemplate lblSelectCertificat = new GeneralTextTemplate("Selectionner votre certificat : ");
+    private GeneralTextTemplate lblSelectCertificate = new GeneralTextTemplate("Selectionner votre certificat : ");
 
 
-    private CertificatsComboBox listCertificat = new CertificatsComboBox();
+    private CertificatesComboBox listCertificate = new CertificatesComboBox();
     private ButtonTemplate btnSelected = new ButtonTemplate("Selectionner");
     private AESService aes = AESService.getInstance();
 
@@ -43,8 +43,8 @@ public class MainWindow extends JFrame {
     public PinCodeWindow getPinCodeWindow() {
         return pinCodeWindow;
     }
-    public CertificatsComboBox getListCertificat() {
-        return listCertificat;
+    public CertificatesComboBox getListCertificate() {
+        return listCertificate;
     }
 
     public MainWindow(){
@@ -65,7 +65,7 @@ public class MainWindow extends JFrame {
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=2;
-        centerPanel.add(lblSelectCertificat, c);
+        centerPanel.add(lblSelectCertificate, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = Design.PREFERED_SIZE.getWidth();
@@ -73,9 +73,9 @@ public class MainWindow extends JFrame {
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=2;
-        centerPanel.add(listCertificat, c);
+        centerPanel.add(listCertificate, c);
 
-        listCertificat.addActionListener(new ActionListener() {
+        listCertificate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 myBox(evt);
             }
@@ -91,16 +91,16 @@ public class MainWindow extends JFrame {
     }
 
     protected void myBox(ActionEvent evt) {
-        if (listCertificat.getSelectedItem() != null) {
-            System.out.println("DN : " + listCertificat.getSelectedItem().toString());
+        if (listCertificate.getSelectedItem() != null) {
+            System.out.println("DN : " + listCertificate.getSelectedItem().toString());
         }
     }
 
     public void init(){
-        List<KeyPair> certificats = aes.getInstalledCertificats();
-        for(KeyPair certificat:certificats){
-            listCertificat.addItem(certificat);
-            System.out.println(certificat.getPkB64());
+        List<KeyPair> certificates = aes.getInstalledCertificates();
+        for(KeyPair certificate:certificates){
+            listCertificate.addItem(certificate);
+            System.out.println(certificate.getPkB64());
         }
     }
 
