@@ -88,7 +88,7 @@ public class PinCodeWindow extends JDialog{
                 KeyPair kp = null;
                 try {
                     kp = aes.getKeyPairWithPrivateKey(
-                            ((KeyPair)parent.getListCertificat().getSelectedItem()).getAlias(),
+                            ((KeyPair)parent.getListCertificate().getSelectedItem()).getAlias(),
                             txtPassword.getText());
                 } catch (Exception e1) {
                     e1.printStackTrace();
@@ -104,7 +104,7 @@ public class PinCodeWindow extends JDialog{
                     byte[] content  = zs.getContentFile(new ZipFile(f), Configuration.FILENAME_CRYPTED_KEYS);
                     if(kp != null) {
                         System.out.println("Begin decode sercret key ...");
-                        secret = aes.decodeSecretKeyByCertificat(content, kp);
+                        secret = aes.decodeSecretKeyByCertificate(content, kp);
                         System.out.println("End decode sercret key ...");
                     }else {
                         System.out.println("aucun certificat selectionné." );

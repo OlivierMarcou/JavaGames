@@ -108,7 +108,7 @@ public class CertificatesUtils {
 		return null;
 	}
 
-	public static List<com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair> getInstalledCertificats() {
+	public static List<com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair> getInstalledCertificates() {
 		List<com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair> certificats = new ArrayList();
 		try {
 			KeyStore ks = getKeyStore();
@@ -130,7 +130,7 @@ public class CertificatesUtils {
 				String aliasKey = (String) en.nextElement();
 				java.security.cert.Certificate c = ks.getCertificate(aliasKey);
 				if (aliasKey.equals(alias)) {
-					System.out.println("    Certificat : " + c.toString());
+					System.out.println("    Certificate : " + c.toString());
 					PrivateKey key = (PrivateKey) ks.getKey(aliasKey, password.toCharArray());
 					X509Certificate certificate = (X509Certificate) ks.getCertificate(aliasKey);
 					return new KeyPair(certificate, key, aliasKey);
