@@ -21,15 +21,15 @@ public class PinCodeWindow extends JDialog{
 
     private ZipService zs = ZipService.getInstance();
     private JTextField txtPassword = new JTextField();
-    private MainWindow parent;
+    private OpenReceivership parent;
     private AESService aes = AESService.getInstance();
 
     @Override
-    public MainWindow getParent() {
+    public OpenReceivership getParent() {
         return parent;
     }
 
-    public void setParent(MainWindow parent) {
+    public void setParent(OpenReceivership parent) {
         this.parent = parent;
     }
 
@@ -41,7 +41,7 @@ public class PinCodeWindow extends JDialog{
         this.txtPassword = txtPassword;
     }
 
-    public PinCodeWindow(MainWindow parent){
+    public PinCodeWindow(OpenReceivership parent){
         setSize(300, 200);
         Container content = getContentPane();
                 content.setLayout(new GridBagLayout());

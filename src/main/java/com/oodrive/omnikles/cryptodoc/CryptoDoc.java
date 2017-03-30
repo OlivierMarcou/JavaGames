@@ -3,13 +3,12 @@ package com.oodrive.omnikles.cryptodoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.swing.window.IntroWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.LogWindow;
+import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
 import com.oodrive.omnikles.cryptodoc.swing.window.TestWindow;
 
 import javax.swing.*;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.util.Properties;
@@ -43,11 +42,12 @@ public class CryptoDoc {
         System.out.println(Configuration.activFolder);
 
         if(Configuration.parameters.get("action").equals("depot")) {
-            depot();
+            new IntroWindow();
         }
 
         if(Configuration.parameters.get("action").equals("decrypt")){
-            openDepot();
+            OpenReceivership openReceivership = new OpenReceivership();
+            openReceivership.setVisible(true);
         }
         if(Configuration.parameters.get("action").equals("test")){
             TestWindow test = new TestWindow();
@@ -84,16 +84,6 @@ public class CryptoDoc {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-
-    private static void openDepot() throws MalformedURLException, FileNotFoundException {
-//        mainWindow.init();
-//        mainWindow.setVisible(true);
-    }
-
-    private static void depot() throws IOException {
-        new IntroWindow();
     }
 
     public String getAppVersion() throws IOException{
