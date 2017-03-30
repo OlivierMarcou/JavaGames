@@ -1,6 +1,6 @@
 package com.oodrive.omnikles.cryptodoc.swing.component.template;
 
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.pojo.Design;
 
 import javax.swing.*;
 

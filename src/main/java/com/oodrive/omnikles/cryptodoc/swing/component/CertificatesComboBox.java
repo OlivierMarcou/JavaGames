@@ -1,7 +1,7 @@
 package com.oodrive.omnikles.cryptodoc.swing.component;
 
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;
-import com.oodrive.omnikles.cryptodoc.deposit.service.AESService;
+import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
+import com.oodrive.omnikles.cryptodoc.service.AESService;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

@@ -1,9 +1,9 @@
 package com.oodrive.omnikles.cryptodoc.swing.component;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
-import com.oodrive.omnikles.cryptodoc.deposit.service.ZipService;
+import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
 
 import javax.swing.*;

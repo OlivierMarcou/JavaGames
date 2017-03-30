@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.cryptodoc.deposit.utils;
+package com.oodrive.omnikles.cryptodoc.utils;
 
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
 

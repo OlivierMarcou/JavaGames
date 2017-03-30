@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.cryptodoc.deposit.pojo;
+package com.oodrive.omnikles.cryptodoc.pojo;
 
 import java.io.IOException;
 import java.util.HashMap;

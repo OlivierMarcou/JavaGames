@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.cryptodoc.deposit.pojo;
+package com.oodrive.omnikles.cryptodoc.pojo;
 
 import javax.swing.*;
 import javax.swing.border.Border;

@@ -1,6 +1,6 @@
 package com.oodrive.omnikles.cryptodoc.swing.window;
 
-import com.oodrive.omnikles.cryptodoc.deposit.service.SslConnexionService;
+import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.swing.component.CustomOutputStream;
 
 import javax.swing.*;

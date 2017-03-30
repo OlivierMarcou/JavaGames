@@ -1,7 +1,7 @@
 package com.oodrive.omnikles.cryptodoc.swing.component;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GeneralTextTemplate;
 import org.w3c.dom.NamedNodeMap;

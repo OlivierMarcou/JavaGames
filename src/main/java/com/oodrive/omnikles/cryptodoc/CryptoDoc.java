@@ -1,6 +1,6 @@
 package com.oodrive.omnikles.cryptodoc;
 
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.swing.window.IntroWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.LogWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.TestWindow;

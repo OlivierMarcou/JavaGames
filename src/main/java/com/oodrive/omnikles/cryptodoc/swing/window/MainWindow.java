@@ -1,9 +1,9 @@
 package com.oodrive.omnikles.cryptodoc.swing.window;
 
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;
-import com.oodrive.omnikles.cryptodoc.deposit.service.AESService;
+import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
+import com.oodrive.omnikles.cryptodoc.service.AESService;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.CertificatesComboBox;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;

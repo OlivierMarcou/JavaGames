@@ -1,7 +1,7 @@
 package com.oodrive.omnikles.cryptodoc.swing.component;
 
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.Design;
 
 import javax.swing.*;
 import javax.swing.border.Border;

@@ -1,11 +1,11 @@
 package com.oodrive.omnikles.cryptodoc.swing.window;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;
-import com.oodrive.omnikles.cryptodoc.deposit.thread.TestRunnable;
+import com.oodrive.omnikles.cryptodoc.thread.TestRunnable;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,6 +1,6 @@
 package com.oodrive.omnikles.cryptodoc.swing.component;
 
-import com.oodrive.omnikles.cryptodoc.deposit.utils.CountingOutputStream;
+import com.oodrive.omnikles.cryptodoc.utils.CountingOutputStream;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.HttpEntityWrapper;
 
