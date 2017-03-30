@@ -37,6 +37,14 @@ public class OpenReceivership extends JFrame {
     private GeneralTextTemplate lblCertificates = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.list.certificate"));
     private GenaralPanelTemplate panel = null;
 
+    public CertificatesComboBox getListCertificate() {
+        return listCertificate;
+    }
+
+    public void setListCertificate(CertificatesComboBox listCertificate) {
+        this.listCertificate = listCertificate;
+    }
+
     public ButtonTemplate getOpenBtn() {
         return openBtn;
     }
