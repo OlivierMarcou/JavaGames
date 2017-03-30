@@ -1,4 +1,4 @@
-package com.oodrive.omnikles.cryptodoc.deposit.pojo;
+package com.oodrive.omnikles.cryptodoc.pojo;
 
 import sun.misc.BASE64Encoder;
 import sun.security.provider.X509Factory;

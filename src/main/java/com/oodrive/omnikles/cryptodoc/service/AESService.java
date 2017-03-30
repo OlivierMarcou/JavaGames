@@ -1,9 +1,9 @@
-package com.oodrive.omnikles.cryptodoc.deposit.service;
+package com.oodrive.omnikles.cryptodoc.service;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;
-import com.oodrive.omnikles.cryptodoc.deposit.utils.CertificatesUtils;
+import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
+import com.oodrive.omnikles.cryptodoc.utils.CertificatesUtils;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;

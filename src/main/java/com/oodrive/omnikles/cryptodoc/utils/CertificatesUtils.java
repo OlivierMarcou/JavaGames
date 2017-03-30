@@ -1,7 +1,7 @@
-package com.oodrive.omnikles.cryptodoc.deposit.utils;
+package com.oodrive.omnikles.cryptodoc.utils;
 
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;
+import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import sun.security.mscapi.SunMSCAPI;
 
 import java.io.File;
@@ -52,7 +52,7 @@ public class CertificatesUtils {
 	}
 
 	public static List<KeyPair> loadKeyPairsFromKeystore(KeyStore keyStore, char[] password) {
-		List<com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair> keyPairs = null;
+		List<com.oodrive.omnikles.cryptodoc.pojo.KeyPair> keyPairs = null;
 		keyPairs = new ArrayList<>();
 		Enumeration aliases = null;
 		try {
@@ -85,7 +85,7 @@ public class CertificatesUtils {
 			try {
 				X509Certificate certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
 				if (certificate != null) {
-					keyPairs.add(new com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair(certificate, (PrivateKey) keytmp, keyAlias));
+					keyPairs.add(new com.oodrive.omnikles.cryptodoc.pojo.KeyPair(certificate, (PrivateKey) keytmp, keyAlias));
 				}
 			} catch (KeyStoreException e) {
 				e.printStackTrace();
@@ -108,8 +108,8 @@ public class CertificatesUtils {
 		return null;
 	}
 
-	public static List<com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair> getInstalledCertificates() {
-		List<com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair> certificats = new ArrayList();
+	public static List<com.oodrive.omnikles.cryptodoc.pojo.KeyPair> getInstalledCertificates() {
+		List<com.oodrive.omnikles.cryptodoc.pojo.KeyPair> certificats = new ArrayList();
 		try {
 			KeyStore ks = getKeyStore();
 			certificats = loadKeyPairsFromKeystore(ks, null);

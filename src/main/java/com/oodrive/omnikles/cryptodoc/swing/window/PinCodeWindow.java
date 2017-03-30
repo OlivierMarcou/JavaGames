@@ -1,10 +1,10 @@
 package com.oodrive.omnikles.cryptodoc.swing.window;
 
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.deposit.pojo.KeyPair;
-import com.oodrive.omnikles.cryptodoc.deposit.service.AESService;
-import com.oodrive.omnikles.cryptodoc.deposit.service.SslConnexionService;
-import com.oodrive.omnikles.cryptodoc.deposit.service.ZipService;
+import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
+import com.oodrive.omnikles.cryptodoc.service.AESService;
+import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
+import com.oodrive.omnikles.cryptodoc.service.ZipService;
 
 import javax.swing.*;
 import java.awt.*;
