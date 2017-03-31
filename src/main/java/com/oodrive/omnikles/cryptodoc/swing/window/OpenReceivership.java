@@ -3,7 +3,11 @@ package com.oodrive.omnikles.cryptodoc.swing.window;
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
+import com.oodrive.omnikles.cryptodoc.service.AESService;
+import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.component.CertificatesComboBox;
+import com.oodrive.omnikles.cryptodoc.swing.component.DepositFilePanel;
 import com.oodrive.omnikles.cryptodoc.swing.component.SelectDepositPanel;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;
@@ -16,6 +20,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.zip.ZipFile;
 
 /**
  * Created by olivier on 20/03/17.
@@ -144,9 +150,69 @@ public class OpenReceivership extends JFrame {
         c.gridwidth=1;
         centerPanel.add(openBtn, c);
 
+        openBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectDepositPanel.getScrollablePanel().getComponents();
+                for(Component component:selectDepositPanel.getScrollablePanel().getComponents())
+                    if(component instanceof DepositFilePanel && ((DepositFilePanel) component).getCheck().isSelected()) {
+                        System.out.println("hop " + ((DepositFilePanel) component).getFile().getName());
+                        decryptAction(((DepositFilePanel) component).getFile());
+                    }
+            }
+        });
+
         initListener();
 
         setVisible(true);
+    }
+
+    AESService aes = AESService.getInstance();
+    ZipService zs = ZipService.getInstance();
+
+    private void decryptAction(File zipFile){
+        {
+            //Initialise la clé privé avec le code pin
+            KeyPair kp = null;
+            try {
+                kp = aes.getKeyPairWithPrivateKey(
+                        ((KeyPair)getListCertificate().getSelectedItem()).getAlias(),
+                        "");
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+            byte[] secret = new byte[0];
+            try {
+                System.out.println("Zip name :"+zipFile.getName());
+                System.out.println("Zip exist :"+zipFile.exists());
+                System.out.println("Zip path :"+zipFile.getPath());
+                System.out.println("Zip size :"+zipFile.length());
+                System.out.println("FILENAME_CRYPTED_KEYS : " + Configuration.FILENAME_CRYPTED_KEYS);
+                byte[] content  = zs.getContentFile(new ZipFile(zipFile), Configuration.FILENAME_CRYPTED_KEYS);
+                if(kp != null) {
+                    System.out.println("Begin decode sercret key ...");
+                    secret = aes.decodeSecretKeyByCertificate(content, kp);
+                    System.out.println("End decode sercret key ...");
+                }else {
+                    System.out.println("aucun certificat selectionné." );
+                }
+            } catch (IOException exx) {
+                exx.printStackTrace();
+            }
+            zs.unzip(zipFile.getPath(), Configuration.activFolder);
+            File cryptedFile = new File(Configuration.activFolder
+                    + File.separatorChar
+                    + Configuration.FILENAME_CRYPTED_ZIP);
+            try {
+                aes.decryptFileWithSecretKey(cryptedFile
+                        , new File(Configuration.activFolder
+                                + File.separatorChar
+                                + Configuration.FILENAME_DECRYPTED_ZIP), secret);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
     private void initListener(){

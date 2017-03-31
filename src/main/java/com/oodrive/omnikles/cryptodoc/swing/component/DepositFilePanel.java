@@ -21,6 +21,24 @@ public class DepositFilePanel extends JPanel{
     private FileLabel labelOpenIcon = null;
     private ImageIcon closeIcon = new ImageIcon(new ImageIcon(DepositFilePanel.this.getClass().getResource("/images/notopen.jpeg")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
     private ImageIcon openIcon =  new ImageIcon(new ImageIcon(DepositFilePanel.this.getClass().getResource("/images/openletter.png")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
+
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public JCheckBox getCheck() {
+        return check;
+    }
+
+    public void setCheck(JCheckBox check) {
+        this.check = check;
+    }
+
     private MouseListener checkedListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
