@@ -20,6 +20,10 @@ public class SelectDepositPanel extends JPanel {
     private ZipService zs = ZipService.getInstance();
     private JPanel scrollablePanel = new JPanel();
 
+    public JPanel getScrollablePanel() {
+        return scrollablePanel;
+    }
+
     public SelectDepositPanel(OpenReceivership parent) {
         this.parent = parent;
         setMinimumSize(new Dimension(600, 280));
@@ -73,8 +77,7 @@ public class SelectDepositPanel extends JPanel {
     }
 
     private void getZipLinePanel(File file, int indexLine) {
-        JPanel filePanel = new DepositFilePanel(file);
-
+        DepositFilePanel filePanel = new DepositFilePanel(file);
         GridBagConstraints listFileContraints = new GridBagConstraints();
         listFileContraints.fill = GridBagConstraints.NONE;
         listFileContraints.anchor = GridBagConstraints.BASELINE;
