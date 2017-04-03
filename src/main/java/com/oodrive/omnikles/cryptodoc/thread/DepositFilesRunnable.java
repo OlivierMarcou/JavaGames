@@ -9,7 +9,6 @@ import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -67,7 +66,7 @@ public class DepositFilesRunnable implements Runnable{
         java.util.List<String> certificats = ssl.getCertificatesWithJSessionId(Configuration.parameters.get("urlCertificat"), Configuration.parameters.get("sessionid"));
         if(certificats == null || certificats.size() <= 0) {
             JOptionPane d = new JOptionPane();
-            int retour = d.showConfirmDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail"),
+            d.showConfirmDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail"),
                     CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail.title"), JOptionPane.ERROR_MESSAGE);
             throw new NullPointerException("Aucun certificat trouvé pour : " + Configuration.parameters.get("urlCertificat"));
         }
@@ -78,9 +77,12 @@ public class DepositFilesRunnable implements Runnable{
             as.setProgressBar(progressBar);
             as.setJobNumber(1);
             as.setMaxPercent(25);
-            enveloppe = as.cryptedByCertificates(zip);
-        } catch (IOException e) {
+            enveloppe = as.cryptedByCertificates(zip, certificats);
+        } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane d = new JOptionPane();
+            d.showConfirmDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail"),
+                    CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail.title"), JOptionPane.ERROR_MESSAGE);
         }
         System.out.println("crypt ok");
         ssl.setJobNumber(3);

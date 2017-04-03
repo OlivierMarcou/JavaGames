@@ -236,7 +236,7 @@ public class SslConnexionService{
         JSONObject obj = null;
         try {
             obj = new JSONObject(jsonCertificate);
-            JSONArray certificats = obj.getJSONArray("certificats");
+            JSONArray certificats = obj.getJSONArray("certificatesB64");
             List<String> certificatsB64 = new ArrayList();
             for(int i=0; i<certificats.length(); i++){
                 certificatsB64.add(certificats.get(i).toString().replaceAll("\r", ""));
