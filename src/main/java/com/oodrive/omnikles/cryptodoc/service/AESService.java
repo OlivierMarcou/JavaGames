@@ -1,10 +1,11 @@
 package com.oodrive.omnikles.cryptodoc.service;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
+import com.oodrive.omnikles.cryptodoc.pojo.CertificateInformations;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
-import com.oodrive.omnikles.cryptodoc.utils.CertificatesUtils;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.cryptodoc.utils.CertificatesUtils;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,9 +74,9 @@ public class AESService {
         this.jobNumber = jobNumber;
     }
 
-    public File cryptedByCertificates(File depositZipFile) throws IOException {
+    public File cryptedByCertificates(File depositZipFile, List<String> certificats) throws IOException, InvalidKeySpecException {
         if(depositZipFile.exists()) {
-            List<KeyPair> certs = CertificatesUtils.getInstalledCertificates();
+            List<CertificateInformations> certs = CertificatesUtils.getCertificatesX509(certificats);
             System.out.println("utils");
 
             List<File> contentZip = new ArrayList<>();
@@ -170,14 +171,19 @@ public class AESService {
     public byte[] decodeSecretKeyByCertificate(byte[] data, KeyPair keyPair) {
         byte[] encryptedSecretKey = null;
         try {
-            JSONObject arr = new JSONObject(new String(data));
+            String dataString = new String(data);
+            JSONObject arr = new JSONObject(dataString);
+            System.out.println("Key File data : "+ dataString);
             JSONObject certificatsSecretKeys = arr.getJSONObject("data");
+
+            System.out.println("JSON certificatsSecretKeys : "+certificatsSecretKeys);
 
             for (Iterator it = certificatsSecretKeys.keys(); it.hasNext(); ) {
                 String certificate = (String)it.next();
                 if(certificate != null && keyPair.getX509CertificateB64() != null
                         && certificate.equals(keyPair.getX509CertificateB64())){
                     String encryptedSecretKeyB64 = (String)certificatsSecretKeys.get(certificate);
+                    System.out.println("Secret : "+encryptedSecretKeyB64);
                     BASE64Decoder decoder = new BASE64Decoder();
                     encryptedSecretKey = decoder.decodeBuffer(encryptedSecretKeyB64);
                 }
@@ -188,6 +194,7 @@ public class AESService {
         try {
             Cipher dcipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, Configuration.WINDOWS_PROVIDER_KEYSTORE);
             dcipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
+            System.out.println( "PK " + keyPair.getPrivateKey());
             return dcipher.doFinal(encryptedSecretKey);
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
@@ -255,27 +262,31 @@ public class AESService {
         }
     }
 
-    public File createKeyFile(List<KeyPair> certificats) throws IOException {
+    public File createKeyFile(List<CertificateInformations> certificats) throws IOException, InvalidKeySpecException {
         BASE64Encoder encoder = new BASE64Encoder();
         File jsonKeyFile = new File(Configuration.FILENAME_CRYPTED_KEYS);
         jsonKeyFile.delete();
         HashMap<String, String> dualKeys = new HashMap<>();
         JSONObject json = new JSONObject();
-        for(KeyPair keyPair: certificats){
+        for(CertificateInformations certificateInformations: certificats){
             //on crypte la secret key avec chaque certificat
             // ensuite on la stocke dans un fichier nommé :
-            byte[] encryptedSecretKey = encrypt(secret.getEncoded(), keyPair.getCertificate());
+            byte[] encryptedSecretKey = encrypt(secret.getEncoded(), certificateInformations.getX509Certificate());
             if(encryptedSecretKey != null){
-                dualKeys.put( keyPair.getX509CertificateB64(), encoder.encode(encryptedSecretKey));
+                dualKeys.put( certificateInformations.getB64Certificate(), encoder.encode(encryptedSecretKey));
             }
         }
-        try {
-            json.put("data",dualKeys);
-        }catch (JSONException e) {
-            e.printStackTrace();
+        if(dualKeys.size() > 0) {
+            try {
+                json.put("data", dualKeys);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            FileUtils.writeStringToFile(jsonKeyFile, json.toString(), Configuration.JSON_ENCODING, true);
+            return jsonKeyFile;
+        }else{
+            throw new InvalidKeySpecException("Aucun certificat d'acheteur valide n'a été trouvé !");
         }
-        FileUtils.writeStringToFile(jsonKeyFile, json.toString(), Configuration.JSON_ENCODING, true);
-        return jsonKeyFile;
     }
 
     public String decryptMessage(byte[] key, KeyPair keyPair, String filename) {
@@ -333,16 +344,13 @@ public class AESService {
             // La clé publique de ce certificat servira à chiffrer la clé symétrique
         Cipher cipher = null;
         try {
-            cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME,
-                    Configuration.WINDOWS_PROVIDER_KEYSTORE);
+            cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME);
             cipher.init(Cipher.ENCRYPT_MODE, x509Certificate);
             // Encrypt the message
             return cipher.doFinal(data);
         } catch (InvalidKeyException e) {
             System.out.println("Le certificat : "+x509Certificate.getSubjectDN() +" \n n'est pas conçu pour crypter un fichier");
         }  catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();

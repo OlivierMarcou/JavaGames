@@ -1,5 +1,6 @@
 package com.oodrive.omnikles.cryptodoc.utils;
 
+import com.oodrive.omnikles.cryptodoc.pojo.CertificateInformations;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import sun.security.mscapi.SunMSCAPI;
@@ -106,6 +107,15 @@ public class CertificatesUtils {
 			}
 		}
 		return null;
+	}
+
+
+	public static List<CertificateInformations> getCertificatesX509(List<String> certificatesB64) {
+		List<CertificateInformations> certificates = new ArrayList();
+		for(String certificate:certificatesB64){
+			certificates.add(new CertificateInformations(certificate));
+		}
+		return certificates;
 	}
 
 	public static List<com.oodrive.omnikles.cryptodoc.pojo.KeyPair> getInstalledCertificates() {
