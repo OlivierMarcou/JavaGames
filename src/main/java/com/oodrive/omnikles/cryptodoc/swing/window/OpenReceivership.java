@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.security.cert.CertificateEncodingException;
 import java.util.zip.ZipFile;
 
 /**
@@ -157,7 +158,11 @@ public class OpenReceivership extends JFrame {
                 for(Component component:selectDepositPanel.getScrollablePanel().getComponents())
                     if(component instanceof DepositFilePanel && ((DepositFilePanel) component).getCheck().isSelected()) {
                         System.out.println("hop " + ((DepositFilePanel) component).getFile().getName());
-                        decryptAction(((DepositFilePanel) component).getFile());
+                        try {
+                            decryptAction(((DepositFilePanel) component).getFile());
+                        } catch (CertificateEncodingException e1) {
+                            e1.printStackTrace();
+                        }
                     }
             }
         });
@@ -170,7 +175,7 @@ public class OpenReceivership extends JFrame {
     AESService aes = AESService.getInstance();
     ZipService zs = ZipService.getInstance();
 
-    private void decryptAction(File zipFile){
+    private void decryptAction(File zipFile) throws CertificateEncodingException {
         {
             //Initialise la clé privé avec le code pin
             KeyPair kp = null;

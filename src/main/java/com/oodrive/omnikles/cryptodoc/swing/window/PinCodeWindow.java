@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.security.cert.CertificateEncodingException;
 import java.util.zip.ZipFile;
 
 /**
@@ -111,6 +112,8 @@ public class PinCodeWindow extends JDialog{
                     }
                 } catch (IOException exx) {
                     exx.printStackTrace();
+                } catch (CertificateEncodingException e1) {
+                    e1.printStackTrace();
                 }
                 zs.unzip(Configuration.FILENAME_ZIP, Configuration.activFolder, false);
                 File cryptedFile = new File(Configuration.activFolder
