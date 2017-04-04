@@ -18,6 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.security.*;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
@@ -168,7 +169,7 @@ public class AESService {
         return cryptedFile;
     }
 
-    public byte[] decodeSecretKeyByCertificate(byte[] data, KeyPair keyPair) {
+    public byte[] decodeSecretKeyByCertificate(byte[] data, KeyPair keyPair) throws CertificateEncodingException {
         byte[] encryptedSecretKey = null;
         try {
             String dataString = new String(data);
@@ -179,19 +180,22 @@ public class AESService {
             System.out.println("JSON certificatsSecretKeys : "+certificatsSecretKeys);
 
             for (Iterator it = certificatsSecretKeys.keys(); it.hasNext(); ) {
-                String certificate = (String)it.next();
-                if(certificate != null && keyPair.getX509CertificateB64() != null
-                        && certificate.equals(keyPair.getX509CertificateB64())){
-                    String encryptedSecretKeyB64 = (String)certificatsSecretKeys.get(certificate);
+                CertificateInformations certificateInformations = new CertificateInformations((String)it.next());
+                if(certificateInformations != null && keyPair.getCertificate() != null
+                        && certificateInformations.getX509Certificate().hashCode() == keyPair.getCertificate().hashCode()){
+                    System.out.println("IF keyPair == " + keyPair.toString());
+                    String encryptedSecretKeyB64 = (String)certificatsSecretKeys.get(certificateInformations.getB64Certificate());
                     System.out.println("Secret : "+encryptedSecretKeyB64);
                     BASE64Decoder decoder = new BASE64Decoder();
                     encryptedSecretKey = decoder.decodeBuffer(encryptedSecretKeyB64);
+                    System.out.println("encryptedSecretKey length  == " + encryptedSecretKey.length);
                 }
             }
         } catch (JSONException | NullPointerException | IOException e) {
             e.printStackTrace();
         }
         try {
+            System.out.println("CertificatesUtils.provider " + CertificatesUtils.provider.getName() + " " + CertificatesUtils.provider.getInfo());
             Cipher dcipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, CertificatesUtils.provider);
             dcipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
             System.out.println( "PK " + keyPair.getPrivateKey());
@@ -243,7 +247,7 @@ public class AESService {
             byte[] inputBytes = new byte[(int) encryptFile.length()];
             inputStream.read(inputBytes);
 
-            System.out.println("inputBytes : " + inputBytes);
+            System.out.println("Send inputBytes to cipher ...");
             byte[] outputBytes = cipher.doFinal(inputBytes);
 
             System.out.println("decryptedFile : " + decryptedFile);
