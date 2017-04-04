@@ -13,6 +13,7 @@ public class Configuration {
     public static boolean debug = false;
     public static HashMap<String, String> parameters = new HashMap<>();
     public static String activFolder;
+    public static String destinationFolderPath = null;
     public static long totalSizeFiles = 0;
     public static String version = null;
 
@@ -24,7 +25,6 @@ public class Configuration {
     public static final String JSON_ENCODING = "UTF-8";
     public static final String CIPHER_ALGORITHME = "RSA";
     public static final String CRYPTED_KEY_ALGORITHME = "AES";
-    public static final String WINDOWS_PROVIDER_KEYSTORE = "SunMSCAPI";
     public static final String PREFIX_DECRYPTED_FILENAME = "fichier_decrypte_";
 
     public static final void initParameters(String[] args) throws IOException {

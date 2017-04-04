@@ -192,7 +192,7 @@ public class AESService {
             e.printStackTrace();
         }
         try {
-            Cipher dcipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, Configuration.WINDOWS_PROVIDER_KEYSTORE);
+            Cipher dcipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, CertificatesUtils.provider);
             dcipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
             System.out.println( "PK " + keyPair.getPrivateKey());
             return dcipher.doFinal(encryptedSecretKey);
@@ -203,8 +203,6 @@ public class AESService {
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
             e.printStackTrace();
@@ -293,8 +291,7 @@ public class AESService {
         byte [] decripted  = null;
         try {
             if (keyPair.getPrivateKey() != null) {
-                Cipher cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME,
-                        Security.getProvider(Configuration.WINDOWS_PROVIDER_KEYSTORE));
+                Cipher cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, CertificatesUtils.provider);
                 cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
                 cipher.update(key);
                 decripted = cipher.doFinal();
@@ -379,8 +376,7 @@ public class AESService {
             }
             try {
                 if (keyPair.getPrivateKey() != null) {
-                    Cipher cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME,
-                            Security.getProvider(Configuration.WINDOWS_PROVIDER_KEYSTORE));
+                    Cipher cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, CertificatesUtils.provider);
                     cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
                     cipher.update(pkcs7envelopedData);
                     decripted = cipher.doFinal();

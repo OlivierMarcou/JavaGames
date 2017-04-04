@@ -22,13 +22,16 @@ import java.util.Properties;
 public class CryptoDoc {
 
     public static Properties textProperties = new Properties();
+    public static Properties contextProperties = new Properties();
 
     public CryptoDoc(String[] args) throws IOException {
         Configuration.initParameters(args);
         if(Configuration.debug){
             new LogWindow();
         }
-        System.out.println("WebStart CryptoDoc - version : " + getAppVersion());
+        initContext();
+
+        System.out.println("WebStart CryptoDoc - version : " + contextProperties.getProperty("build.version"));
         if(Configuration.parameters.get("language") == null || Configuration.parameters.get("language").isEmpty()) {
             Configuration.parameters.put("language", "fr");
         }
@@ -86,17 +89,14 @@ public class CryptoDoc {
         }
     }
 
-    public String getAppVersion() throws IOException{
+    public void initContext() throws IOException{
         String versionString = null;
-        Properties mainProperties = new Properties();
         URL url = this.getClass().getResource("/cryptodoc.properties");
         if(url != null && url.getFile() != null) {
-            mainProperties.load(url.openStream());
-            versionString = mainProperties.getProperty("build.version");
-            Configuration.version = mainProperties.getProperty("actual.version");
-            return versionString;
+            contextProperties.load(url.openStream());
+            versionString = contextProperties.getProperty("build.version");
+            Configuration.version = contextProperties.getProperty("actual.version");
         }
-        return null;
     }
 
 
