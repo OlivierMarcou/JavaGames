@@ -3,6 +3,7 @@ package com.oodrive.omnikles.cryptodoc.service;
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -46,10 +47,17 @@ public class ZipService {
         this.progressBar = progressBar;
     }
 
-    public void unzip(String zipFilePath, String destDir) {
+    public void unzip(String zipFilePath, String destDir, boolean rewrite) {
         File dir = new File(destDir);
+        if(rewrite)
+            try {
+                FileUtils.deleteDirectory(dir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         // create output directory if it doesn't exist
-        if(!dir.exists()) dir.mkdirs();
+        if(!dir.exists())
+            dir.mkdirs();
         FileInputStream fis;
         long totalSizeZip = (new File(zipFilePath)).length();
         //buffer for read and write data to file

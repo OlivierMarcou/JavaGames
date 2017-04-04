@@ -112,7 +112,7 @@ public class PinCodeWindow extends JDialog{
                 } catch (IOException exx) {
                     exx.printStackTrace();
                 }
-                zs.unzip(Configuration.FILENAME_ZIP, Configuration.activFolder);
+                zs.unzip(Configuration.FILENAME_ZIP, Configuration.activFolder, false);
                 File cryptedFile = new File(Configuration.activFolder
                                     + File.separatorChar
                                     + Configuration.FILENAME_CRYPTED_ZIP);

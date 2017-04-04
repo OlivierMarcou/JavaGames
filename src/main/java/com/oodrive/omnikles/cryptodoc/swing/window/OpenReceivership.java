@@ -200,13 +200,13 @@ public class OpenReceivership extends JFrame {
             } catch (IOException exx) {
                 exx.printStackTrace();
             }
-            zs.unzip(zipFile.getPath(), Configuration.activFolder);
-            File cryptedFile = new File(Configuration.activFolder
+            zs.unzip(zipFile.getPath(), Configuration.destinationFolderPath, false);
+            File cryptedFile = new File(Configuration.destinationFolderPath
                     + File.separatorChar
                     + Configuration.FILENAME_CRYPTED_ZIP);
             try {
                 aes.decryptFileWithSecretKey(cryptedFile
-                        , new File(Configuration.activFolder
+                        , new File(Configuration.destinationFolderPath
                                 + File.separatorChar
                                 + Configuration.FILENAME_DECRYPTED_ZIP), secret);
             } catch (Exception e1) {

@@ -64,10 +64,9 @@ public class SelectDepositPanel extends JPanel {
     }
 
     public void parseFile(File zipFile) {
-        String destinationFolderpath = Configuration.activFolder + File.separator + zipFile.getName().substring(0,zipFile.getName().toLowerCase().lastIndexOf(".zip"));
-
-        zs.unzip(zipFile.getPath(), destinationFolderpath );
-        File[] contentZipFolder = new File(destinationFolderpath ).listFiles();
+        Configuration.destinationFolderPath = zipFile.getPath().substring(0,zipFile.getPath().toLowerCase().lastIndexOf(".zip"));
+        zs.unzip(zipFile.getPath(), Configuration.destinationFolderPath , true );
+        File[] contentZipFolder = new File(Configuration.destinationFolderPath).listFiles();
         for (int i = 0; i < contentZipFolder.length; i++) {
             getZipLinePanel(contentZipFolder[i], i);
             getFilesInfos(contentZipFolder);
