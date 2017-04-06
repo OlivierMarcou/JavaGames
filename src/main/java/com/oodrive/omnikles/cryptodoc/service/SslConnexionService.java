@@ -2,6 +2,7 @@ package com.oodrive.omnikles.cryptodoc.service;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressEntityWrapper;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
@@ -65,8 +66,16 @@ public class SslConnexionService{
 
         String jsonCertificate = getStringResponse(entity);
         List<String> certificatsB64 = getJSONCertificates(jsonCertificate);
-        if (certificatsB64 != null) return certificatsB64;
-        return null;
+        return certificatsB64;
+    }
+
+    public List<DepositStatus> getDepositStatusesWithJSessionId(String urlDepositStatus, String JSessionId){
+        System.out.println("getDepositStatusesWithJSessionId method");
+        HttpEntity entity = getResponseHttpGet(urlDepositStatus, JSessionId).getEntity();
+
+        String jsonDepositStatus = getStringResponse(entity);
+        List<DepositStatus> depositStatuses = getJSONDepositStatuses(jsonDepositStatus);
+        return depositStatuses;
     }
 
     public File sslDownloadFile(String url, String JSessionId, String filename){
@@ -242,6 +251,24 @@ public class SslConnexionService{
                 certificatsB64.add(certificats.get(i).toString().replaceAll("\r", ""));
             }
             return certificatsB64;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private List<DepositStatus> getJSONDepositStatuses(String jsonDepositStatus) {
+        JSONObject obj = null;
+        try {
+            obj = new JSONObject(jsonDepositStatus);
+            JSONArray depositStatusesArray = obj.getJSONArray("depositsStatus");
+            List<DepositStatus> depositStatuses = new ArrayList();
+            for(int i=0; i<depositStatusesArray.length(); i++){
+                String line = depositStatusesArray.get(i).toString();
+                line = line.replaceAll("[{}]", "");
+                depositStatuses.add(new DepositStatus(line.split(",")));
+            }
+            return depositStatuses;
         } catch (JSONException e) {
             e.printStackTrace();
         }

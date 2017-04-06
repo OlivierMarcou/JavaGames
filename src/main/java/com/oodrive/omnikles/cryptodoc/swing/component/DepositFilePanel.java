@@ -1,6 +1,10 @@
 package com.oodrive.omnikles.cryptodoc.swing.component;
 
+import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.pojo.ExchangeDocumentState;
+import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,11 +12,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by olivier on 28/03/17.
  */
 public class DepositFilePanel extends JPanel{
+
+    private SslConnexionService ssl = SslConnexionService.getInstance();
+    List<DepositStatus> depositStatuses = ssl.getDepositStatusesWithJSessionId(Configuration.parameters.get("urlReadStatus"), Configuration.parameters.get("sessionid"));
+
+    private String[] nameIds = new String[]{"buyerId","tenderId","phaseId","publicationId","supplierId","documentId"};
 
     private File file;
     private GridBagConstraints fileConstraints = new GridBagConstraints();
@@ -65,12 +76,19 @@ public class DepositFilePanel extends JPanel{
         public void mouseExited(MouseEvent e) {
         }
     };
+
     public DepositFilePanel(File file) {
         this.file = file;
         text.setText(file.getName());
+        HashMap<String, Long> idsFile = getIdsFile(file.getName());
+        DepositStatus depositStatus = findDepositStatus(idsFile);
         setLayout(new GridBagLayout());
         labelOpenIcon = new FileLabel("", file);
-        labelOpenIcon.setIcon(closeIcon);
+        if(depositStatus.getExchangeDocumentState().equals(ExchangeDocumentState.CLOSE)) {
+            labelOpenIcon.setIcon(closeIcon);
+        }else{
+            labelOpenIcon.setIcon(openIcon);
+        }
         labelOpenIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -119,5 +137,23 @@ public class DepositFilePanel extends JPanel{
         fileConstraints.gridwidth = 1;
         fileConstraints.insets = new Insets(10, 10, 10, 10);
         add(labelOpenIcon, fileConstraints);
+    }
+
+    private DepositStatus findDepositStatus(HashMap<String, Long> idsFile) {
+        for(DepositStatus depositStatus:depositStatuses){
+            if(depositStatus.getId() == idsFile.get("documentId"))
+                return depositStatus;
+        }
+        return null;
+    }
+
+    private HashMap<String, Long> getIdsFile(String filename){
+        String line = filename.toLowerCase().substring(filename.indexOf("_")+1,filename.lastIndexOf("."));
+        String[] idsStr = line.split("_");
+        HashMap<String, Long> ids = new HashMap<>();
+        for(int i =0; i < idsStr.length; i++){
+            ids.put(nameIds[i], Long.parseLong(idsStr[i]));
+        }
+        return ids;
     }
 }
