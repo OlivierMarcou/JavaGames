@@ -72,7 +72,7 @@ public class SelectDepositPanel extends JPanel {
 
     public void parseFile(File zipFile) {
         try {
-            depositStatuses =  ssl.getDepositStatusesWithJSessionId(Configuration.parameters.get("urlReadStatus"), Configuration.parameters.get("sessionid"));
+            depositStatuses = ssl.getDepositStatusesWithJSessionId(Configuration.parameters.get("urlReadStatus"));
         } catch (JSONException e) {
             e.printStackTrace();
             error(CryptoDoc.textProperties.getProperty("message.error.text"));

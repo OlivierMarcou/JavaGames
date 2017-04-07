@@ -66,7 +66,7 @@ public class DepositFilesRunnable implements Runnable{
         SslConnexionService ssl = SslConnexionService.getInstance();
         List<String> certificats = null;
         try {
-            certificats = ssl.getCertificatesWithJSessionId(Configuration.parameters.get("urlCertificat"), Configuration.parameters.get("sessionid"));
+            certificats = ssl.getCertificatesWithJSessionId(Configuration.parameters.get("urlCertificat"));
         } catch (JSONException e) {
             JOptionPane.showMessageDialog(progressBar, CryptoDoc.textProperties.getProperty("message.error.text"),
             CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
@@ -94,7 +94,7 @@ public class DepositFilesRunnable implements Runnable{
         System.out.println("crypt ok");
         ssl.setJobNumber(3);
         ssl.setMaxPercent(25);
-        File podFile = ssl.sslUploadFileAndDownloadProof(enveloppe, Configuration.parameters.get("urlDepot"), Configuration.parameters.get("sessionid"), progressBar);
+        File podFile = ssl.sslUploadFileAndDownloadProof(enveloppe, Configuration.parameters.get("urlDepot"), progressBar);
         System.out.println("send ok");
         progressBar.finish(podFile);
     }

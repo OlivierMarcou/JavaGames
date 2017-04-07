@@ -1,9 +1,10 @@
 package com.oodrive.omnikles.cryptodoc.swing.component;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
-import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
-import com.oodrive.omnikles.cryptodoc.pojo.Design;
-import com.oodrive.omnikles.cryptodoc.pojo.ExchangeDocumentState;
+import com.oodrive.omnikles.cryptodoc.pojo.*;
+import com.oodrive.omnikles.cryptodoc.service.AESService;
+import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
+import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import org.json.JSONException;
 
 import javax.swing.*;
@@ -11,12 +12,18 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
+import java.security.cert.CertificateEncodingException;
+import java.util.zip.ZipFile;
 
 /**
  * Created by olivier on 28/03/17.
  */
 public class DepositFilePanel extends JPanel{
 
+    private AESService aes = AESService.getInstance();
+    private ZipService zs = ZipService.getInstance();
+    private SslConnexionService ssl = SslConnexionService.getInstance();
     private File file;
     private GridBagConstraints fileConstraints = new GridBagConstraints();
     private JLabel text = new JLabel();
@@ -125,4 +132,51 @@ public class DepositFilePanel extends JPanel{
         fileConstraints.insets = new Insets(10, 10, 10, 10);
         add(labelOpenIcon, fileConstraints);
     }
+
+    public void decryptAction(KeyPair kp) throws CertificateEncodingException, IOException {
+        byte[] secret = new byte[0];
+        try {
+            System.out.println("Zip name :"+file.getName());
+            System.out.println("Zip exist :"+file.exists());
+            System.out.println("Zip path :"+file.getPath());
+            System.out.println("Zip size :"+file.length());
+            System.out.println("FILENAME_CRYPTED_KEYS : " + Configuration.FILENAME_CRYPTED_KEYS);
+            byte[] content  = zs.getContentFile(new ZipFile(file), Configuration.FILENAME_CRYPTED_KEYS);
+            if(kp != null) {
+                System.out.println("Begin decode sercret key ...");
+                secret = aes.decodeSecretKeyByCertificate(content, kp);
+                System.out.println("End decode sercret key ...");
+                if(secret == null){
+                    error(CryptoDoc.textProperties.getProperty("open.page2.decrypt.secret.fail").replace("<filename>",file.getName()));
+                    return;
+                }
+            }else {
+                System.out.println("aucun certificat selectionné." );
+            }
+        } catch (IOException exx) {
+            exx.printStackTrace();
+            error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + file.getName());
+            return;
+        }
+        zs.unzip(file.getPath(), Configuration.destinationFolderPath, false);
+        File cryptedFile = new File(Configuration.destinationFolderPath
+                + File.separatorChar
+                + Configuration.FILENAME_CRYPTED_ZIP);
+        try {
+            aes.decryptFileWithSecretKey(cryptedFile
+                    , new File(Configuration.destinationFolderPath
+                            + File.separatorChar
+                            + Configuration.FILENAME_DECRYPTED_ZIP), secret);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + file.getName());
+        }
+        ssl.updateExchangeDocumentState(depositStatus.getId(), Configuration.parameters.get("urlUpdateStatus"));
+    }
+
+    private void error(String msg){
+        JOptionPane.showMessageDialog(this, msg,
+                CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
+    }
+
 }
