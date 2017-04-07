@@ -5,8 +5,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.service.AESService;
-import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
-import com.oodrive.omnikles.cryptodoc.service.ZipService;
+import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.CertificatesComboBox;
 import com.oodrive.omnikles.cryptodoc.swing.component.DepositFilePanel;
 import com.oodrive.omnikles.cryptodoc.swing.component.SelectDepositPanel;
@@ -22,15 +21,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.security.cert.CertificateEncodingException;
-import java.util.zip.ZipFile;
 
 /**
  * Created by olivier on 20/03/17.
  */
 public class OpenReceivership extends JFrame {
 
-    private SslConnexionService ssl = SslConnexionService.getInstance();
+    private AESService aes = AESService.getInstance();
     private SummaryTextTemplate page1Paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.page1.paragraphe1"));
     private ButtonTemplate selectBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.select"), Design.MAX_SIZE);
     private GeneralTextTemplate page2Paragraphe1 = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.paragraphe1"));
@@ -44,6 +41,11 @@ public class OpenReceivership extends JFrame {
     private CertificatesComboBox listCertificate = new CertificatesComboBox();
     private GeneralTextTemplate lblCertificates = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.list.certificate"));
     private GenaralPanelTemplate panel = null;
+
+    private AnimatedProgressBar progressBar = null;
+    private SummaryTextTemplate page3Paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.page3.paragraphe1"));
+    private GeneralTextTemplate page3Paragraphe2 = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page3.paragraphe2"));
+    private ButtonTemplate exitBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page3.button.exit"), Design.MAX_SIZE);
 
     public CertificatesComboBox getListCertificate() {
         return listCertificate;
@@ -76,13 +78,18 @@ public class OpenReceivership extends JFrame {
         panel = new GenaralPanelTemplate(this);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-
         JPanel centerPanel = panel.getCenterPanel();
         centerPanel.setMinimumSize(Design.CENTERPANEL_PREFERED_SIZE);
 
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
+
+        try {
+            progressBar = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         activateScreen(1);
 
@@ -91,9 +98,8 @@ public class OpenReceivership extends JFrame {
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=1;
-        c.insets = new Insets(5, 10, 5, 10);
+        c.insets = new Insets(0, 10, 0, 10);
         centerPanel.add(page1Paragraphe1, c);
-
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -122,7 +128,6 @@ public class OpenReceivership extends JFrame {
         c.gridy=2;
         c.gridwidth=2;
         centerPanel.add(infos, c);
-
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -156,15 +161,33 @@ public class OpenReceivership extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectDepositPanel.getScrollablePanel().getComponents();
-                for(Component component:selectDepositPanel.getScrollablePanel().getComponents())
+                String errorOpener = null;
+                for(Component component:selectDepositPanel.getScrollablePanel().getComponents()){
                     if(component instanceof DepositFilePanel && ((DepositFilePanel) component).getCheck().isSelected()) {
                         System.out.println("hop " + ((DepositFilePanel) component).getFile().getName());
+
+                        //Initialise la clé privé avec le code pin
+                        KeyPair kp = null;
                         try {
-                            decryptAction(((DepositFilePanel) component).getFile());
-                        } catch (CertificateEncodingException e1) {
+                            kp = aes.getKeyPairWithPrivateKey(
+                                    ((KeyPair)getListCertificate().getSelectedItem()).getAlias(),
+                                    "");
+                        } catch (Exception e1) {
                             e1.printStackTrace();
                         }
+                        try {
+                            ((DepositFilePanel) component).decryptAction(kp);
+                        } catch (Exception e2) {
+                            e2.printStackTrace();
+                            errorOpener += e2.getMessage()+" \n";
+                        }
                     }
+                }
+                if(errorOpener != null) {
+                    error(CryptoDoc.textProperties.getProperty("message.error.text"));
+                }else {
+                    activateScreen(3);
+                }
             }
         });
 
@@ -173,61 +196,6 @@ public class OpenReceivership extends JFrame {
         setVisible(true);
     }
 
-    AESService aes = AESService.getInstance();
-    ZipService zs = ZipService.getInstance();
-
-    private void decryptAction(File zipFile) throws CertificateEncodingException {
-
-        //Initialise la clé privé avec le code pin
-        KeyPair kp = null;
-        try {
-            kp = aes.getKeyPairWithPrivateKey(
-                    ((KeyPair)getListCertificate().getSelectedItem()).getAlias(),
-                    "");
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-
-        byte[] secret = new byte[0];
-        try {
-            System.out.println("Zip name :"+zipFile.getName());
-            System.out.println("Zip exist :"+zipFile.exists());
-            System.out.println("Zip path :"+zipFile.getPath());
-            System.out.println("Zip size :"+zipFile.length());
-            System.out.println("FILENAME_CRYPTED_KEYS : " + Configuration.FILENAME_CRYPTED_KEYS);
-            byte[] content  = zs.getContentFile(new ZipFile(zipFile), Configuration.FILENAME_CRYPTED_KEYS);
-            if(kp != null) {
-                System.out.println("Begin decode sercret key ...");
-                secret = aes.decodeSecretKeyByCertificate(content, kp);
-                System.out.println("End decode sercret key ...");
-                if(secret == null){
-                    error(CryptoDoc.textProperties.getProperty("open.page2.decrypt.secret.fail").replace("<filename>",zipFile.getName()));
-                    return;
-                }
-            }else {
-                System.out.println("aucun certificat selectionné." );
-            }
-        } catch (IOException exx) {
-            exx.printStackTrace();
-            error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + zipFile.getName());
-            return;
-        }
-        zs.unzip(zipFile.getPath(), Configuration.destinationFolderPath, false);
-        File cryptedFile = new File(Configuration.destinationFolderPath
-                + File.separatorChar
-                + Configuration.FILENAME_CRYPTED_ZIP);
-        try {
-            aes.decryptFileWithSecretKey(cryptedFile
-                    , new File(Configuration.destinationFolderPath
-                            + File.separatorChar
-                            + Configuration.FILENAME_DECRYPTED_ZIP), secret);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-            error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + zipFile.getName());
-        }
-        //TODO: ici on change le status de l'exchangeDocument
-//        ssl.updateExchangeDocumentState();
-    }
 
     private void error(String msg){
         JOptionPane.showMessageDialog(this, msg,
@@ -268,16 +236,25 @@ public class OpenReceivership extends JFrame {
     private void activateScreen(int screennumber){
         boolean one = true;
         boolean two = false;
+        boolean three = false;
         switch (screennumber ) {
             case 1:
                 one = true;
                 two = false;
+                three = false;
                 break;
             case 2:
                 one = false;
                 two = true;
+                three = false;
+                break;
+            case 3:
+                one = false;
+                two = false;
+                three = true ;
                 break;
         }
+
         page1Paragraphe1.setVisible(one);
         selectBtn.setVisible(one);
 
@@ -288,6 +265,11 @@ public class OpenReceivership extends JFrame {
         backBtn.setVisible(two);
         lblCertificates.setVisible(two);
         listCertificate.setVisible(two);
+
+        progressBar.setVisible(three);
+        page3Paragraphe1.setVisible(three);
+        page3Paragraphe2.setVisible(three);
+        exitBtn.setVisible(three);
 
         panel.getMyStatusBar().setPagesNumber(3);
         panel.getMyStatusBar().setActualPage(screennumber);

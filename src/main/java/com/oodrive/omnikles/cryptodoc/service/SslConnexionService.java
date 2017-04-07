@@ -3,6 +3,7 @@ package com.oodrive.omnikles.cryptodoc.service;
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
+import com.oodrive.omnikles.cryptodoc.pojo.ExchangeDocumentState;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressEntityWrapper;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
@@ -21,6 +22,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,29 +63,29 @@ public class SslConnexionService{
         this.jobNumber = jobNumber;
     }
 
-    public List<String> getCertificatesWithJSessionId(String urlCertificate, String JSessionId) throws JSONException {
+    public List<String> getCertificatesWithJSessionId(String urlCertificate ) throws JSONException {
         System.out.println("getCertificatesWithJSessionId method");
-        HttpEntity entity = getResponseHttpGet(urlCertificate, JSessionId).getEntity();
+        HttpEntity entity = getResponseHttpGet(urlCertificate).getEntity();
 
         String jsonCertificate = getStringResponse(entity);
         List<String> certificatsB64 = getJSONCertificates(jsonCertificate);
         return certificatsB64;
     }
 
-    public HashMap<Long, DepositStatus> getDepositStatusesWithJSessionId(String urlDepositStatus, String JSessionId) throws JSONException {
+    public HashMap<Long, DepositStatus> getDepositStatusesWithJSessionId(String urlDepositStatus) throws JSONException {
         System.out.println("getDepositStatusesWithJSessionId method");
-        HttpEntity entity = getResponseHttpGet(urlDepositStatus, JSessionId).getEntity();
+        HttpEntity entity = getResponseHttpGet(urlDepositStatus).getEntity();
 
         String jsonDepositStatus = getStringResponse(entity);
         HashMap<Long, DepositStatus> depositStatuses = getJSONDepositStatuses(jsonDepositStatus);
         return depositStatuses;
     }
 
-    public File sslDownloadFile(String url, String JSessionId, String filename){
+    public File sslDownloadFile(String url, String filename){
         System.out.println("sslDownloadFile method");
         File file = new File(Configuration.activFolder + File.separatorChar + filename);
         try {
-            HttpEntity entity = getResponseHttpGet(url, JSessionId).getEntity();
+            HttpEntity entity = getResponseHttpGet(url).getEntity();
             entity.writeTo(new FileOutputStream(file));
         }catch (FileNotFoundException e1) {
             e1.printStackTrace();
@@ -95,15 +97,15 @@ public class SslConnexionService{
         return file;
     }
 
-    public void sslUploadFile(File file, String url, String JSessionId){
+    public void sslUploadFile(File file, String url){
         System.out.println("sslUploadFile method");
-        getResponseHttpPostFile(url, JSessionId, file).getEntity();
+        getResponseHttpPostFile(url, file).getEntity();
     }
 
-    public File sslUploadFileAndDownloadProof(File file, String url, String JSessionId, AnimatedProgressBar animatedProgressBar){
+    public File sslUploadFileAndDownloadProof(File file, String url,  AnimatedProgressBar animatedProgressBar){
         this.uploadBar = animatedProgressBar;
         System.out.println("sslUploadFile method");
-        HttpEntity entity = getResponseHttpPostFile(url, JSessionId, file).getEntity();
+        HttpEntity entity = getResponseHttpPostFile(url, file).getEntity();
 
         System.out.println("sslDownloadFile method");
         System.out.println("Download File in " + Configuration.activFolder + File.separatorChar + "pod.pdf");
@@ -119,11 +121,11 @@ public class SslConnexionService{
         return null;
     }
 
-
-    public void post(String url, List<NameValuePair> parameters) throws  IOException {
-        CloseableHttpResponse httpsReponse = null;
-        httpsReponse = getResponseHttpPost(url, parameters);
-        httpsReponse.close();
+    public void updateExchangeDocumentState(long documentId, String urlUpdateStatus) throws IOException {
+        System.out.println("updateExchangeDocumentState method");
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("state", ExchangeDocumentState.OPEN.name()));
+        HttpEntity entity = getResponseHttpPost(urlUpdateStatus+documentId,params).getEntity();
     }
 
     /* -------------------------------- PRIVATE ------------------------------*/
@@ -153,14 +155,14 @@ public class SslConnexionService{
                 .build();
     }
 
-    private CloseableHttpResponse getResponseHttpGet(String url, String JSessionId){
+    private CloseableHttpResponse getResponseHttpGet(String url){
         if (debug)
             System.out.println("... Debut connexion ...");
         System.out.println("HttpClient");
         System.out.println("url : " + url);
         CloseableHttpClient httpclientSsl = initSSL();
         HttpGet httpGet = new HttpGet(url);
-        httpGet.setHeader("Cookie", "JSESSIONID="+JSessionId);
+        httpGet.setHeader("Cookie", "JSESSIONID="+Configuration.parameters.get("sessionid"));
         if(httpclientSsl == null)
             throw new NullPointerException("HTTP client is null !");
         if(httpGet == null)
@@ -174,7 +176,7 @@ public class SslConnexionService{
         return null;
     }
 
-    private CloseableHttpResponse getResponseHttpPostFile(String url, String JSessionId, File file){
+    private CloseableHttpResponse getResponseHttpPostFile(String url, File file){
         if (debug)
             System.out.println("... Debut upload file ...");
 
@@ -204,7 +206,7 @@ public class SslConnexionService{
             };
 
         httpPost.setEntity(new ProgressEntityWrapper(multipart, pListener));
-        httpPost.setHeader("Cookie", "JSESSIONID="+JSessionId);
+        httpPost.setHeader("Cookie", "JSESSIONID="+Configuration.parameters.get("sessionid"));
 
         CloseableHttpClient httpclientSsl = initSSL();
 

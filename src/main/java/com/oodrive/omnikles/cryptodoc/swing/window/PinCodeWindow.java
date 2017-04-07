@@ -83,7 +83,6 @@ public class PinCodeWindow extends JDialog{
                 // changer ici pas un filechooser de sequestre
                 File f = ssl.sslDownloadFile(
                         Configuration.parameters.get("urlCryptedFile"),
-                        Configuration.parameters.get("sessionid"),
                         Configuration.parameters.get("filename"));
                 //Initialise la clé privé avec le code pin
                 KeyPair kp = null;
