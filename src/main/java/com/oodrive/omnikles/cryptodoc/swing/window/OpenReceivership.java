@@ -5,6 +5,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.service.AESService;
+import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.component.CertificatesComboBox;
 import com.oodrive.omnikles.cryptodoc.swing.component.DepositFilePanel;
@@ -29,6 +30,7 @@ import java.util.zip.ZipFile;
  */
 public class OpenReceivership extends JFrame {
 
+    private SslConnexionService ssl = SslConnexionService.getInstance();
     private SummaryTextTemplate page1Paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.page1.paragraphe1"));
     private ButtonTemplate selectBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.select"), Design.MAX_SIZE);
     private GeneralTextTemplate page2Paragraphe1 = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.paragraphe1"));
@@ -175,48 +177,61 @@ public class OpenReceivership extends JFrame {
     ZipService zs = ZipService.getInstance();
 
     private void decryptAction(File zipFile) throws CertificateEncodingException {
-        {
-            //Initialise la clé privé avec le code pin
-            KeyPair kp = null;
-            try {
-                kp = aes.getKeyPairWithPrivateKey(
-                        ((KeyPair)getListCertificate().getSelectedItem()).getAlias(),
-                        "");
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
 
-            byte[] secret = new byte[0];
-            try {
-                System.out.println("Zip name :"+zipFile.getName());
-                System.out.println("Zip exist :"+zipFile.exists());
-                System.out.println("Zip path :"+zipFile.getPath());
-                System.out.println("Zip size :"+zipFile.length());
-                System.out.println("FILENAME_CRYPTED_KEYS : " + Configuration.FILENAME_CRYPTED_KEYS);
-                byte[] content  = zs.getContentFile(new ZipFile(zipFile), Configuration.FILENAME_CRYPTED_KEYS);
-                if(kp != null) {
-                    System.out.println("Begin decode sercret key ...");
-                    secret = aes.decodeSecretKeyByCertificate(content, kp);
-                    System.out.println("End decode sercret key ...");
-                }else {
-                    System.out.println("aucun certificat selectionné." );
-                }
-            } catch (IOException exx) {
-                exx.printStackTrace();
-            }
-            zs.unzip(zipFile.getPath(), Configuration.destinationFolderPath, false);
-            File cryptedFile = new File(Configuration.destinationFolderPath
-                    + File.separatorChar
-                    + Configuration.FILENAME_CRYPTED_ZIP);
-            try {
-                aes.decryptFileWithSecretKey(cryptedFile
-                        , new File(Configuration.destinationFolderPath
-                                + File.separatorChar
-                                + Configuration.FILENAME_DECRYPTED_ZIP), secret);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
+        //Initialise la clé privé avec le code pin
+        KeyPair kp = null;
+        try {
+            kp = aes.getKeyPairWithPrivateKey(
+                    ((KeyPair)getListCertificate().getSelectedItem()).getAlias(),
+                    "");
+        } catch (Exception e1) {
+            e1.printStackTrace();
         }
+
+        byte[] secret = new byte[0];
+        try {
+            System.out.println("Zip name :"+zipFile.getName());
+            System.out.println("Zip exist :"+zipFile.exists());
+            System.out.println("Zip path :"+zipFile.getPath());
+            System.out.println("Zip size :"+zipFile.length());
+            System.out.println("FILENAME_CRYPTED_KEYS : " + Configuration.FILENAME_CRYPTED_KEYS);
+            byte[] content  = zs.getContentFile(new ZipFile(zipFile), Configuration.FILENAME_CRYPTED_KEYS);
+            if(kp != null) {
+                System.out.println("Begin decode sercret key ...");
+                secret = aes.decodeSecretKeyByCertificate(content, kp);
+                System.out.println("End decode sercret key ...");
+                if(secret == null){
+                    error(CryptoDoc.textProperties.getProperty("open.page2.decrypt.secret.fail").replace("<filename>",zipFile.getName()));
+                    return;
+                }
+            }else {
+                System.out.println("aucun certificat selectionné." );
+            }
+        } catch (IOException exx) {
+            exx.printStackTrace();
+            error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + zipFile.getName());
+            return;
+        }
+        zs.unzip(zipFile.getPath(), Configuration.destinationFolderPath, false);
+        File cryptedFile = new File(Configuration.destinationFolderPath
+                + File.separatorChar
+                + Configuration.FILENAME_CRYPTED_ZIP);
+        try {
+            aes.decryptFileWithSecretKey(cryptedFile
+                    , new File(Configuration.destinationFolderPath
+                            + File.separatorChar
+                            + Configuration.FILENAME_DECRYPTED_ZIP), secret);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + zipFile.getName());
+        }
+        //TODO: ici on change le status de l'exchangeDocument
+//        ssl.updateExchangeDocumentState();
+    }
+
+    private void error(String msg){
+        JOptionPane.showMessageDialog(this, msg,
+                CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
     }
 
     private void initListener(){

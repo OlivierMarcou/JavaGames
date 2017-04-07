@@ -17,7 +17,9 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -199,7 +201,8 @@ public class AESService {
             Cipher dcipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, CertificatesUtils.provider);
             dcipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
             System.out.println( "PK " + keyPair.getPrivateKey());
-            return dcipher.doFinal(encryptedSecretKey);
+            byte[] secretKey = dcipher.doFinal(encryptedSecretKey);
+            return secretKey;
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         } catch (BadPaddingException e) {
@@ -209,6 +212,8 @@ public class AESService {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }catch (IllegalArgumentException e){
             e.printStackTrace();
         }
         return null;

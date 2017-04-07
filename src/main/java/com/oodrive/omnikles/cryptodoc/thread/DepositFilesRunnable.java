@@ -6,6 +6,7 @@ import com.oodrive.omnikles.cryptodoc.service.AESService;
 import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
+import org.json.JSONException;
 
 import javax.swing.*;
 import java.io.File;
@@ -63,11 +64,18 @@ public class DepositFilesRunnable implements Runnable{
         System.out.println("zip ok");
 
         SslConnexionService ssl = SslConnexionService.getInstance();
-        java.util.List<String> certificats = ssl.getCertificatesWithJSessionId(Configuration.parameters.get("urlCertificat"), Configuration.parameters.get("sessionid"));
+        List<String> certificats = null;
+        try {
+            certificats = ssl.getCertificatesWithJSessionId(Configuration.parameters.get("urlCertificat"), Configuration.parameters.get("sessionid"));
+        } catch (JSONException e) {
+            JOptionPane.showMessageDialog(progressBar, CryptoDoc.textProperties.getProperty("message.error.text"),
+            CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
         if(certificats == null || certificats.size() <= 0) {
-            JOptionPane d = new JOptionPane();
-            d.showConfirmDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail"),
-                    CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail.title"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("message.error.text"),
+                    CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             throw new NullPointerException("Aucun certificat trouvé pour : " + Configuration.parameters.get("urlCertificat"));
         }
 
@@ -80,9 +88,8 @@ public class DepositFilesRunnable implements Runnable{
             enveloppe = as.cryptedByCertificates(zip, certificats);
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane d = new JOptionPane();
-            d.showConfirmDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail"),
-                    CryptoDoc.textProperties.getProperty("depot.page4.sending.result.fail.title"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("message.error.text"),
+                    CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
         }
         System.out.println("crypt ok");
         ssl.setJobNumber(3);
