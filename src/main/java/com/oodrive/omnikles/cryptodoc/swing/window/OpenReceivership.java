@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by olivier on 20/03/17.
@@ -157,14 +158,52 @@ public class OpenReceivership extends JFrame {
         c.gridwidth=1;
         centerPanel.add(openBtn, c);
 
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=0;
+        c.gridwidth=2;
+        c.insets = new Insets(0, 10, 0, 10);
+        centerPanel.add(page3Paragraphe1, c);
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=1;
+        c.gridwidth=2;
+        centerPanel.add(progressBar, c);
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=2;
+        c.gridwidth=1;
+        centerPanel.add(page3Paragraphe2, c);
+
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=1;
+        c.gridy=2;
+        c.gridwidth=1;
+        centerPanel.add(exitBtn, c);
+
         openBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectDepositPanel.getScrollablePanel().getComponents();
                 String errorOpener = null;
-                for(Component component:selectDepositPanel.getScrollablePanel().getComponents()){
+                activateScreen(3);
+                java.util.List<DepositFilePanel> selectDeposit = new ArrayList<>();
+                for(Component component: selectDepositPanel.getScrollablePanel().getComponents()){
                     if(component instanceof DepositFilePanel && ((DepositFilePanel) component).getCheck().isSelected()) {
-                        System.out.println("hop " + ((DepositFilePanel) component).getFile().getName());
+                        selectDeposit.add((DepositFilePanel)component);
+                    }
+                }
+                for(int i =0 ; i< selectDeposit.size(); i++){
+                    if(selectDeposit.get(i).getCheck().isSelected()) {
+                        System.out.println("hop " + selectDeposit.get(i).getFile().getName());
 
                         //Initialise la clé privé avec le code pin
                         KeyPair kp = null;
@@ -176,17 +215,16 @@ public class OpenReceivership extends JFrame {
                             e1.printStackTrace();
                         }
                         try {
-                            ((DepositFilePanel) component).decryptAction(kp);
+                            selectDeposit.get(i).decryptAction(kp);
                         } catch (Exception e2) {
                             e2.printStackTrace();
                             errorOpener += e2.getMessage()+" \n";
                         }
+                        progressBar.setActualIcon(Math.round((i*100)/selectDeposit.size()));
                     }
                 }
                 if(errorOpener != null) {
                     error(CryptoDoc.textProperties.getProperty("message.error.text"));
-                }else {
-                    activateScreen(3);
                 }
             }
         });
