@@ -2,19 +2,26 @@ package com.oodrive.omnikles.cryptodoc.swing.component;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
+import org.json.JSONException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.HashMap;
 
 /**
  * Created by olivier on 07/02/17.
  */
 public class SelectDepositPanel extends JPanel {
 
+    private SslConnexionService ssl = SslConnexionService.getInstance();
+    private HashMap<Long, DepositStatus> depositStatuses = null;
+    private String[] nameIds = new String[]{"buyerId","tenderId","phaseId","publicationId","supplierId","documentId"};
     private JScrollPane scrollPane;
     private OpenReceivership parent;
     private ZipService zs = ZipService.getInstance();
@@ -64,25 +71,52 @@ public class SelectDepositPanel extends JPanel {
     }
 
     public void parseFile(File zipFile) {
+        try {
+            depositStatuses =  ssl.getDepositStatusesWithJSessionId(Configuration.parameters.get("urlReadStatus"), Configuration.parameters.get("sessionid"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            error(CryptoDoc.textProperties.getProperty("message.error.text"));
+        }
         Configuration.destinationFolderPath = zipFile.getPath().substring(0,zipFile.getPath().toLowerCase().lastIndexOf(".zip"));
         zs.unzip(zipFile.getPath(), Configuration.destinationFolderPath , true );
         File[] contentZipFolder = new File(Configuration.destinationFolderPath).listFiles();
         for (int i = 0; i < contentZipFolder.length; i++) {
-            getZipLinePanel(contentZipFolder[i], i);
+            try {
+                getZipLinePanel(contentZipFolder[i], i);
+            } catch (Exception e) {
+                e.printStackTrace();
+                error( CryptoDoc.textProperties.getProperty("message.error.text"));
+                return;
+            }
             getFilesInfos(contentZipFolder);
         }
         revalidate();
         repaint();
     }
 
-    private void getZipLinePanel(File file, int indexLine) {
-        DepositFilePanel filePanel = new DepositFilePanel(file);
+    private void getZipLinePanel(File file, int indexLine) throws JSONException, NumberFormatException {
+        HashMap<String, Long> ids = getIdsFile(file.getName());
+        DepositFilePanel filePanel = new DepositFilePanel(file, depositStatuses.get(ids.get("documentId")));
         GridBagConstraints listFileContraints = new GridBagConstraints();
-        listFileContraints.fill = GridBagConstraints.NONE;
+        listFileContraints.fill = GridBagConstraints.HORIZONTAL;
         listFileContraints.anchor = GridBagConstraints.BASELINE;
         listFileContraints.gridx = 0;
         listFileContraints.gridy = indexLine;
         scrollablePanel.add(filePanel, listFileContraints);
     }
 
+    private void error(String msg){
+        JOptionPane.showMessageDialog(this, msg,
+                CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
+    }
+
+    private HashMap<String, Long> getIdsFile(String filename) throws NumberFormatException{
+        String line = filename.toLowerCase().substring(filename.indexOf("_")+1,filename.lastIndexOf("."));
+        String[] idsStr = line.split("_");
+        HashMap<String, Long> ids = new HashMap<>();
+        for(int i =0; i < idsStr.length; i++){
+            ids.put(nameIds[i], Long.parseLong(idsStr[i]));
+        }
+        return ids;
+    }
 }

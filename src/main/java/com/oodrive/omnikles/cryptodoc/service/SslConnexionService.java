@@ -31,6 +31,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -60,7 +61,7 @@ public class SslConnexionService{
         this.jobNumber = jobNumber;
     }
 
-    public List<String> getCertificatesWithJSessionId(String urlCertificate, String JSessionId){
+    public List<String> getCertificatesWithJSessionId(String urlCertificate, String JSessionId) throws JSONException {
         System.out.println("getCertificatesWithJSessionId method");
         HttpEntity entity = getResponseHttpGet(urlCertificate, JSessionId).getEntity();
 
@@ -69,12 +70,12 @@ public class SslConnexionService{
         return certificatsB64;
     }
 
-    public List<DepositStatus> getDepositStatusesWithJSessionId(String urlDepositStatus, String JSessionId){
+    public HashMap<Long, DepositStatus> getDepositStatusesWithJSessionId(String urlDepositStatus, String JSessionId) throws JSONException {
         System.out.println("getDepositStatusesWithJSessionId method");
         HttpEntity entity = getResponseHttpGet(urlDepositStatus, JSessionId).getEntity();
 
         String jsonDepositStatus = getStringResponse(entity);
-        List<DepositStatus> depositStatuses = getJSONDepositStatuses(jsonDepositStatus);
+        HashMap<Long, DepositStatus> depositStatuses = getJSONDepositStatuses(jsonDepositStatus);
         return depositStatuses;
     }
 
@@ -241,38 +242,27 @@ public class SslConnexionService{
         return content;
     }
 
-    private List<String> getJSONCertificates(String jsonCertificate) {
-        JSONObject obj = null;
-        try {
-            obj = new JSONObject(jsonCertificate);
-            JSONArray certificats = obj.getJSONArray("certificatesB64");
-            List<String> certificatsB64 = new ArrayList();
-            for(int i=0; i<certificats.length(); i++){
-                certificatsB64.add(certificats.get(i).toString().replaceAll("\r", ""));
-            }
-            return certificatsB64;
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private List<String> getJSONCertificates(String jsonCertificate) throws JSONException {
+        JSONObject obj  = new JSONObject(jsonCertificate);
+        JSONArray certificats = obj.getJSONArray("certificatesB64");
+        List<String> certificatsB64 = new ArrayList();
+        for(int i=0; i<certificats.length(); i++){
+            certificatsB64.add(certificats.get(i).toString().replaceAll("\r", ""));
         }
-        return null;
+        return certificatsB64;
     }
 
-    private List<DepositStatus> getJSONDepositStatuses(String jsonDepositStatus) {
-        JSONObject obj = null;
-        try {
-            obj = new JSONObject(jsonDepositStatus);
-            JSONArray depositStatusesArray = obj.getJSONArray("depositsStatus");
-            List<DepositStatus> depositStatuses = new ArrayList();
-            for(int i=0; i<depositStatusesArray.length(); i++){
-                String line = depositStatusesArray.get(i).toString();
-                line = line.replaceAll("[{}]", "");
-                depositStatuses.add(new DepositStatus(line.split(",")));
-            }
-            return depositStatuses;
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private HashMap<Long, DepositStatus> getJSONDepositStatuses(String jsonDepositStatus) throws JSONException {
+        JSONObject obj = new JSONObject(jsonDepositStatus);
+        JSONArray depositStatusesArray = obj.getJSONArray("depositsStatus");
+        HashMap<Long, DepositStatus> depositStatuses = new HashMap<>();
+        for(int i=0; i<depositStatusesArray.length(); i++){
+            String line = depositStatusesArray.get(i).toString();
+            line = line.replaceAll("[{}]", "");
+            DepositStatus depositStatus = new DepositStatus(line.split(","));
+            depositStatuses.put(depositStatus.getId(), depositStatus);
         }
-        return null;
+        return depositStatuses;
     }
 
     private CloseableHttpResponse getResponseHttpPost(String url, List<NameValuePair> parameters) throws  IOException {
