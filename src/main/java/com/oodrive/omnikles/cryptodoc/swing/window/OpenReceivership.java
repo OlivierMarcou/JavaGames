@@ -13,6 +13,7 @@ import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GeneralTextTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.SummaryTextTemplate;
+import com.oodrive.omnikles.cryptodoc.thread.DecryptFilesRunnable;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -21,7 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * Created by olivier on 20/03/17.
@@ -198,42 +199,28 @@ public class OpenReceivership extends JFrame {
                 java.util.List<DepositFilePanel> selectDeposit = new ArrayList<>();
                 for(Component component: selectDepositPanel.getScrollablePanel().getComponents()){
                     if(component instanceof DepositFilePanel && ((DepositFilePanel) component).getCheck().isSelected()) {
+                        System.out.println("Selected file name :  " + ((DepositFilePanel) component).getName());
                         selectDeposit.add((DepositFilePanel)component);
                     }
                 }
-                for(int i =0 ; i< selectDeposit.size(); i++){
-                    if(selectDeposit.get(i).getCheck().isSelected()) {
-                        System.out.println("hop " + selectDeposit.get(i).getFile().getName());
+                System.out.println("Selected files number :  " + selectDeposit.size());
+                DecryptFilesRunnable decryptFilesRunnable = new DecryptFilesRunnable(selectDeposit, progressBar,
+                                                            ((KeyPair)getListCertificate().getSelectedItem()));
+                Thread decrypt = new Thread(decryptFilesRunnable);
+                decrypt.start();
 
-                        //Initialise la clé privé avec le code pin
-                        KeyPair kp = null;
-                        try {
-                            kp = aes.getKeyPairWithPrivateKey(
-                                    ((KeyPair)getListCertificate().getSelectedItem()).getAlias(),
-                                    "");
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                        try {
-                            selectDeposit.get(i).decryptAction(kp);
-                        } catch (Exception e2) {
-                            e2.printStackTrace();
-                            errorOpener += e2.getMessage()+" \n";
-                        }
-                        progressBar.setActualIcon(Math.round((i*100)/selectDeposit.size()));
-                    }
-                }
-                if(errorOpener != null) {
-                    error(CryptoDoc.textProperties.getProperty("message.error.text"));
-                }
             }
         });
-
+        exitBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(1);
+            }
+        });
         initListener();
 
         setVisible(true);
     }
-
 
     private void error(String msg){
         JOptionPane.showMessageDialog(this, msg,
