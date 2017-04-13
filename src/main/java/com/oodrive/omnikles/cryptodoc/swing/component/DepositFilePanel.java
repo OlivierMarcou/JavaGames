@@ -30,6 +30,7 @@ public class DepositFilePanel extends JPanel{
     private JLabel state = new JLabel();
     private JCheckBox check = new JCheckBox();
     private FileLabel labelOpenIcon = null;
+    private AnimatedProgressBar progressBar = null;
     private ImageIcon closeIcon = new ImageIcon(new ImageIcon(DepositFilePanel.this.getClass().getResource("/images/notopen.jpeg")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
     private ImageIcon openIcon =  new ImageIcon(new ImageIcon(DepositFilePanel.this.getClass().getResource("/images/openletter.png")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
 
@@ -74,7 +75,8 @@ public class DepositFilePanel extends JPanel{
 
     private DepositStatus depositStatus;
 
-    public DepositFilePanel(File file, DepositStatus depositStatus) throws JSONException, NumberFormatException {
+    public DepositFilePanel(File file, DepositStatus depositStatus, AnimatedProgressBar progressBar) throws JSONException, NumberFormatException {
+        this.progressBar = progressBar;
         this.file = file;
         text.setText(file.getName());
         this.depositStatus = depositStatus;
@@ -158,11 +160,16 @@ public class DepositFilePanel extends JPanel{
             error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + file.getName());
             return;
         }
+        zs.setJobNumber(0);
+        zs.setMaxPercent(50);
+        zs.setProgressBar(progressBar);
         zs.unzip(file.getPath(), Configuration.destinationFolderPath, false);
         File cryptedFile = new File(Configuration.destinationFolderPath
                 + File.separatorChar
                 + Configuration.FILENAME_CRYPTED_ZIP);
         try {
+            aes.setMaxPercent(100);
+            aes.setJobNumber(1);
             aes.decryptFileWithSecretKey(cryptedFile
                     , new File(Configuration.destinationFolderPath
                             + File.separatorChar

@@ -249,22 +249,42 @@ public class AESService {
             System.out.println("Cipher init ok.");
             FileInputStream inputStream = new FileInputStream(encryptFile);
             System.out.println("Encrypted file length" + encryptFile.length());
-            byte[] inputBytes = new byte[(int) encryptFile.length()];
-            inputStream.read(inputBytes);
 
+            long fileSize = encryptFile.length();
+
+            CipherOutputStream out = new CipherOutputStream(new FileOutputStream(decryptedFile), cipher);
+            byte[] buffer = new byte[8192];
+            int count;
             System.out.println("Send inputBytes to cipher ...");
-            byte[] outputBytes = cipher.doFinal(inputBytes);
+            long size = 0l;
+            int percentMem = -1;
+            while ((count = inputStream.read(buffer)) > 0)
+            {
+                if(progressBar != null){
+                    size += buffer.length/1024;
+                    int percent = maxPercent;
+                    if(fileSize > 0) {
+                        percent = Math.round((size * maxPercent) / fileSize);
+                    }
+                    if(percentMem != percent){
+                        progressBar.setActualIcon(percent + (maxPercent*jobNumber));
+                        percentMem = percent;
+                        progressBar.setText(CryptoDoc.textProperties.getProperty("open.page3.decrypt") +
+                                (percent + (maxPercent*jobNumber)) + "%");
+                    }
+                }
+                out.write(buffer, 0, count);
+            }
 
-            System.out.println("decryptedFile : " + decryptedFile);
-            FileOutputStream outputStream = new FileOutputStream(decryptedFile);
-            outputStream.write(outputBytes);
 
+            out.close();
             inputStream.close();
-            outputStream.close();
+            System.out.println("decryptedFile : " + decryptedFile);
+
 
         } catch (NoSuchPaddingException | NoSuchAlgorithmException
-                | InvalidKeyException | BadPaddingException
-                | IllegalBlockSizeException | IOException ex) {
+                | InvalidKeyException
+                |  IOException ex) {
             throw new Exception("Error encrypting/decrypting file", ex);
         }
     }

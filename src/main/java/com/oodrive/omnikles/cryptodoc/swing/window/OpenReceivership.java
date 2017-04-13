@@ -38,13 +38,14 @@ public class OpenReceivership extends JFrame {
     private ButtonTemplate backBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.back"), Design.MAX_SIZE);
 
     private GeneralTextTemplate infos = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.vide"));
+
+    private AnimatedProgressBar progressBar = null;
     private SelectDepositPanel selectDepositPanel = new SelectDepositPanel(this);
 
     private CertificatesComboBox listCertificate = new CertificatesComboBox();
     private GeneralTextTemplate lblCertificates = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.list.certificate"));
     private GenaralPanelTemplate panel = null;
 
-    private AnimatedProgressBar progressBar = null;
     private SummaryTextTemplate page3Paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.page3.paragraphe1"));
     private GeneralTextTemplate page3Paragraphe2 = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page3.paragraphe2"));
     private ButtonTemplate exitBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page3.button.exit"), Design.MAX_SIZE);
@@ -71,6 +72,10 @@ public class OpenReceivership extends JFrame {
 
     public void setInfos(GeneralTextTemplate infos) {
         this.infos = infos;
+    }
+
+    public AnimatedProgressBar getProgressBar() {
+        return progressBar;
     }
 
     public OpenReceivership(){
