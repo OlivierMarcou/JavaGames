@@ -78,6 +78,7 @@ public class SelectDepositPanel extends JPanel {
             error(CryptoDoc.textProperties.getProperty("message.error.text"));
         }
         Configuration.destinationFolderPath = zipFile.getPath().substring(0,zipFile.getPath().toLowerCase().lastIndexOf(".zip"));
+        zs.setProgressBar(parent.getProgressBar());
         zs.unzip(zipFile.getPath(), Configuration.destinationFolderPath , true );
         File[] contentZipFolder = new File(Configuration.destinationFolderPath).listFiles();
         for (int i = 0; i < contentZipFolder.length; i++) {
@@ -96,7 +97,7 @@ public class SelectDepositPanel extends JPanel {
 
     private void getZipLinePanel(File file, int indexLine) throws JSONException, NumberFormatException {
         HashMap<String, Long> ids = getIdsFile(file.getName());
-        DepositFilePanel filePanel = new DepositFilePanel(file, depositStatuses.get(ids.get("documentId")));
+        DepositFilePanel filePanel = new DepositFilePanel(file, depositStatuses.get(ids.get("documentId")), parent.getProgressBar());
         GridBagConstraints listFileContraints = new GridBagConstraints();
         listFileContraints.fill = GridBagConstraints.HORIZONTAL;
         listFileContraints.anchor = GridBagConstraints.BASELINE;

@@ -59,14 +59,15 @@ public class ZipService {
         if(!dir.exists())
             dir.mkdirs();
         FileInputStream fis;
-        long totalSizeZip = (new File(zipFilePath)).length();
         //buffer for read and write data to file
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[4096];
+        progressBar.setText(CryptoDoc.textProperties.getProperty("open.page3.extract"));
+
+        progressBar.setActualIcon(0);
         try {
             fis = new FileInputStream(zipFilePath);
             ZipInputStream zis = new ZipInputStream(fis);
             ZipEntry ze = zis.getNextEntry();
-            int size = 0;
             while(ze != null){
                 String fileName = ze.getName();
                 File newFile = new File(destDir + File.separator + fileName);
@@ -77,17 +78,12 @@ public class ZipService {
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
                 fos.write(buffer, 0, len);
-                    if(progressBar != null){
-                        size += buffer.length;
-                        progressBar.setActualIcon(Math.round((size*100)/totalSizeZip));
-                    }
                 }
                 fos.close();
-                //close this ZipEntry
                 zis.closeEntry();
                 ze = zis.getNextEntry();
             }
-            //close last ZipEntry
+            progressBar.setActualIcon(49);
             zis.closeEntry();
             zis.close();
             fis.close();
