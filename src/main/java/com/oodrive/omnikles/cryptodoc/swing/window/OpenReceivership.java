@@ -5,7 +5,6 @@ import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.service.AESService;
-import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.CertificatesComboBox;
 import com.oodrive.omnikles.cryptodoc.swing.component.DepositFilePanel;
 import com.oodrive.omnikles.cryptodoc.swing.component.SelectDepositPanel;
@@ -21,7 +20,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -39,7 +37,6 @@ public class OpenReceivership extends JFrame {
 
     private GeneralTextTemplate infos = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.vide"));
 
-    private AnimatedProgressBar progressBar = null;
     private SelectDepositPanel selectDepositPanel = new SelectDepositPanel(this);
 
     private CertificatesComboBox listCertificate = new CertificatesComboBox();
@@ -47,8 +44,27 @@ public class OpenReceivership extends JFrame {
     private GenaralPanelTemplate panel = null;
 
     private SummaryTextTemplate page3Paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.page3.paragraphe1"));
+
+    public GeneralTextTemplate getPage3Paragraphe2() {
+        return page3Paragraphe2;
+    }
+
+    public void setPage3Paragraphe2(GeneralTextTemplate page3Paragraphe2) {
+        this.page3Paragraphe2 = page3Paragraphe2;
+    }
+
     private GeneralTextTemplate page3Paragraphe2 = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page3.paragraphe2"));
     private ButtonTemplate exitBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page3.button.exit"), Design.MAX_SIZE);
+
+    public JLabel getLoadingIcon() {
+        return loadingIcon;
+    }
+
+    public void setLoadingIcon(JLabel loadingIcon) {
+        this.loadingIcon = loadingIcon;
+    }
+
+    private JLabel loadingIcon = new JLabel();
 
     public CertificatesComboBox getListCertificate() {
         return listCertificate;
@@ -74,10 +90,6 @@ public class OpenReceivership extends JFrame {
         this.infos = infos;
     }
 
-    public AnimatedProgressBar getProgressBar() {
-        return progressBar;
-    }
-
     public OpenReceivership(){
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
@@ -91,12 +103,7 @@ public class OpenReceivership extends JFrame {
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
-
-        try {
-            progressBar = new AnimatedProgressBar(getClass().getResource("/progressbar.gif").openStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadingIcon.setIcon(new ImageIcon(getClass().getResource("/load.gif")));
 
         activateScreen(1);
 
@@ -170,29 +177,28 @@ public class OpenReceivership extends JFrame {
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=2;
-        c.insets = new Insets(0, 10, 0, 10);
         centerPanel.add(page3Paragraphe1, c);
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
         c.gridy=1;
-        c.gridwidth=2;
-        centerPanel.add(progressBar, c);
+        c.gridwidth=1;
+        centerPanel.add(loadingIcon, c);
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=2;
+        c.gridx=1;
+        c.gridy=1;
         c.gridwidth=1;
         centerPanel.add(page3Paragraphe2, c);
 
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=1;
+        c.gridx=0;
         c.gridy=2;
-        c.gridwidth=1;
+        c.gridwidth=2;
         centerPanel.add(exitBtn, c);
 
         openBtn.addActionListener(new ActionListener() {
@@ -209,8 +215,8 @@ public class OpenReceivership extends JFrame {
                     }
                 }
                 System.out.println("Selected files number :  " + selectDeposit.size());
-                DecryptFilesRunnable decryptFilesRunnable = new DecryptFilesRunnable(selectDeposit, progressBar,
-                                                            ((KeyPair)getListCertificate().getSelectedItem()));
+                DecryptFilesRunnable decryptFilesRunnable = new DecryptFilesRunnable(selectDeposit,
+                                                            (KeyPair)getListCertificate().getSelectedItem(), OpenReceivership.this );
                 Thread decrypt = new Thread(decryptFilesRunnable);
                 decrypt.start();
 
@@ -296,7 +302,7 @@ public class OpenReceivership extends JFrame {
         lblCertificates.setVisible(two);
         listCertificate.setVisible(two);
 
-        progressBar.setVisible(three);
+        loadingIcon.setVisible(three);
         page3Paragraphe1.setVisible(three);
         page3Paragraphe2.setVisible(three);
         exitBtn.setVisible(three);

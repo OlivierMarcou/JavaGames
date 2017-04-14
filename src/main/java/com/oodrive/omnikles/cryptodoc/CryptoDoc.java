@@ -90,11 +90,9 @@ public class CryptoDoc {
     }
 
     public void initContext() throws IOException{
-        String versionString = null;
         URL url = this.getClass().getResource("/cryptodoc.properties");
         if(url != null && url.getFile() != null) {
             contextProperties.load(url.openStream());
-            versionString = contextProperties.getProperty("build.version");
             Configuration.version = contextProperties.getProperty("actual.version");
         }
     }
