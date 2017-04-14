@@ -61,9 +61,6 @@ public class ZipService {
         FileInputStream fis;
         //buffer for read and write data to file
         byte[] buffer = new byte[4096];
-        progressBar.setText(CryptoDoc.textProperties.getProperty("open.page3.extract"));
-
-        progressBar.setActualIcon(0);
         try {
             fis = new FileInputStream(zipFilePath);
             ZipInputStream zis = new ZipInputStream(fis);
@@ -83,7 +80,6 @@ public class ZipService {
                 zis.closeEntry();
                 ze = zis.getNextEntry();
             }
-            progressBar.setActualIcon(49);
             zis.closeEntry();
             zis.close();
             fis.close();

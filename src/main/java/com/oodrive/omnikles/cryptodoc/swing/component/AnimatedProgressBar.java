@@ -142,12 +142,6 @@ public class AnimatedProgressBar extends JPanel {
         podBtn.setVisible(true);
     }
 
-    public void finishDecrypt( ){
-        icon.setVisible(false);
-        setText(CryptoDoc.textProperties.getProperty("open.page3.sending.result.ok"));
-        annulBtn.setVisible(false);
-    }
-
     /* -------------------------------- PRIVATE ------------------------------*/
 
     private void decoposeGif(InputStream imageGif){

@@ -250,32 +250,14 @@ public class AESService {
             FileInputStream inputStream = new FileInputStream(encryptFile);
             System.out.println("Encrypted file length" + encryptFile.length());
 
-            long fileSize = encryptFile.length();
-
             CipherOutputStream out = new CipherOutputStream(new FileOutputStream(decryptedFile), cipher);
             byte[] buffer = new byte[8192];
             int count;
             System.out.println("Send inputBytes to cipher ...");
-            long size = 0l;
-            int percentMem = -1;
             while ((count = inputStream.read(buffer)) > 0)
             {
-                if(progressBar != null){
-                    size += buffer.length/1024;
-                    int percent = maxPercent;
-                    if(fileSize > 0) {
-                        percent = Math.round((size * maxPercent) / fileSize);
-                    }
-                    if(percentMem != percent){
-                        progressBar.setActualIcon(percent + (maxPercent*jobNumber));
-                        percentMem = percent;
-                        progressBar.setText(CryptoDoc.textProperties.getProperty("open.page3.decrypt") +
-                                (percent + (maxPercent*jobNumber)) + "%");
-                    }
-                }
                 out.write(buffer, 0, count);
             }
-
 
             out.close();
             inputStream.close();
