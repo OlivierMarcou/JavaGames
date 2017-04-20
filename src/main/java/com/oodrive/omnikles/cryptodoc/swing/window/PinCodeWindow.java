@@ -42,7 +42,7 @@ public class PinCodeWindow extends JDialog{
         this.txtPassword = txtPassword;
     }
 
-    public PinCodeWindow(OpenReceivership parent){
+    public PinCodeWindow(final OpenReceivership parent){
         setSize(300, 200);
         Container content = getContentPane();
                 content.setLayout(new GridBagLayout());

@@ -251,7 +251,7 @@ public class AESService {
             System.out.println("Encrypted file length" + encryptFile.length());
 
             CipherOutputStream out = new CipherOutputStream(new FileOutputStream(decryptedFile), cipher);
-            byte[] buffer = new byte[8192];
+            byte[] buffer = new byte[2048];
             int count;
             System.out.println("Send inputBytes to cipher ...");
             while ((count = inputStream.read(buffer)) > 0)
@@ -262,7 +262,6 @@ public class AESService {
             out.close();
             inputStream.close();
             System.out.println("decryptedFile : " + decryptedFile);
-
 
         } catch (NoSuchPaddingException | NoSuchAlgorithmException
                 | InvalidKeyException
@@ -298,48 +297,6 @@ public class AESService {
         }
     }
 
-    public String decryptMessage(byte[] key, KeyPair keyPair, String filename) {
-        byte [] decripted  = null;
-        try {
-            if (keyPair.getPrivateKey() != null) {
-                Cipher cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, CertificatesUtils.provider);
-                cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
-                cipher.update(key);
-                decripted = cipher.doFinal();
-            }
-        } catch (InvalidKeyException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        FileOutputStream envfos = null;
-        try {
-            envfos = new FileOutputStream(Configuration.activFolder
-                    + File.separatorChar + Configuration.PREFIX_DECRYPTED_FILENAME + filename );
-            envfos.write(decripted);
-            envfos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        return "ok";
-    }
-
-
     public byte[] encrypt(byte[] data, X509Certificate x509Certificate) {
         try {
             Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
@@ -347,13 +304,12 @@ public class AESService {
             field.set(null, Boolean.FALSE);
         } catch (Exception ex) {
         }
-        String resultat = null;
             // La variable cert correspond au certificat du destinataire
             // La clé publique de ce certificat servira à chiffrer la clé symétrique
         Cipher cipher = null;
         try {
             cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME);
-            cipher.init(Cipher.ENCRYPT_MODE, x509Certificate);
+            cipher.init(Cipher.ENCRYPT_MODE, x509Certificate.getPublicKey());
             // Encrypt the message
             return cipher.doFinal(data);
         } catch (InvalidKeyException e) {
@@ -369,61 +325,6 @@ public class AESService {
         }
         return null;
     }
-
-    public String decryptMessage(File file, KeyPair keyPair) {
-//        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        byte [] decripted  = null;
-        if(file.exists()) {
-            byte[] pkcs7envelopedData = new byte[(int) file.length()];
-            DataInputStream in = null;
-            try {
-                in = new DataInputStream(new FileInputStream(file));
-                in.readFully(pkcs7envelopedData);
-                in.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                if (keyPair.getPrivateKey() != null) {
-                    Cipher cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, CertificatesUtils.provider);
-                    cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
-                    cipher.update(pkcs7envelopedData);
-                    decripted = cipher.doFinal();
-                }
-            } catch (InvalidKeyException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            } catch (NoSuchPaddingException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-            FileOutputStream envfos = null;
-            try {
-                envfos = new FileOutputStream(Configuration.activFolder
-                        + File.separatorChar + Configuration.PREFIX_DECRYPTED_FILENAME + file.getName());
-                envfos.write(decripted);
-                envfos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return "ok";
-        }
-        return "echec";
-    }
-
 
     public static AESService getInstance() {
         if (null == instance) {

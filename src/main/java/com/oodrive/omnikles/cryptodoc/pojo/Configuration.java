@@ -23,7 +23,7 @@ public class Configuration {
     public static final String FILENAME_DECRYPTED_ZIP = "enveloppe_decrypte.zip";
     public static final String FILENAME_CRYPTED_KEYS = "enveloppe.key.p7m";
     public static final String JSON_ENCODING = "UTF-8";
-    public static final String CIPHER_ALGORITHME = "RSA";
+    public static final String CIPHER_ALGORITHME = "RSA/ECB/PKCS1Padding";
     public static final String CRYPTED_KEY_ALGORITHME = "AES";
     public static final String PREFIX_DECRYPTED_FILENAME = "fichier_decrypte_";
 
