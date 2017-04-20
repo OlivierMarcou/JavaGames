@@ -26,7 +26,7 @@ public class Step2Window extends JFrame {
     private java.util.List<File> files;
     private int totalSize = 0;
 
-    public Step2Window(java.util.List<File> files){
+    public Step2Window(final java.util.List<File> files){
         this.files = files;
 
         setTitle(CryptoDoc.textProperties.getProperty("depot.page3.title"));

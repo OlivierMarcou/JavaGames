@@ -145,14 +145,14 @@ public class SelectFilesPanel extends JPanel {
 
             GridBagConstraints constraints = new GridBagConstraints();
             GridBagConstraints fileConstraints = new GridBagConstraints();
-            JPanel filePanel = new JPanel();
+            final JPanel filePanel = new JPanel();
 
             JLabel labelIcon = new JLabel();
 //            ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/icon_pdf.png"));
             ImageIcon icon = new ImageIcon(new ImageIcon(this.getClass().getResource(getFileType(file.getName()))).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
             labelIcon.setIcon(icon);
 
-            FileLabel labelRemoveIcon = new FileLabel("", file);
+            final FileLabel labelRemoveIcon = new FileLabel("", file);
 //            ImageIcon removeIcon = new ImageIcon(this.getClass().getResource("/images/trash.png"));
             ImageIcon removeIcon = new ImageIcon(new ImageIcon(this.getClass().getResource("/images/trash.png")).getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
             labelRemoveIcon.setIcon(removeIcon);

@@ -112,7 +112,7 @@ public class OpenReceivership extends JFrame {
         c.gridx=0;
         c.gridy=0;
         c.gridwidth=1;
-        c.insets = new Insets(0, 10, 0, 10);
+        c.insets = new Insets(5, 10, 5, 10);
         centerPanel.add(page1Paragraphe1, c);
 
         c.fill = GridBagConstraints.BOTH;
