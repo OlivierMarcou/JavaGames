@@ -145,15 +145,15 @@ public class AESService {
                 + File.separatorChar
                 + Configuration.FILENAME_CRYPTED_ZIP);
         FileOutputStream fout = new FileOutputStream(cryptedFile);
+        CipherOutputStream cos = new CipherOutputStream(fout, cipher);
 
         byte[] block = new byte[2048];
         int i;
         long size = 0 ;
         int percentMem = -1;
         long fileSize = file.length()/1024;
-        while ((fin1.read(block)) != -1) {
-            byte[] inputfile= cipher.doFinal(block);
-            fout.write(inputfile);
+        while ((i = fin1.read(block)) != -1) {
+            cos.write(block, 0, i);
             if(progressBar != null){
                 size += block.length/1024;
                 int percent = maxPercent;
@@ -168,6 +168,10 @@ public class AESService {
                 }
             }
         }
+        cos.close();
+        fin1.close();
+        fout.close();
+
         return cryptedFile;
     }
 
@@ -250,17 +254,18 @@ public class AESService {
             FileInputStream inputStream = new FileInputStream(encryptFile);
             System.out.println("Encrypted file length" + encryptFile.length());
 
-            CipherOutputStream out = new CipherOutputStream(new FileOutputStream(decryptedFile), cipher);
-            byte[] buffer = new byte[2048];
+            byte[] buffer = new byte[8192];
             int count;
             System.out.println("Send inputBytes to cipher ...");
-            while ((count = inputStream.read(buffer)) > 0)
-            {
-                out.write(buffer, 0, count);
+            CipherInputStream cis = new CipherInputStream(inputStream, cipher);
+            FileOutputStream fos = new FileOutputStream(decryptedFile);
+            while ((count = cis.read(buffer)) != -1) {
+                fos.write(buffer,0,count);
             }
-
-            out.close();
+            fos.close();
             inputStream.close();
+            cis.close();
+
             System.out.println("decryptedFile : " + decryptedFile);
 
         } catch (NoSuchPaddingException | NoSuchAlgorithmException
