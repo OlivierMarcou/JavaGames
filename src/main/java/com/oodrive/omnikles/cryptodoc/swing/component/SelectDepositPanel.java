@@ -85,6 +85,10 @@ public class SelectDepositPanel extends JPanel {
         Configuration.destinationFolderPath = zipFile.getPath().substring(0,zipFile.getPath().toLowerCase().lastIndexOf(".zip"));
         zs.unzip(zipFile.getPath(), Configuration.destinationFolderPath , true );
         File[] contentZipFolder = new File(Configuration.destinationFolderPath).listFiles();
+        for(Component component:scrollablePanel.getComponents()){
+            scrollablePanel.remove(component);
+        }
+        parent.getInfos().setText(CryptoDoc.textProperties.getProperty("open.page2.paragraphe2.vide"));
         for (int i = 0; i < contentZipFolder.length; i++) {
             try {
                 getZipLinePanel(contentZipFolder[i], i);
@@ -112,9 +116,6 @@ public class SelectDepositPanel extends JPanel {
         listFileContraints.anchor = GridBagConstraints.BASELINE;
         listFileContraints.gridx = 0;
         listFileContraints.gridy = indexLine;
-        for(Component component:scrollablePanel.getComponents()){
-            scrollablePanel.remove(component);
-        }
         scrollablePanel.add(filePanel, listFileContraints);
     }
 
