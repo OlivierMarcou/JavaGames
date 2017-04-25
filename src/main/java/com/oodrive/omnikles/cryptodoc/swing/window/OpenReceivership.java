@@ -31,7 +31,7 @@ public class OpenReceivership extends JFrame {
     private SummaryTextTemplate page1Paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.page1.paragraphe1"));
     private ButtonTemplate selectBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.select"), Design.MAX_SIZE);
     private GeneralTextTemplate page2Paragraphe1 = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.paragraphe1"));
-
+    private int screenNumber = 1;
     private ButtonTemplate openBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.open"), Design.MAX_SIZE);
     private ButtonTemplate backBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.back"), Design.MAX_SIZE);
 
@@ -105,7 +105,7 @@ public class OpenReceivership extends JFrame {
         setContentPane(panel);
         loadingIcon.setIcon(new ImageIcon(getClass().getResource("/load.gif")));
 
-        activateScreen(1);
+        activateScreen();
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -205,8 +205,8 @@ public class OpenReceivership extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectDepositPanel.getScrollablePanel().getComponents();
-                String errorOpener = null;
-                activateScreen(3);
+                screenNumber = 3;
+                activateScreen();
                 java.util.List<DepositFilePanel> selectDeposit = new ArrayList<>();
                 for(Component component: selectDepositPanel.getScrollablePanel().getComponents()){
                     if(component instanceof DepositFilePanel && ((DepositFilePanel) component).getCheck().isSelected()) {
@@ -243,13 +243,15 @@ public class OpenReceivership extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectDepositPanel.parseFile(zipFileChooser());
-                activateScreen(2);
+                screenNumber = 2;
+                activateScreen();
             }
         });
         backBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                activateScreen(1);
+                screenNumber --;
+                activateScreen();
             }
         });
     }
@@ -269,11 +271,11 @@ public class OpenReceivership extends JFrame {
         return null;
     }
 
-    private void activateScreen(int screennumber){
+    private void activateScreen(){
         boolean one = true;
         boolean two = false;
         boolean three = false;
-        switch (screennumber ) {
+        switch (screenNumber ) {
             case 1:
                 one = true;
                 two = false;
@@ -298,7 +300,7 @@ public class OpenReceivership extends JFrame {
         selectDepositPanel.setVisible(two);
         infos.setVisible(two);
         openBtn.setVisible(two);
-        backBtn.setVisible(two);
+        backBtn.setVisible((two || three));
         lblCertificates.setVisible(two);
         listCertificate.setVisible(two);
 
@@ -308,6 +310,6 @@ public class OpenReceivership extends JFrame {
         exitBtn.setVisible(three);
 
         panel.getMyStatusBar().setPagesNumber(3);
-        panel.getMyStatusBar().setActualPage(screennumber);
+        panel.getMyStatusBar().setActualPage(screenNumber);
     }
 }

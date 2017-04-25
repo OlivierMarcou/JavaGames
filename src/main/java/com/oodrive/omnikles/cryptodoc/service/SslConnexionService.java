@@ -7,6 +7,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.ExchangeDocumentState;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressEntityWrapper;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
+import org.apache.http.ConnectionClosedException;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -72,7 +73,7 @@ public class SslConnexionService{
         return certificatsB64;
     }
 
-    public HashMap<Long, DepositStatus> getDepositStatusesWithJSessionId(String urlDepositStatus) throws JSONException {
+    public HashMap<Long, DepositStatus> getDepositStatusesWithJSessionId(String urlDepositStatus) throws JSONException, ConnectionClosedException {
         System.out.println("getDepositStatusesWithJSessionId method");
         HttpEntity entity = getResponseHttpGet(urlDepositStatus).getEntity();
 
@@ -254,9 +255,14 @@ public class SslConnexionService{
         return certificatsB64;
     }
 
-    private HashMap<Long, DepositStatus> getJSONDepositStatuses(String jsonDepositStatus) throws JSONException {
+    private HashMap<Long, DepositStatus> getJSONDepositStatuses(String jsonDepositStatus) throws JSONException, ConnectionClosedException {
         JSONObject obj = new JSONObject(jsonDepositStatus);
-        JSONArray depositStatusesArray = obj.getJSONArray("depositsStatus");
+        JSONArray depositStatusesArray = null;
+        try {
+            depositStatusesArray = obj.getJSONArray("depositsStatus");
+        }catch(JSONException e){
+            throw new ConnectionClosedException("\n" + obj.getJSONObject("status").get("message"));
+        }
         HashMap<Long, DepositStatus> depositStatuses = new HashMap<>();
         for(int i=0; i<depositStatusesArray.length(); i++){
             String line = depositStatusesArray.get(i).toString();

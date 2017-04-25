@@ -11,6 +11,7 @@ public class Configuration {
     public static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
     public static final boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
     public static boolean debug = false;
+    public static boolean tests = false;
     public static HashMap<String, String> parameters = new HashMap<>();
     public static String activFolder;
     public static String destinationFolderPath = null;
@@ -25,7 +26,6 @@ public class Configuration {
     public static final String JSON_ENCODING = "UTF-8";
     public static final String CIPHER_ALGORITHME = "RSA/ECB/PKCS1Padding";
     public static final String CRYPTED_KEY_ALGORITHME = "AES";
-    public static final String PREFIX_DECRYPTED_FILENAME = "fichier_decrypte_";
 
     public static final void initParameters(String[] args) throws IOException {
         activFolder = System.getProperty("user.home");
@@ -41,6 +41,7 @@ public class Configuration {
             parameters.put(keyValue[0], keyValue[1]);
         }
         debug = Boolean.parseBoolean(parameters.get("debug"));
+        tests = Boolean.parseBoolean(parameters.get("tests"));
     }
 
 }

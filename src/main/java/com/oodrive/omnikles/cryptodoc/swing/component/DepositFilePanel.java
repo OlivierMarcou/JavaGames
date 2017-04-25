@@ -80,7 +80,8 @@ public class DepositFilePanel extends JPanel{
         this.depositStatus = depositStatus;
         setLayout(new GridBagLayout());
         labelOpenIcon = new FileLabel("", file);
-        if(this.depositStatus.getExchangeDocumentState().equals(ExchangeDocumentState.CLOSE)) {
+        if(this.depositStatus != null &&
+                this.depositStatus.getExchangeDocumentState().equals(ExchangeDocumentState.CLOSE)) {
             labelOpenIcon.setIcon(closeIcon);
         }else{
             labelOpenIcon.setIcon(openIcon);
@@ -111,7 +112,11 @@ public class DepositFilePanel extends JPanel{
         fileConstraints.insets = new Insets(10, 10, 10, 10);
         add(text, fileConstraints);
 
-        state.setText(CryptoDoc.textProperties.getProperty(depositStatus.getExchangeState().name()));
+        if(depositStatus != null) {
+            state.setText(CryptoDoc.textProperties.getProperty(this.depositStatus.getExchangeState().name()));
+        }else{
+            state.setText(CryptoDoc.textProperties.getProperty(ExchangeState.ERROR.name()));
+        }
         fileConstraints.fill = GridBagConstraints.NONE;
         fileConstraints.anchor = GridBagConstraints.CENTER;
         fileConstraints.gridx = 2;
@@ -171,7 +176,11 @@ public class DepositFilePanel extends JPanel{
             e1.printStackTrace();
             error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + file.getName());
         }
-        ssl.updateExchangeDocumentState(depositStatus.getId(), Configuration.parameters.get("urlUpdateStatus"));
+        if(depositStatus == null) {
+            error(CryptoDoc.textProperties.getProperty("open.page3.upload.fail"));
+        }else{
+            ssl.updateExchangeDocumentState(depositStatus.getId(), Configuration.parameters.get("urlUpdateStatus"));
+        }
     }
 
     private void error(String msg){

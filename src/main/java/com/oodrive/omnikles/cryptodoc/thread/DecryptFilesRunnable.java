@@ -7,6 +7,8 @@ import com.oodrive.omnikles.cryptodoc.swing.component.DepositFilePanel;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.security.cert.CertificateEncodingException;
 import java.util.List;
 
 /**
@@ -29,6 +31,7 @@ public class DecryptFilesRunnable implements Runnable{
 
     @Override
     public void run() {
+        errorOpener = null;
         parent.getPage3Paragraphe2().setText(CryptoDoc.textProperties.getProperty("open.page3.decrypt"));
         for(int i =0 ; i< selectDeposit.size(); i++){
             if(selectDeposit.get(i).getCheck().isSelected()) {
@@ -42,9 +45,15 @@ public class DecryptFilesRunnable implements Runnable{
                 }
                 try {
                     selectDeposit.get(i).decryptAction(kp);
-                } catch (Exception e2) {
+                } catch (IOException e2) {
                     e2.printStackTrace();
-                    errorOpener += e2.getMessage()+" \n";
+                    errorOpener +=CryptoDoc.textProperties.getProperty("open.page3.upload.fail")+ " \n";
+                } catch (CertificateEncodingException e) {
+                    e.printStackTrace();
+                    errorOpener += e.getMessage()+" \n";
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    errorOpener += e.getMessage()+" \n";
                 }
             }
         }
