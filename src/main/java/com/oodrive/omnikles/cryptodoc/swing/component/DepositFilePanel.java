@@ -79,6 +79,9 @@ public class DepositFilePanel extends JPanel{
         text.setText(file.getName());
         this.depositStatus = depositStatus;
         setLayout(new GridBagLayout());
+        setPreferredSize(new Dimension(580, 40));
+        setMinimumSize(new Dimension(580, 40));
+
         labelOpenIcon = new FileLabel("", file);
         if(this.depositStatus != null &&
                 this.depositStatus.getExchangeDocumentState().equals(ExchangeDocumentState.CLOSE)) {
@@ -94,21 +97,20 @@ public class DepositFilePanel extends JPanel{
         text.setFont(Design.TEXTFIELD_FONT);
         text.setFont(Design.TEXTFIELD_FONT);
 
-        fileConstraints.fill = GridBagConstraints.NONE;
         fileConstraints.anchor = GridBagConstraints.LINE_START;
+        fileConstraints.fill = GridBagConstraints.NONE;
         fileConstraints.gridx = 0;
         fileConstraints.gridy = 0;
         fileConstraints.gridwidth = 1;
         fileConstraints.insets = new Insets(10, 10, 10, 10);
         add(check, fileConstraints);
 
-        fileConstraints.fill = GridBagConstraints.NONE;
-        fileConstraints.anchor = GridBagConstraints.CENTER;
+        fileConstraints.fill = GridBagConstraints.BOTH;
         fileConstraints.gridx = 1;
         fileConstraints.gridy = 0;
         fileConstraints.gridwidth = 1;
-//            text.setPreferredSize(new Dimension(300, 30));
-//            text.setMinimumSize(new Dimension(300, 30));
+        text.setPreferredSize(new Dimension(300, 30));
+        text.setMinimumSize(new Dimension(300, 30));
         fileConstraints.insets = new Insets(10, 10, 10, 10);
         add(text, fileConstraints);
 
