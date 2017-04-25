@@ -13,7 +13,6 @@ import java.awt.*;
 public class GenaralPanelTemplate extends JPanel {
 
     private JFrame parent = null;
-    private JPanel topPanel = new JPanel();
     private JPanel centerPanel = new JPanel();
     private FooterBar myStatusBar = null;
 
@@ -23,15 +22,6 @@ public class GenaralPanelTemplate extends JPanel {
 
     public void setMyStatusBar(FooterBar myStatusBar) {
         this.myStatusBar = myStatusBar;
-    }
-
-
-    public JPanel getTopPanel() {
-        return topPanel;
-    }
-
-    public void setTopPanel(JPanel topPanel) {
-        this.topPanel = topPanel;
     }
 
     public JPanel getCenterPanel() {
@@ -45,24 +35,14 @@ public class GenaralPanelTemplate extends JPanel {
     public GenaralPanelTemplate(JFrame parent) {
         setBackground(Design.BG_COLOR);
         setForeground(Design.FG_COLOR);
-        topPanel.setBackground(Design.BG_COLOR);
-        topPanel.setForeground(Design.FG_COLOR);
         centerPanel.setBackground(Design.BG_COLOR);
         centerPanel.setForeground(Design.FG_COLOR);
         centerPanel.setPreferredSize(new Dimension(Design.WIDTH_CENTRAL_PANEL, Design.HEIGHT_CENTRAL_PANEL));
         centerPanel.setMaximumSize(new Dimension(Design.WIDTH_CENTRAL_PANEL, Design.HEIGHT_CENTRAL_PANEL));
         centerPanel.setBorder(new EmptyBorder(Design.CONTENT_MARGIN, Design.CONTENT_MARGIN, Design.CONTENT_MARGIN, Design.CONTENT_MARGIN));
         this.parent = parent;
-//        parent.setResizable(false);
-//        parent.pack();
-//        myStatusBar = new FooterBar(this.parent);
-//        setLayout(new BorderLayout());
-//        add(topPanel, BorderLayout.PAGE_START);
-//        add(centerPanel, BorderLayout.CENTER);
-//        add(myStatusBar, BorderLayout.PAGE_END);
         myStatusBar = new FooterBar(this.parent);
         setLayout(new BorderLayout());
-        add(topPanel, BorderLayout.PAGE_START);
         JPanel restricSizePanel = new JPanel();
 
         centerPanel.setPreferredSize(Design.CENTERPANEL_PREFERED_SIZE);

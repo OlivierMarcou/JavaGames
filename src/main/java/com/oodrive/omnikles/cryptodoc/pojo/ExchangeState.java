@@ -9,7 +9,7 @@ public enum ExchangeState {
     IN_PROGRESS(0), IN_TIME(1), OUT_TIME(2),
     
 	//in DB WAITING_ANSWER = 3 , ANSWERED = 4
-	WAITING_ANSWER(3), ANSWERED(4), OLD_DEPOSIT(5);
+	WAITING_ANSWER(3), ANSWERED(4), OLD_DEPOSIT(5), ERROR(-1);
 
     private int value;
 

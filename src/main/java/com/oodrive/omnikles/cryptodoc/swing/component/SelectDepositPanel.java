@@ -7,6 +7,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
+import org.apache.http.ConnectionClosedException;
 import org.json.JSONException;
 
 import javax.swing.*;
@@ -72,10 +73,14 @@ public class SelectDepositPanel extends JPanel {
 
     public void parseFile(File zipFile) {
         try {
+            depositStatuses = null;
             depositStatuses = ssl.getDepositStatusesWithJSessionId(Configuration.parameters.get("urlReadStatus"));
         } catch (JSONException e) {
             e.printStackTrace();
             error(CryptoDoc.textProperties.getProperty("message.error.text"));
+        } catch (ConnectionClosedException e) {
+            e.printStackTrace();
+            error(CryptoDoc.textProperties.getProperty("message.error.text") + e.getMessage());
         }
         Configuration.destinationFolderPath = zipFile.getPath().substring(0,zipFile.getPath().toLowerCase().lastIndexOf(".zip"));
         zs.unzip(zipFile.getPath(), Configuration.destinationFolderPath , true );
@@ -96,12 +101,20 @@ public class SelectDepositPanel extends JPanel {
 
     private void getZipLinePanel(File file, int indexLine) throws JSONException, NumberFormatException {
         HashMap<String, Long> ids = getIdsFile(file.getName());
-        DepositFilePanel filePanel = new DepositFilePanel(file, depositStatuses.get(ids.get("documentId")));
+        DepositFilePanel filePanel = null;
+        if(depositStatuses != null && depositStatuses.size() > 0){
+            filePanel = new DepositFilePanel(file, depositStatuses.get(ids.get("documentId")));
+        }else{
+            filePanel = new DepositFilePanel(file, null);
+        }
         GridBagConstraints listFileContraints = new GridBagConstraints();
         listFileContraints.fill = GridBagConstraints.HORIZONTAL;
         listFileContraints.anchor = GridBagConstraints.BASELINE;
         listFileContraints.gridx = 0;
         listFileContraints.gridy = indexLine;
+        for(Component component:scrollablePanel.getComponents()){
+            scrollablePanel.remove(component);
+        }
         scrollablePanel.add(filePanel, listFileContraints);
     }
 
@@ -115,7 +128,10 @@ public class SelectDepositPanel extends JPanel {
         String[] idsStr = line.split("_");
         HashMap<String, Long> ids = new HashMap<>();
         for(int i =0; i < idsStr.length; i++){
-            ids.put(nameIds[i], Long.parseLong(idsStr[i]));
+            if(idsStr[i] != null){
+                long id = Long.parseLong(idsStr[i]);
+                ids.put(nameIds[i], id);
+            }
         }
         return ids;
     }
