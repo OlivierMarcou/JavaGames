@@ -94,7 +94,15 @@ public class DepositFilesRunnable implements Runnable{
         System.out.println("crypt ok");
         ssl.setJobNumber(3);
         ssl.setMaxPercent(25);
-        File podFile = ssl.sslUploadFileAndDownloadProof(enveloppe, Configuration.parameters.get("urlDepot"), progressBar);
+        File podFile = null;
+        try {
+            podFile = ssl.sslUploadFileAndDownloadProof(enveloppe, Configuration.parameters.get("urlDepot"), progressBar);
+        }catch(UnsupportedOperationException e){
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("message.error.text"),
+                    CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         System.out.println("send ok");
         progressBar.finish(podFile);
     }
