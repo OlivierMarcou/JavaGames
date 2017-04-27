@@ -7,10 +7,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.ExchangeDocumentState;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressEntityWrapper;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
-import org.apache.http.ConnectionClosedException;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -98,15 +95,14 @@ public class SslConnexionService{
         return file;
     }
 
-    public void sslUploadFile(File file, String url){
-        System.out.println("sslUploadFile method");
-        getResponseHttpPostFile(url, file).getEntity();
-    }
-
     public File sslUploadFileAndDownloadProof(File file, String url,  AnimatedProgressBar animatedProgressBar){
         this.uploadBar = animatedProgressBar;
         System.out.println("sslUploadFile method");
-        HttpEntity entity = getResponseHttpPostFile(url, file).getEntity();
+        CloseableHttpResponse httpResponse= getResponseHttpPostFile(url, file);
+        StatusLine statusLine = httpResponse.getStatusLine();
+        if(statusLine.getStatusCode() != 200)
+            throw new UnsupportedOperationException("Error server : "+statusLine.getStatusCode() + "\n" + statusLine.getReasonPhrase() );
+        HttpEntity entity = httpResponse.getEntity();
 
         System.out.println("sslDownloadFile method");
         System.out.println("Download File in " + Configuration.activFolder + File.separatorChar + "pod.pdf");
