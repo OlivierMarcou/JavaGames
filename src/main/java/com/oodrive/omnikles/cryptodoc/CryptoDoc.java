@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.cryptodoc;
 
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.swing.component.template.easter.MenuEasterEggs;
 import com.oodrive.omnikles.cryptodoc.swing.window.IntroWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.LogWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
@@ -62,6 +63,12 @@ public class CryptoDoc {
         if(Configuration.parameters.get("action").equals("test")){
             TestWindow test = new TestWindow();
             changeLookAndFeel(2, test);
+        }
+
+        if(Configuration.parameters.get("action").equals("easter")){
+            new TestWindow();
+            new MenuEasterEggs();
+
         }
 
         if(Configuration.parameters.get("action").equals("class")){
