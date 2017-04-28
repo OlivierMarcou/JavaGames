@@ -7,6 +7,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.ExchangeDocumentState;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressEntityWrapper;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -182,6 +183,15 @@ public class SslConnexionService{
         builderFile.addBinaryBody("file", file,
                 ContentType.APPLICATION_OCTET_STREAM,
                 file.getName());
+        String hashFile = "";
+        try {
+            InputStream inputStream= new BufferedInputStream(new FileInputStream(file));
+            hashFile = DigestUtils.sha1Hex(inputStream);
+        } catch (IOException e) {
+            System.out.print("Could not get hash from file : " + e.getMessage());
+            e.printStackTrace();
+        }
+        builderFile.addTextBody("hash_code", hashFile);
         HttpEntity multipart = builderFile.build();
         HttpPost httpPost = new HttpPost(url);
 
