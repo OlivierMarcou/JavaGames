@@ -7,7 +7,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.ExchangeDocumentState;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressEntityWrapper;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
-import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -183,14 +184,8 @@ public class SslConnexionService{
         builderFile.addBinaryBody("file", file,
                 ContentType.APPLICATION_OCTET_STREAM,
                 file.getName());
-        String hashFile = "";
-        try {
-            InputStream inputStream= new BufferedInputStream(new FileInputStream(file));
-            hashFile = DigestUtils.sha1Hex(inputStream);
-        } catch (IOException e) {
-            System.out.print("Could not get hash from file : " + e.getMessage());
-            e.printStackTrace();
-        }
+        String hashFile = getHashFile(file);
+
         builderFile.addTextBody("hash_code", hashFile);
         HttpEntity multipart = builderFile.build();
         HttpPost httpPost = new HttpPost(url);
@@ -230,6 +225,34 @@ public class SslConnexionService{
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static String getHashFile(File file) {
+        String hash = null;
+        try {
+            FileInputStream fin = new FileInputStream(file);
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] buf = new byte[4096];
+            int bread;
+            while ((bread = fin.read(buf)) != -1){
+                md.update(buf, 0, bread);
+            }
+            byte[] bytes = md.digest();
+            fin.close();
+
+            Hex hex = new Hex();
+            hash = new String(hex.encode(bytes));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return hash;
     }
 
     private String getStringResponse(HttpEntity entity) {
