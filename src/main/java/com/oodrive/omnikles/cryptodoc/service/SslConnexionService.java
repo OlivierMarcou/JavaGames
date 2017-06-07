@@ -231,7 +231,7 @@ public class SslConnexionService{
         String hash = null;
         try {
             FileInputStream fin = new FileInputStream(file);
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            MessageDigest md = MessageDigest.getInstance("SHA1");
             byte[] buf = new byte[4096];
             int bread;
             while ((bread = fin.read(buf)) != -1){
