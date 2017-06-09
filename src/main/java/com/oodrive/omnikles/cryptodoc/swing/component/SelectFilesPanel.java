@@ -68,13 +68,8 @@ public class SelectFilesPanel extends JPanel {
         add(emptyPanel, c);
 
         filenamesPanel.setLayout(new GridBagLayout());
-//        filenamesPanel.setBackground(Color.decode("#FF2626"));
-
         filenamesPanel.setBackground(Design.BG_COLOR);
         filenamesPanel.setForeground(Design.FG_COLOR);
-//        filenamesPanel.setPreferredSize(Design.TEXTFIELD_SIZE);
-//        filenamesPanel.setMinimumSize(Design.TEXTFIELD_SIZE);
-
         filenamesPanel.setBorder(BorderFactory.createLineBorder(Design.FG_COLOR));
         filenamesPanel.setBorder(BorderFactory.createCompoundBorder(
                 filenamesPanel.getBorder(),
@@ -117,10 +112,10 @@ public class SelectFilesPanel extends JPanel {
     }
 
     public void getFilesInfos() {
-        long totalSize = 0;
+        Configuration.totalSizeFiles = 0l;
         for (File file : files) {
             if (file != null && file.exists()) {
-                totalSize += file.length();
+                Configuration.totalSizeFiles += file.length();
             } else
                 files.remove(file);
         }
@@ -130,8 +125,7 @@ public class SelectFilesPanel extends JPanel {
             parent.getOkBtn().setEnabled(true);
             texte = CryptoDoc.textProperties.getProperty("depot.page2.paragraphe2.infos");
             texte = texte.replace("<count>", String.valueOf(files.size()));
-            texte = texte.replace("<size>", String.valueOf((totalSize / 1024) / 1024));
-            Configuration.totalSizeFiles = totalSize;
+            texte = texte.replace("<size>", humanRenderSize(Configuration.totalSizeFiles));
         } else {
             parent.getOkBtn().setEnabled(false);
         }
@@ -250,7 +244,6 @@ public class SelectFilesPanel extends JPanel {
     private String getFileType(String fileName) {
         System.out.println(fileName);
         String[] filename_array = fileName.split("\\.");
-//        System.out.println(filename_array.length);
         String extension = filename_array[filename_array.length - 1];
         switch (extension.toLowerCase()) {
             case "pdf":
@@ -269,11 +262,37 @@ public class SelectFilesPanel extends JPanel {
             default:
                 return "/images/icon_file.png";
         }
-
-//
-
-//        return "doc";
     }
 
+    private static final int kilo = 1000;
+    public static String humanRenderSize(float size){
+        float[] result = divide(new float[]{size, 0f});
+        switch (Math.round(result[1])){
+            case(1):
+                return result[0] + " Ko";
+            case(2):
+                return result[0] + " Mo";
+            case(3):
+                return result[0] + " Go";
+            case(4):
+                return result[0] + " To";
+            default:
+                return result[0] + "";
+        }
+    }
+
+    private static float[] divide(float[] range){
+        float newSize = range[0]/kilo;
+        if(newSize > kilo) {
+            range[0] = newSize;
+            range[1]++;
+            return divide(range);
+        }
+        if(Math.round(newSize) > 0) {
+            range[0] = newSize;
+            range[1]++;
+        }
+        return range;
+    }
 
 }
