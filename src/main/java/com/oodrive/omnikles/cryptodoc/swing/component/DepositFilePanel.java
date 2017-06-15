@@ -173,6 +173,12 @@ public class DepositFilePanel extends JPanel{
             aes.decryptFileWithSecretKey(cryptedFile
                     , new File(Configuration.destinationFolderPath
                             + File.separatorChar
+                            + depositStatus.getSupplierName().toUpperCase()
+                            + "_"
+                            + depositStatus.getSupplierOrganism().toUpperCase()
+                            + "_"
+                            + depositStatus.getTenderId()
+                            + "_"
                             + Configuration.FILENAME_DECRYPTED_ZIP), secret);
         } catch (Exception e1) {
             e1.printStackTrace();
