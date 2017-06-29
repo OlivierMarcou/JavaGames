@@ -45,7 +45,7 @@ public class PinCodeWindow extends JDialog{
     public PinCodeWindow(final OpenReceivership parent){
         setSize(300, 200);
         Container content = getContentPane();
-                content.setLayout(new GridBagLayout());
+        content.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -104,7 +104,7 @@ public class PinCodeWindow extends JDialog{
                     byte[] content  = zs.getContentFile(new ZipFile(f), Configuration.FILENAME_CRYPTED_KEYS);
                     if(kp != null) {
                         System.out.println("Begin decode sercret key ...");
-                        secret = aes.decodeSecretKeyByCertificate(content, kp);
+                        secret = aes.decodeJSONSecretKeyByCertificate(content, kp);
                         System.out.println("End decode sercret key ...");
                     }else {
                         System.out.println("aucun certificat selectionné." );

@@ -1,14 +1,21 @@
 package com.oodrive.omnikles.cryptodoc.pojo;
 
+import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 import sun.security.provider.X509Factory;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
-import java.security.PrivateKey;
+import java.io.*;
+import java.security.*;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Enumeration;
 
 public class KeyPair {
 
@@ -26,6 +33,30 @@ public class KeyPair {
         this.alias = alias;
         initX509CertificateB64();
         initPkB64();
+    }
+
+    public KeyPair(String certificate, String privateKey, String alias) throws CertificateException, NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        X509Certificate cert = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certificate.getBytes()));
+        this.certificate = cert;
+        setPrivateKey(privateKey);
+        this.alias = alias;
+        initX509CertificateB64();
+        initPkB64();
+    }
+
+    public KeyPair(String p12Path, String password) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
+        KeyStore p12 = KeyStore.getInstance("pkcs12");
+        p12.load(new FileInputStream(p12Path), password.toCharArray());
+        Enumeration e = p12.aliases();
+        while (e.hasMoreElements()) {
+            String alias = (String) e.nextElement();
+            this.certificate  = (X509Certificate) p12.getCertificate(alias);
+            this.privateKey  = (PrivateKey) p12.getKey(alias, password.toCharArray());
+            this.alias = alias;
+            initX509CertificateB64();
+            initPkB64();
+        }
     }
 
     public X509Certificate getCertificate() {
@@ -95,5 +126,34 @@ public class KeyPair {
     }
     public int getSizeB64(){
         return getX509CertificateB64().length();
+    }
+
+
+    public void setPrivateKey(String privateKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException{
+        // Read in the key into a String
+        StringBuilder pkcs8Lines = new StringBuilder();
+        BufferedReader rdr = new BufferedReader(new StringReader(privateKey));
+        String line;
+        while ((line = rdr.readLine()) != null) {
+            pkcs8Lines.append(line);
+        }
+
+        // Remove the "BEGIN" and "END" lines, as well as any whitespace
+
+        String pkcs8Pem = pkcs8Lines.toString();
+        pkcs8Pem = pkcs8Pem.replace("-----BEGIN PRIVATE KEY-----", "");
+        pkcs8Pem = pkcs8Pem.replace("-----END PRIVATE KEY-----", "");
+        pkcs8Pem = pkcs8Pem.replaceAll("\\s+","");
+
+        // Base64 decode the result
+        BASE64Decoder decode = new BASE64Decoder();
+        byte [] pkcs8EncodedBytes = decode.decodeBuffer(pkcs8Pem);
+
+        // extract the private key
+
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8EncodedBytes);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        PrivateKey privKey = kf.generatePrivate(keySpec);
+        this.privateKey = privKey;
     }
 }
