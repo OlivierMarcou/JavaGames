@@ -151,7 +151,7 @@ public class DepositFilePanel extends JPanel{
             byte[] content  = zs.getContentFile(new ZipFile(file), Configuration.FILENAME_CRYPTED_KEYS);
             if(kp != null) {
                 System.out.println("Begin decode sercret key ...");
-                secret = aes.decodeSecretKeyByCertificate(content, kp);
+                secret = aes.decodeJSONSecretKeyByCertificate(content, kp);
                 System.out.println("End decode sercret key ...");
                 if(secret == null){
                     error(CryptoDoc.textProperties.getProperty("open.page2.decrypt.secret.fail").replace("<filename>",file.getName()));

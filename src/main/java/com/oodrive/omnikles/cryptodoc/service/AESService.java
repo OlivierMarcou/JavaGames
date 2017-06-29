@@ -17,19 +17,14 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.security.spec.KeySpec;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by olivier on 14/11/16.
@@ -175,7 +170,7 @@ public class AESService {
         return cryptedFile;
     }
 
-    public byte[] decodeSecretKeyByCertificate(byte[] data, KeyPair keyPair) throws CertificateEncodingException {
+    public byte[] decodeJSONSecretKeyByCertificate(byte[] data, KeyPair keyPair) throws CertificateEncodingException {
         byte[] encryptedSecretKey = null;
         try {
             String dataString = new String(data);
@@ -200,9 +195,88 @@ public class AESService {
         } catch (JSONException | NullPointerException | IOException e) {
             e.printStackTrace();
         }
+        return decryptSecretKey(keyPair, encryptedSecretKey);
+    }
+
+    private static boolean isRestrictedCryptography() {
+        return "Java(TM) SE Runtime Environment".equals(System.getProperty("java.runtime.name"));
+    }
+
+    private static void removeCryptographyRestrictions() {
+        if (!isRestrictedCryptography()) {
+            System.out.println("Cryptography restrictions removal not needed");
+            return;
+        }
         try {
-            System.out.println("CertificatesUtils.provider " + CertificatesUtils.provider.getName() + " " + CertificatesUtils.provider.getInfo());
-            Cipher dcipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, CertificatesUtils.provider);
+            final Class<?> jceSecurity = Class.forName("javax.crypto.JceSecurity");
+            final Class<?> cryptoPermissions = Class.forName("javax.crypto.CryptoPermissions");
+            final Class<?> cryptoAllPermission = Class.forName("javax.crypto.CryptoAllPermission");
+
+            final Field isRestrictedField = jceSecurity.getDeclaredField("isRestricted");
+            isRestrictedField.setAccessible(true);
+            isRestrictedField.set(null, false);
+
+            final Field defaultPolicyField = jceSecurity.getDeclaredField("defaultPolicy");
+            defaultPolicyField.setAccessible(true);
+            final PermissionCollection defaultPolicy = (PermissionCollection) defaultPolicyField.get(null);
+
+            final Field perms = cryptoPermissions.getDeclaredField("perms");
+            perms.setAccessible(true);
+            ((Map<?, ?>) perms.get(defaultPolicy)).clear();
+
+            final Field instance = cryptoAllPermission.getDeclaredField("INSTANCE");
+            instance.setAccessible(true);
+            defaultPolicy.add((Permission) instance.get(null));
+
+            System.out.println("Successfully removed cryptography restrictions");
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public byte[] decodeXMLSecretKeyByCertificate(byte[] data, KeyPair keyPair) throws Exception {
+        byte[] bytecrypted = null;
+        byte[] bytedecrypted = null;
+        String dataString = new String(data);
+        try {
+            System.out.println(Cipher.getMaxAllowedKeyLength("AES"));
+            System.out.println(Cipher.getMaxAllowedKeyLength("RSA"));
+            System.out.println(Cipher.getMaxAllowedKeyLength("DESede"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+//        removeCryptographyRestrictions();
+        System.out.println("Key File data : "+ dataString);
+        dataString = dataString.replaceAll("<ds:EncryptedExchangeKey>","");
+        dataString = dataString.replaceAll("</ds:EncryptedExchangeKey>","");
+        dataString = dataString.replaceAll("</ds:X509Certificate>", "-----END PRIVATE KEY-----");
+        String[] biKeys = dataString.split("<ds:X509Certificate>");
+
+        if (dataString.indexOf("<ds:EncryptedKey>") > 0) {
+            // System.out.println("Utilisation cas 3 - ouverture d'une
+            // enveloppe cryptee avec rien");
+            int index2 = dataString.indexOf("<ds:EncryptedKey>") + 17;
+            String encryptedKey = dataString
+                    .substring(index2, dataString.indexOf("</ds:EncryptedKey>"));
+            encryptedKey = encryptedKey.replaceAll("\n", "");
+                    BASE64Decoder decoder = new BASE64Decoder();
+            bytecrypted = decoder.decodeBuffer(encryptedKey);
+        }
+        bytedecrypted =decryptSecretKey(keyPair,bytecrypted);
+        return bytedecrypted;
+    }
+
+
+    public byte[] decryptSecretKey(KeyPair keyPair, byte[] encryptedSecretKey) {
+        try {
+            removeCryptographyRestrictions();
+            Cipher dcipher = null;
+            if(CertificatesUtils.provider != null) {
+                System.out.println("CertificatesUtils.provider " + CertificatesUtils.provider.getName() + " " + CertificatesUtils.provider.getInfo());
+                dcipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, CertificatesUtils.provider);
+            }else{
+                dcipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME);
+            }
             dcipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
             System.out.println( "PK " + keyPair.getPrivateKey());
             byte[] secretKey = dcipher.doFinal(encryptedSecretKey);
@@ -218,23 +292,6 @@ public class AESService {
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }catch (IllegalArgumentException e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public JSONObject getAllCryptedKey(File fileEncryptKey){
-        List<String> encryptedKeys = new ArrayList<>();
-
-        String content = null;
-        try {
-            content = FileUtils.readFileToString(fileEncryptKey, Configuration.JSON_ENCODING);
-            try {
-                return new JSONObject(content);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -273,6 +330,65 @@ public class AESService {
                 |  IOException ex) {
             throw new Exception("Error encrypting/decrypting file", ex);
         }
+    }
+
+    public void decryptFileWithSecretKeyDESede(File encryptFile, File decryptedFile, byte[] secret)
+    {
+//        removeCryptographyRestrictions();
+        System.out.println("Methode decryptFileWithSecretKey...");
+        System.out.println("EncryptFile existe ?" + encryptFile.exists());
+
+        SecretKey secretKey = new SecretKeySpec(secret, "DESede");
+        System.out.println("SecretKey : " + secretKey.getEncoded());
+        System.out.println("CRYPTED_KEY_ALGORITHME : " + "DESede");
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("DESede");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Cipher init ok.");
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(encryptFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Encrypted file length" + encryptFile.length());
+
+        byte[] buffer = new byte[1024];
+        int count;
+        System.out.println("Send inputBytes to cipher ...");
+        CipherInputStream cis = new CipherInputStream(inputStream, cipher);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(decryptedFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            while ((count = cis.read(buffer)) != -1) {
+                fos.write(buffer,0,count);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            fos.close();
+            inputStream.close();
+            cis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("decryptedFile : " + decryptedFile);
+
+
     }
 
     public File createKeyFile(List<CertificateInformations> certificats) throws IOException, InvalidKeySpecException {

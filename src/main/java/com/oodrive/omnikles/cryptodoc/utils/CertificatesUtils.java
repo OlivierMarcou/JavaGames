@@ -163,7 +163,7 @@ public class CertificatesUtils {
 		return null;
 	}
 
-	private static List<String> findFilesPaths(String filename, File folder){
+	public static List<String> findFilesPaths(String filename, File folder){
 		List<String> paths = new ArrayList<>();
 		return recursiveFolder(filename, folder, paths,1,0);
 	}

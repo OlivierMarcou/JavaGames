@@ -52,6 +52,7 @@ public class CryptoDoc {
             OpenReceivership openReceivership = new OpenReceivership();
             openReceivership.setVisible(true);
         }
+
         if(Configuration.parameters.get("action").equals("test")){
             TestWindow test = new TestWindow();
             changeLookAndFeel(2, test);
@@ -69,7 +70,6 @@ public class CryptoDoc {
             JFrame test = (JFrame) Class.forName("com.oodrive.omnikles.cryptodoc.swing.window."+Configuration.parameters.get("class")).newInstance();
             test.setVisible(true);
         }
-
     }
 
     public static void changeLookAndFeel(int index, JFrame frame){
@@ -96,8 +96,6 @@ public class CryptoDoc {
             Configuration.version = contextProperties.getProperty("actual.version");
         }
     }
-
-
 
     public void initTextes(String language) throws IOException{
         URL url = this.getClass().getResource("/texts_" + language + ".properties");
