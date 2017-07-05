@@ -245,7 +245,7 @@ public class AESService {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-//        removeCryptographyRestrictions();
+        removeCryptographyRestrictions();
         System.out.println("Key File data : "+ dataString);
         dataString = dataString.replaceAll("<ds:EncryptedExchangeKey>","");
         dataString = dataString.replaceAll("</ds:EncryptedExchangeKey>","");

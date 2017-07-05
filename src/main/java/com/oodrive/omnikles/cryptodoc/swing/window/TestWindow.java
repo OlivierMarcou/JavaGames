@@ -193,6 +193,7 @@ public class TestWindow extends JFrame {
 
     private File fileChooser() {
         JFileChooser c = new JFileChooser(Configuration.activFolder);
+        c.setPreferredSize(new Dimension(600,480));
         c.setDialogTitle(CryptoDoc.textProperties.getProperty("depot.page2.filechooser.selectfiles"));
         c.setMultiSelectionEnabled(false);
         c.setAcceptAllFileFilterUsed(false);

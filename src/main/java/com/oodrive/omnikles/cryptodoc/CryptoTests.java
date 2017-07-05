@@ -8,7 +8,6 @@ import com.oodrive.omnikles.cryptodoc.service.ZipService;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.zip.ZipFile;
@@ -25,12 +24,7 @@ public class CryptoTests {
     }
 
     public void decryptNew(File zip, KeyPair pk){
-        byte[] secret = new byte[0];        try {
-            Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
-            field.setAccessible(true);
-            field.set(null, Boolean.FALSE);
-        } catch (Exception ex) {
-        }
+        byte[] secret = new byte[0];
         try {
             System.out.println("Zip name :"+zip.getName());
             System.out.println("Zip exist :"+zip.exists());

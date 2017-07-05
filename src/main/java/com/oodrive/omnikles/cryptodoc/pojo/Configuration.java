@@ -44,7 +44,11 @@ public class Configuration {
             if(keyValue[0].equals("titleProcedure") || keyValue[0].equals("organismName"))
                 keyValue[1] = new String(decode.decodeBuffer(keyValue[1]));
             System.out.println(keyValue[0] + " " + keyValue[1]);
-            parameters.put(keyValue[0], keyValue[1]);
+            if(keyValue[0].toLowerCase().equals("activfolder")) {
+                activFolder = keyValue[1];
+            }else {
+                parameters.put(keyValue[0], keyValue[1]);
+            }
         }
         debug = Boolean.parseBoolean(parameters.get("debug"));
         tests = Boolean.parseBoolean(parameters.get("tests"));
