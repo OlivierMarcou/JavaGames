@@ -2,9 +2,7 @@ package com.oodrive.omnikles.cryptodoc.service;
 
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.utils.MsCryptoProvider;
-import com.sun.jna.Library;
-import com.sun.jna.Native;
-import com.sun.jna.win32.StdCallFunctionMapper;
+
 import sun.misc.BASE64Encoder;
 
 import javax.crypto.KeyGenerator;
@@ -12,21 +10,16 @@ import javax.crypto.SecretKey;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
+
 import java.util.List;
 
 public class CryptKey {
 
-    private MsCryptoProvider capi = null;
-
     public CryptKey(){
-        System.setProperty("jna.library.path","/home/olivier/workspace/cryptoDoc/libs/MicrosoftCryptoApi_0_3.dll");
-        HashMap<String, StdCallFunctionMapper> optionMap = new HashMap<String,    StdCallFunctionMapper>();
-        StdCallFunctionMapper myMapper = new StdCallFunctionMapper();
-        optionMap.put(Library.OPTION_FUNCTION_MAPPER, myMapper);
-        capi = (MsCryptoProvider) Native.loadLibrary("MicrosoftCryptoApi_0_3", MsCryptoProvider.class, optionMap);
+        //MsCryptoProvider.hello();
+        new MsCryptoProvider();
+        System.out.println("Version : " + MsCryptoProvider.getMajorVersion());
     }
-
 
     public byte[] genereSymKeyFile(String pathsymkey, List<KeyPair> certificates) {
         KeyGenerator kgen = null;
@@ -50,7 +43,7 @@ public class CryptKey {
             sb.append(certificate.getX509CertificateB64());
             sb.append("\n</ds:X509Certificate>\n");
             try {
-                cryptKey = capi.cryptMessage(raw, certificate.getCertificate().getEncoded());
+                cryptKey = MsCryptoProvider.cryptMessage(raw, certificate.getCertificate().getEncoded());
             } catch (Exception exc) {
                 System.out.println("Erreur lors du chiffrement asymetrique de la cle symetrique");
                 exc.printStackTrace();
@@ -90,12 +83,10 @@ public class CryptKey {
     }
 
     public byte[] cryptMessage(byte[] toBeCrypted, byte[] certificate) throws Exception {
-//        System.load( "libs/MicrosoftCryptoApi_0_3.dll");
-//        DLL INSTANCE = (DLL) Native.loadLibrary("libs/MicrosoftCryptoApi_0_3.dll", DLL.class);
-//        MsCryptoProvider capi = new MsCryptoProvider();
-        byte[] data = capi.cryptMessage(toBeCrypted, certificate);
+
+        byte[] data = MsCryptoProvider.cryptMessage(toBeCrypted, certificate);
         if (data == null) {
-            int capiError = capi.getLastErrorCode();
+            int capiError = MsCryptoProvider.getLastErrorCode();
             // todo: check errornumber for various conditions and react properly - telling the user when needed etc
             // note that different CSP's can return different codes etc.
             // for now: expect the user to have cancelled

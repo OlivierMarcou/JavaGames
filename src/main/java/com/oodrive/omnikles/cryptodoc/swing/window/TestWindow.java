@@ -32,6 +32,7 @@ public class TestWindow extends JFrame {
     private AnimatedProgressBar progressBar;
     private ButtonTemplate retryBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
 
+    CryptKey ck = new CryptKey();
     private File zipFile;
     private File p12;
 
@@ -144,7 +145,6 @@ public class TestWindow extends JFrame {
                 CryptoTests cryptoTests = new CryptoTests();
                 try {
                     KeyPair kp = new KeyPair(p12.getAbsolutePath(), "ok");
-                    CryptKey ck = new CryptKey();
                     List<KeyPair> kps = new ArrayList<>();
                     kps.add(kp);
                     System.out.println(ck.genereSymKeyFile("",kps));
