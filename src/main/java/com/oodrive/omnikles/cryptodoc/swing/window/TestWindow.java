@@ -4,6 +4,7 @@ import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.CryptoTests;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
+import com.oodrive.omnikles.cryptodoc.service.CryptKey;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;
@@ -11,6 +12,8 @@ import com.oodrive.omnikles.cryptodoc.thread.TestRunnable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -140,6 +143,11 @@ public class TestWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 CryptoTests cryptoTests = new CryptoTests();
                 try {
+                    KeyPair kp = new KeyPair(p12.getAbsolutePath(), "ok");
+                    CryptKey ck = new CryptKey();
+                    List<KeyPair> kps = new ArrayList<>();
+                    kps.add(kp);
+                    System.out.println(ck.genereSymKeyFile("",kps));
                     cryptoTests.decryptOld(zipFile, new KeyPair(p12.getAbsolutePath(), "ok"));
                 } catch (KeyStoreException e1) {
                     e1.printStackTrace();
