@@ -173,9 +173,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<keystore>OS201404180675.pfx</keystore>
+					<keystore>win.cert.p12</keystore>
 					<alias>1</alias>
-					<storepass>7b2d5ad158fd2cf9d4ed31b012f0ed431e499b23</storepass>
+					<storepass><![CDATA[mcFr#kt6W_78&ay+{VYL]]></storepass>
 				</configuration>
 			</plugin>
             <plugin>
