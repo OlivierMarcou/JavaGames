@@ -11,6 +11,11 @@ public class DepositStatus {
     private ExchangeState exchangeState;
     private ExchangeDocumentState exchangeDocumentState;
 
+    private long supplierId;
+    private String supplierName;
+    private String supplierOrganism;
+    private long tenderId;
+
     public DepositStatus(String[] keysValues){
         for(String line:keysValues){
             String[] keyValue = line.replaceAll("\"", "").split(":");
@@ -30,6 +35,18 @@ public class DepositStatus {
                         break;
                     case "exchangeDocumentState":
                         this.exchangeDocumentState = ExchangeDocumentState.valueOf(keyValue[1]);
+                        break;
+                    case "supplierId":
+                        this.supplierId = Long.parseLong(keyValue[1]);
+                        break;
+                    case "supplierName":
+                        this.supplierName = keyValue[1];
+                        break;
+                    case "supplierOrganism":
+                        this.supplierOrganism = keyValue[1];
+                        break;
+                    case "tenderId":
+                        this.tenderId = Long.parseLong(keyValue[1]);
                         break;
                 }
             }
@@ -76,4 +93,35 @@ public class DepositStatus {
         this.exchangeDocumentState = exchangeDocumentState;
     }
 
+    public long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(long supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public long getTenderId() {
+        return tenderId;
+    }
+
+    public void setTenderId(long tenderId) {
+        this.tenderId = tenderId;
+    }
+
+    public String getSupplierOrganism() {
+        return supplierOrganism;
+    }
+
+    public void setSupplierOrganism(String supplierOrganism) {
+        this.supplierOrganism = supplierOrganism;
+    }
 }
