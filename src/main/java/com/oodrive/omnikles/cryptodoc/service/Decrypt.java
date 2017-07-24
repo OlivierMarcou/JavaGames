@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.cryptodoc.service;
 
 
+import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.utils.InitDLL;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
@@ -41,7 +42,7 @@ public class Decrypt {
      *            String
      * @return String[]
      */
-    public static String[] openEnveloppe( File enveloppe, String unzipDir,  RSAPrivateKey pk) {
+    public static String[] openEnveloppe( File enveloppe, String unzipDir,  KeyPair keyPair) {
         System.out.println("openEnveloppe");
         System.out.println("unzipDir " + unzipDir);
 
@@ -151,11 +152,11 @@ public class Decrypt {
                     certAanalyser = certAanalyser.replaceAll("\n", "");
                     details[7] = certAanalyser; // il est change tant qu'on
                     // n'est pas sur le bon
-                    try {
-                        byte[] cert2test = Base64.decode(certAanalyser.getBytes());
-                    } catch (Base64DecodingException e1) {
-                        e1.printStackTrace();
-                    }
+//                    try {
+//                        byte[] cert2test = Base64.decode(certAanalyser.getBytes());
+//                    } catch (Base64DecodingException e1) {
+//                        e1.printStackTrace();
+//                    }
 //                    AbstractCertificateHandler h = this.setCertificate(cert2test);
 
 
@@ -167,8 +168,11 @@ public class Decrypt {
                         InitDLL dll = new InitDLL();
                         encryptedKey = encryptedKey.replaceAll("\n", "");
                         System.out.println("Valeur de la cle symetrique cryptee = " + encryptedKey + "\n\n");
-                        byte[] bytecrypted = Base64.decode(encryptedKey.getBytes());
-                        byte[] bytedecrypted = dll.mscproviderDLL.decryptMessage(bytecrypted, pk.getEncoded());
+                       // byte[] bytecrypted = Base64.decode(encryptedKey.getBytes());
+
+                        byte[] bytecrypted = dll.mscproviderDLL.cryptMessage("holey !".getBytes(), keyPair.getPrivateKey().getEncoded());
+                        System.out.println(" ------------------- Crypted byte ? => " + bytecrypted);
+                        byte[] bytedecrypted = dll.mscproviderDLL.decryptMessage(bytecrypted, keyPair.getPrivateKey().getEncoded());
                         System.out.println("error code : " + dll.mscproviderDLL.getLastErrorCode());
                         if ((bytedecrypted != null) && (bytedecrypted.length > 0)) {
                             bytes = bytedecrypted;

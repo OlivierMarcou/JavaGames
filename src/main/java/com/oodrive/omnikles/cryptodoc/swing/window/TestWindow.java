@@ -150,7 +150,11 @@ public class TestWindow extends JFrame {
                     KeyPair kp = new KeyPair(p12.getAbsolutePath(), "ok");
                     List<KeyPair> kps = new ArrayList<>();
                     kps.add(kp);
-                    System.out.println(dk.openEnveloppe(new File("test"),zipFile.getAbsolutePath(), (RSAPrivateKey) kp.getPrivateKey()));
+
+                    ck.genereSymKeyFile( "C:"+ File.separator +"Users"+ File.separator +"dester"
+                            + File.separator +"Documents"+ File.separator +"cryptoDoc"+ File.separator
+                            +"bug_marches"+ File.separator +"enveloppe.key.p7m",kps);
+                    System.out.println(dk.openEnveloppe(zipFile,zipFile.getAbsolutePath(),  kp));
                     cryptoTests.decryptOld(zipFile, new KeyPair(p12.getAbsolutePath(), "ok"));
                 } catch (KeyStoreException e1) {
                     e1.printStackTrace();

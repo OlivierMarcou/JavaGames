@@ -41,7 +41,7 @@ public class CryptKey {
             sb.append(certificate.getX509CertificateB64());
             sb.append("\n</ds:X509Certificate>\n");
             try {
-                cryptKey =  initDLL.mscapiDLL.cryptMessage(raw, certificate.getCertificate().getEncoded());
+                cryptKey =  initDLL.mscproviderDLL.cryptMessage(raw, certificate.getCertificate().getEncoded());
             } catch (Exception exc) {
                 System.out.println("Erreur lors du chiffrement asymetrique de la cle symetrique");
                 exc.printStackTrace();

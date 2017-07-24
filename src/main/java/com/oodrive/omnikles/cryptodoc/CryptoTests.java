@@ -19,8 +19,8 @@ public class CryptoTests {
 
     private ZipService zs = ZipService.getInstance();
     private AESService aes = AESService.getInstance();
-    public void decryptOld(File zip, KeyPair pk) {
-        Decrypt.openEnveloppe(zip,  zip.getPath().replaceAll(zip.getName(), ""), (RSAPrivateKey) pk.getPrivateKey());
+    public void decryptOld(File zip, KeyPair kp) {
+        Decrypt.openEnveloppe(zip,  zip.getPath().replaceAll(zip.getName(), ""), kp);
     }
 
     public void decryptNew(File zip, KeyPair pk){

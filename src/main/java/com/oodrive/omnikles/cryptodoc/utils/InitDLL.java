@@ -11,10 +11,9 @@ public class InitDLL  {
     public MicrosoftCryptoApi mscapiDLL = new MicrosoftCryptoApi();
     public MsCryptoProvider mscproviderDLL = new MsCryptoProvider();
     static {
-        File dir = new File(  "C:"+ File.separatorChar + "Users"+ File.separatorChar +
-                "xypho"+ File.separatorChar +"Documents"+ File.separatorChar +
-                "cryptoDoc"+ File.separatorChar +"src"+ File.separatorChar +
-                "main"+ File.separatorChar +"resources"+ File.separatorChar);
+        File file = new File("resources");
+        String absolutePath = file.getAbsolutePath().replace("resources" , "");
+        File dir = new File(  absolutePath + File.separatorChar);
         addToJavaLibraryPath( dir);
         System.out.println("path " + System.getProperty("java.library.path"));
        // System.load(dir.getAbsolutePath() + "\\MicrosoftCryptoApi_0_3.dll");
