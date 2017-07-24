@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.cryptodoc.service;
 
 
+import com.oodrive.omnikles.cryptodoc.utils.InitDLL;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 
@@ -163,10 +164,12 @@ public class Decrypt {
                     String encryptedKey = contenuFichier.substring(index2, contenuFichier
                             .indexOf("</ds:EncryptedKey>"));
                     try {
+                        InitDLL dll = new InitDLL();
                         encryptedKey = encryptedKey.replaceAll("\n", "");
                         System.out.println("Valeur de la cle symetrique cryptee = " + encryptedKey + "\n\n");
                         byte[] bytecrypted = Base64.decode(encryptedKey.getBytes());
-                        byte[] bytedecrypted = decryptMessage(bytecrypted, pk);
+                        byte[] bytedecrypted = dll.mscproviderDLL.decryptMessage(bytecrypted, pk.getEncoded());
+                        System.out.println("error code : " + dll.mscproviderDLL.getLastErrorCode());
                         if ((bytedecrypted != null) && (bytedecrypted.length > 0)) {
                             bytes = bytedecrypted;
                             System.out.println("cle symetrique decryptee - taille=" + bytes.length + "\n\n");

@@ -5,6 +5,7 @@ import com.oodrive.omnikles.cryptodoc.CryptoTests;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.service.CryptKey;
+import com.oodrive.omnikles.cryptodoc.service.Decrypt;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;
@@ -12,6 +13,7 @@ import com.oodrive.omnikles.cryptodoc.thread.TestRunnable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -33,6 +35,7 @@ public class TestWindow extends JFrame {
     private ButtonTemplate retryBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
 
     CryptKey ck = new CryptKey();
+    Decrypt dk = new Decrypt();
     private File zipFile;
     private File p12;
 
@@ -147,7 +150,7 @@ public class TestWindow extends JFrame {
                     KeyPair kp = new KeyPair(p12.getAbsolutePath(), "ok");
                     List<KeyPair> kps = new ArrayList<>();
                     kps.add(kp);
-                    System.out.println(ck.genereSymKeyFile("",kps));
+                    System.out.println(dk.openEnveloppe(new File("test"),zipFile.getAbsolutePath(), (RSAPrivateKey) kp.getPrivateKey()));
                     cryptoTests.decryptOld(zipFile, new KeyPair(p12.getAbsolutePath(), "ok"));
                 } catch (KeyStoreException e1) {
                     e1.printStackTrace();

@@ -1,8 +1,7 @@
 package com.oodrive.omnikles.cryptodoc.service;
 
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
-import com.oodrive.omnikles.cryptodoc.utils.MsCryptoProvider;
-
+import com.oodrive.omnikles.cryptodoc.utils.InitDLL;
 import sun.misc.BASE64Encoder;
 
 import javax.crypto.KeyGenerator;
@@ -14,11 +13,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class CryptKey {
-
+    InitDLL initDLL = new InitDLL();
     public CryptKey(){
-        //MsCryptoProvider.hello();
-        new MsCryptoProvider();
-        System.out.println("Version : " + MsCryptoProvider.getMajorVersion());
+        System.out.println("Version : " + initDLL.mscapiDLL.getMajorVersion());
+
     }
 
     public byte[] genereSymKeyFile(String pathsymkey, List<KeyPair> certificates) {
@@ -43,7 +41,7 @@ public class CryptKey {
             sb.append(certificate.getX509CertificateB64());
             sb.append("\n</ds:X509Certificate>\n");
             try {
-                cryptKey = MsCryptoProvider.cryptMessage(raw, certificate.getCertificate().getEncoded());
+                cryptKey =  initDLL.mscapiDLL.cryptMessage(raw, certificate.getCertificate().getEncoded());
             } catch (Exception exc) {
                 System.out.println("Erreur lors du chiffrement asymetrique de la cle symetrique");
                 exc.printStackTrace();
@@ -84,9 +82,9 @@ public class CryptKey {
 
     public byte[] cryptMessage(byte[] toBeCrypted, byte[] certificate) throws Exception {
 
-        byte[] data = MsCryptoProvider.cryptMessage(toBeCrypted, certificate);
+        byte[] data = initDLL.mscapiDLL.cryptMessage(toBeCrypted, certificate);
         if (data == null) {
-            int capiError = MsCryptoProvider.getLastErrorCode();
+            int capiError = initDLL.mscapiDLL.getLastErrorCode();
             // todo: check errornumber for various conditions and react properly - telling the user when needed etc
             // note that different CSP's can return different codes etc.
             // for now: expect the user to have cancelled
