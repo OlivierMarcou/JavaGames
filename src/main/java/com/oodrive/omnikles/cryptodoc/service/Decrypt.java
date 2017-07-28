@@ -168,9 +168,7 @@ public class Decrypt {
                         InitDLL dll = new InitDLL();
                         encryptedKey = encryptedKey.replaceAll("\n", "");
                         System.out.println("Valeur de la cle symetrique cryptee = " + encryptedKey + "\n\n");
-                       // byte[] bytecrypted = Base64.decode(encryptedKey.getBytes());
-
-                        byte[] bytecrypted = dll.mscproviderDLL.cryptMessage("holey !".getBytes(), keyPair.getPrivateKey().getEncoded());
+                        byte[] bytecrypted = Base64.decode(encryptedKey.getBytes());
                         System.out.println(" ------------------- Crypted byte ? => " + bytecrypted);
                         byte[] bytedecrypted = dll.mscproviderDLL.decryptMessage(bytecrypted, keyPair.getPrivateKey().getEncoded());
                         System.out.println("error code : " + dll.mscproviderDLL.getLastErrorCode());

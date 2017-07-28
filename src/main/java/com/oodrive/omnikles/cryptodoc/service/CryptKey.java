@@ -4,13 +4,15 @@ import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.utils.InitDLL;
 import sun.misc.BASE64Encoder;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class CryptKey {
     InitDLL initDLL = new InitDLL();
@@ -76,6 +78,80 @@ public class CryptKey {
             return raw;
         } catch (Exception exc) {
             System.out.println("Exception lors de l'ecriture du fichier de cle :" + exc);
+        }
+        return null;
+    }
+
+    public static final String CRYPT_TYPE = "DESede";
+
+    private File cryptFileWithSymKey(byte[] rawkey, File zipfile, String keyFile){
+        byte[] buf = new byte[1024];
+        String tempzipfile = zipfile.getAbsolutePath()+".temp";
+
+        // initialisation du moteur crypto
+        // -> note l'algo 3DES est le plus commun sur les JVM dispos
+        SecretKeySpec skeySpec = new SecretKeySpec(rawkey, CRYPT_TYPE);
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance(CRYPT_TYPE);
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+
+            // a  present on initialise l'entree et la sortie
+            FileOutputStream outCryptedFile = new FileOutputStream(tempzipfile);
+            CipherOutputStream cos = new CipherOutputStream(outCryptedFile, cipher);
+            int bytesRead;
+            InputStream inputZip2crypt = new FileInputStream(zipfile);
+            while((bytesRead = inputZip2crypt.read(buf)) != -1) {
+                cos.write(buf, 0, bytesRead);
+            }
+            cos.close();
+            outCryptedFile.close();
+            java.util.Arrays.fill(buf, (byte) 0);
+            buf = new byte[1024];
+
+            File finalFile = new File(zipfile.getAbsolutePath()+".zip.crypt");
+            FileOutputStream outfinalfile = new FileOutputStream(finalFile);
+            ZipOutputStream out = new ZipOutputStream(outfinalfile);
+
+
+            FileInputStream in = new FileInputStream(keyFile);
+            File kfile = new File(keyFile);
+            out.putNextEntry(new ZipEntry(kfile.getName()));
+            //Transfer bytes from the file to the ZIP file
+            int len;
+            while ( (len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            // Complete the entry
+            out.closeEntry();
+            in.close();
+            // suivant : le fichier crypte
+            in = new FileInputStream(tempzipfile);
+            File cfile = new File(zipfile.getAbsolutePath()+".crypt");
+            out.putNextEntry(new ZipEntry(cfile.getName()));
+            //Transfer bytes from the file to the ZIP file
+            while ( (len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            // Complete the entry
+            out.closeEntry();
+            in.close();
+            // on ferme le zip
+            out.close();
+            outfinalfile.close();
+            return finalFile;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }

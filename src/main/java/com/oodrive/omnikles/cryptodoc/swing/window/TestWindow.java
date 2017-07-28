@@ -118,7 +118,7 @@ public class TestWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 CryptoTests cryptoTests = new CryptoTests();
                 try {
-                    cryptoTests.decryptNew(zipFile, new KeyPair(p12.getAbsolutePath(), "ok"));
+                    cryptoTests.decryptNew(zipFile, new KeyPair(p12.getAbsolutePath(), "1234"));
                 } catch (KeyStoreException e1) {
                     e1.printStackTrace();
                 } catch (IOException e1) {
@@ -147,15 +147,16 @@ public class TestWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 CryptoTests cryptoTests = new CryptoTests();
                 try {
-                    KeyPair kp = new KeyPair(p12.getAbsolutePath(), "ok");
+                    KeyPair kp = new KeyPair(p12.getAbsolutePath(), "1234");
                     List<KeyPair> kps = new ArrayList<>();
                     kps.add(kp);
 
-                    ck.genereSymKeyFile( "C:"+ File.separator +"Users"+ File.separator +"dester"
+                    byte[] test = ck.genereSymKeyFile( "C:"+ File.separator +"Users"+ File.separator +"dester"
                             + File.separator +"Documents"+ File.separator +"cryptoDoc"+ File.separator
                             +"bug_marches"+ File.separator +"enveloppe.key.p7m",kps);
+
                     System.out.println(dk.openEnveloppe(zipFile,zipFile.getAbsolutePath(),  kp));
-                    cryptoTests.decryptOld(zipFile, new KeyPair(p12.getAbsolutePath(), "ok"));
+                    cryptoTests.decryptOld(zipFile, new KeyPair(p12.getAbsolutePath(), "1234"));
                 } catch (KeyStoreException e1) {
                     e1.printStackTrace();
                 } catch (IOException e1) {
