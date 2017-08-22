@@ -4,7 +4,8 @@ import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.CryptoTests;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
-import com.oodrive.omnikles.cryptodoc.service.CryptKey;
+import com.oodrive.omnikles.cryptodoc.service.CryptOkMarchesService;
+import com.oodrive.omnikles.cryptodoc.service.DecryptOkMarchesService;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;
@@ -12,8 +13,6 @@ import com.oodrive.omnikles.cryptodoc.thread.TestRunnable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -22,6 +21,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.System.exit;
 
@@ -32,6 +33,8 @@ public class TestWindow extends JFrame {
     private AnimatedProgressBar progressBar;
     private ButtonTemplate retryBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page3.button.send"));
 
+    CryptOkMarchesService ck = CryptOkMarchesService.getInstance();
+    DecryptOkMarchesService dk = DecryptOkMarchesService.getInstance();
     private File zipFile;
     private File p12;
 
@@ -100,7 +103,6 @@ public class TestWindow extends JFrame {
         c.gridwidth=1;
         centerPanel.add(parcourirP12Btn, c);
 
-
         ButtonTemplate decryptByP12Btn = new ButtonTemplate("Decrypt NEW");
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.EAST;
@@ -114,7 +116,7 @@ public class TestWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 CryptoTests cryptoTests = new CryptoTests();
                 try {
-                    cryptoTests.decryptNew(zipFile, new KeyPair(p12.getAbsolutePath(), "ok"));
+                    cryptoTests.decryptNew(zipFile, new KeyPair(p12.getAbsolutePath(), "1234"));
                 } catch (KeyStoreException e1) {
                     e1.printStackTrace();
                 } catch (IOException e1) {
@@ -128,7 +130,6 @@ public class TestWindow extends JFrame {
                 }
             }
         });
-
 
         ButtonTemplate decryptByP12OldBtn = new ButtonTemplate("Decrypt OLD");
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -142,13 +143,56 @@ public class TestWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CryptoTests cryptoTests = new CryptoTests();
+                zipFile =  fileChooser().getAbsoluteFile();
+                System.out.println(dk.openEnveloppe(zipFile));
+            }
+        });
+
+        ButtonTemplate cryptByP12Btn = new ButtonTemplate("Crypt NEW");
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.EAST;
+        c.gridx=0;
+        c.gridy=4;
+        c.gridwidth=1;
+        centerPanel.add(cryptByP12Btn, c);
+        cryptByP12Btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CryptoTests cryptoTests = new CryptoTests();
+//                try {
+//                    cryptoTests.cry(zipFile, new KeyPair(p12.getAbsolutePath(), "1234"));
+//                } catch (KeyStoreException e1) {
+//                    e1.printStackTrace();
+//                } catch (IOException e1) {
+//                    e1.printStackTrace();
+//                } catch (CertificateException e1) {
+//                    e1.printStackTrace();
+//                } catch (NoSuchAlgorithmException e1) {
+//                    e1.printStackTrace();
+//                } catch (UnrecoverableKeyException e1) {
+//                    e1.printStackTrace();
+//                }
+            }
+        });
+
+        ButtonTemplate cryptByP12OldBtn = new ButtonTemplate("Crypt OLD");
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.EAST;
+        c.gridx=1;
+        c.gridy=4;
+        c.gridwidth=1;
+        centerPanel.add(cryptByP12OldBtn, c);
+        cryptByP12OldBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CryptoTests cryptoTests = new CryptoTests();
                 try {
                     KeyPair kp = new KeyPair(p12.getAbsolutePath(), "ok");
-                    CryptKey ck = new CryptKey();
                     List<KeyPair> kps = new ArrayList<>();
                     kps.add(kp);
-                    System.out.println(ck.genereSymKeyFile("",kps));
-                    cryptoTests.decryptOld(zipFile, new KeyPair(p12.getAbsolutePath(), "ok"));
+                    String pathCryptedKeyFile = Configuration.activFolder + File.separator + Configuration.FILENAME_CRYPTED_KEYS;
+                    byte[] symKey = ck.genereSymKeyFile(pathCryptedKeyFile,kps);
+                    ck.cryptFileWithSymKey(symKey, fileChooser().getAbsoluteFile(), pathCryptedKeyFile);
                 } catch (KeyStoreException e1) {
                     e1.printStackTrace();
                 } catch (IOException e1) {
@@ -162,7 +206,6 @@ public class TestWindow extends JFrame {
                 }
             }
         });
-
 
         parcourirZipBtn.addActionListener(new ActionListener() {
             @Override

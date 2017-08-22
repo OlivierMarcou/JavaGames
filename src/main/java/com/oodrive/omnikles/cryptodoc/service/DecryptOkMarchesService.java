@@ -1,8 +1,9 @@
 package com.oodrive.omnikles.cryptodoc.service;
 
 
-import org.apache.xml.security.exceptions.Base64DecodingException;
-import org.apache.xml.security.utils.Base64;
+import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
+import com.oodrive.omnikles.cryptodoc.utils.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -11,41 +12,21 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
  * Applet qui realise les operations d'ouverture des plis
  */
-public class Decrypt {
+public class DecryptOkMarchesService {
 
-    private static String 	pathouverture;
+    private AESService aes = AESService.getInstance();
 
+    private DecryptOkMarchesService(){}
 
-
-	public static byte[] decryptMessage(byte[] crypted, RSAPrivateKey key) throws Exception{
-		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-	    cipher.init(Cipher.DECRYPT_MODE, key);
-	    return cipher.doFinal(crypted);
-	}
-
-
-    /**
-     * openEnveloppe : ouverture des enveloppes
-     *
-     * @param enveloppe
-     *            File
-     * @param unzipDir
-     *            String
-     * @return String[]
-     */
-    public static String[] openEnveloppe( File enveloppe, String unzipDir,  RSAPrivateKey pk) {
+    public String[] openEnveloppe(File enveloppe) {
         System.out.println("openEnveloppe");
-        System.out.println("unzipDir " + unzipDir);
-
-
-
 
         // 1 dezipper clef symetrique et enveloppe
         String signatureFile = "";
@@ -68,7 +49,7 @@ public class Decrypt {
             ZipInputStream zin = new ZipInputStream(in);
             ZipEntry e;
             String keyUnzippedFile = "";
-            String envpCryptUnzippedFile = "";
+            String cryptedZipFileName = "";
             while ((e = zin.getNextEntry()) != null) {
                 // unzip(zin, e.getName());
                 String entryname = e.getName();
@@ -79,15 +60,15 @@ public class Decrypt {
                 }
                 if (entryname.indexOf(".key.p7m") > 0) {
                     // alors c'est le fichier de cle
-                    keyUnzippedFile = unzipDir+ entryname;// unzipDir + File.separator +
+                    keyUnzippedFile = Configuration.activFolder + File.separator + entryname;
                     // entryname;
                     out = new FileOutputStream(keyUnzippedFile);
                 } else {
                     // alors c'est l'enveloppe cryptee
-                    envpCryptUnzippedFile = unzipDir+ entryname; // unzipDir +
+                    cryptedZipFileName = Configuration.activFolder + File.separator + entryname;
                     // File.separator
                     // + entryname;
-                    out = new FileOutputStream(envpCryptUnzippedFile);
+                    out = new FileOutputStream(cryptedZipFileName);
                 }
                 byte[] b = new byte[512];
                 int len = 0;
@@ -139,111 +120,58 @@ public class Decrypt {
             // il y a du cryptage
             // donc des infos pour decrypter
             String certAanalyser = "";
+            byte[] bytedecrypted = null;
             while (loop) {
                 indexCert = contenuFichier.indexOf("<ds:X509Certificate>");
                 if (indexCert > 0) {
-                    hascert2decrypt = true;
                     indexCert = indexCert + 20;
-                    certAanalyser = contenuFichier
-                            .substring(indexCert, contenuFichier.indexOf("</ds:X509Certificate>"));
-                    // "\n"
+                    certAanalyser = contenuFichier.substring(indexCert, contenuFichier.indexOf("</ds:X509Certificate>"));
                     certAanalyser = certAanalyser.replaceAll("\n", "");
-                    details[7] = certAanalyser; // il est change tant qu'on
-                    // n'est pas sur le bon
-                    try {
-                        byte[] cert2test = Base64.decode(certAanalyser.getBytes());
-                    } catch (Base64DecodingException e1) {
-                        e1.printStackTrace();
-                    }
-//                    AbstractCertificateHandler h = this.setCertificate(cert2test);
+                    details[7] = certAanalyser;
+                    List<KeyPair> kps = aes.getInstalledCertificates();
+                    for(KeyPair kp:kps){
+                        String certInstalled = kp.getX509CertificateB64().replaceAll("\n", "");
+                        if(certInstalled.equals(certAanalyser)){
+                            System.out.println("loop - recherche de certificat - Fin de la boucle : la cle privee a ete trouvee ");
+                            int index2 = contenuFichier.indexOf("<ds:EncryptedKey>") + 17;
+                            String encryptedKey = contenuFichier.substring(index2, contenuFichier.indexOf("</ds:EncryptedKey>"));
+                            try {
+                                encryptedKey = encryptedKey.replaceAll("\n", "");
+                                System.out.println("Valeur de la cle symetrique cryptee = " + encryptedKey + "\n\n");
+                                byte[] bytecrypted = Base64.decode(encryptedKey.getBytes());
+                                System.out.println(" ------------------- Crypted byte ? => " + bytecrypted.length);
 
-
-                    System.out.println("loop - recherche de certificat - Fin de la boucle : la cle privee a ete trouvee ");
-                    int index2 = contenuFichier.indexOf("<ds:EncryptedKey>") + 17;
-                    String encryptedKey = contenuFichier.substring(index2, contenuFichier
-                            .indexOf("</ds:EncryptedKey>"));
-                    try {
-                        encryptedKey = encryptedKey.replaceAll("\n", "");
-                        System.out.println("Valeur de la cle symetrique cryptee = " + encryptedKey + "\n\n");
-                        byte[] bytecrypted = Base64.decode(encryptedKey.getBytes());
-                        byte[] bytedecrypted = decryptMessage(bytecrypted, pk);
-                        if ((bytedecrypted != null) && (bytedecrypted.length > 0)) {
-                            bytes = bytedecrypted;
-                            System.out.println("cle symetrique decryptee - taille=" + bytes.length + "\n\n");
-                            ok4decrypt = true;
-                            loop = false;
-                        } else {
-                            System.out.println("La valeur de la cle symetrique decryptee est nulle\n\n");
+                                AESService aes = AESService.getInstance();
+                                bytedecrypted = aes.decryptMessage(bytecrypted, kp);
+                                System.out.println("cle symetrique decryptee - taille=" + bytedecrypted.length);
+                                if ((bytedecrypted != null) || bytedecrypted.length > 0) {
+                                    loop = false;
+                                    break;
+                                }
+                            } catch (Exception exc) {
+                                System.out.println("Exception lors du decryptage=" + exc + "\n\n");
+                                return null;
+                            }
                         }
-                    } catch (Exception exc) {
-                        System.out.println("Exception lors du decryptage=" + exc + "\n\n");
-                        return null;
                     }
-
-                    // FIXME : ea veut peut-etre dire que le fichier de base
-                    // n'est pas crypte
-					/*
-					 * contenuFichier = contenuFichier.substring(
-					 * contenuFichier.indexOf( "</ds:X509Certificate>")+20);
-					 */
-                    // </ds:EncryptedExchangeKey>
-                    // FIXME : pour remonter le fichier au complet
                     contenuFichier = contenuFichier
-                            .substring(contenuFichier.indexOf("</ds:EncryptedExchangeKey>") + 25);
-
+                            .substring(contenuFichier.indexOf("</ds:EncryptedExchangeKey>") + 26);
                 } else {
                     loop = false;
-                    if (hascert2decrypt) {
-                        System.out.println("Erreur : certificat pour dechiffrer non trouve sur le poste de travail\n\n");
+                    System.out.println("Erreur : certificat pour dechiffrer non trouve dans l'enveloppe.");
+                    return null;
+                }
+            }
 
-                        return null; // ajout MBT du 20/09/2005
-                    }
-                }
-            }
-			/*
-			 * } else { // ajout du 04/03 - decrypter les fichiers cryptes avec
-			 * rien String contenuFichier = new String(bytes); if
-			 * (contenuFichier.indexOf("<ds:EncryptedKey>") > 0) {
-			 * //System.out.println("Utilisation cas 3 - ouverture d'une
-			 * enveloppe cryptee avec rien"); int index2 =
-			 * contenuFichier.indexOf("<ds:EncryptedKey>") + 17; String
-			 * encryptedKey = contenuFichier.substring(index2,
-			 * contenuFichier.indexOf( "</ds:EncryptedKey>")); encryptedKey =
-			 * encryptedKey.replaceAll("\n", ""); bytes =
-			 * Base64.decode(encryptedKey.getBytes()); }
-			 *  }
-			 */
-            // ajout du 04/03
-            if (!ok4decrypt) {
-                // il y a eu un pb au decryptage de la cle -
-                // peut etre que le cryptage n'etait pas active
-                contenuFichier = new String(bytes);
-                if (contenuFichier.indexOf("<ds:EncryptedKey>") > 0) {
-                    // System.out.println("Utilisation cas 3 - ouverture d'une
-                    // enveloppe cryptee avec rien");
-                    int index2 = contenuFichier.indexOf("<ds:EncryptedKey>") + 17;
-                    String encryptedKey = contenuFichier
-                            .substring(index2, contenuFichier.indexOf("</ds:EncryptedKey>"));
-                    encryptedKey = encryptedKey.replaceAll("\n", "");
-                    try {
-                        bytes = Base64.decode(encryptedKey.getBytes());
-                    } catch (Base64DecodingException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-                // sinon cela tentera d'ouvrir avec les bytes directement
-            }
-            // fin du check ok4decrypt
-            // e present bytes represente ds tous les cas de figure la cle
-            // symetrique decryptee
-            SecretKeySpec skeySpec = new SecretKeySpec(bytes, "DESede");
-            // JCOSecretKey bJCOSecretKey = new JCOSecretKey(bytes);
-            // on commence la lecture du fichier crypte
-            String tempunzipfile = keyUnzippedFile = pathouverture + File.separator + "TECHNIQUE" + File.separator
-                    + 1 + "_temp.zip";// unzipDir + File.separator
-            // + entryname;
-            is = new FileInputStream(envpCryptUnzippedFile);
-            out = new FileOutputStream(tempunzipfile);
+            SecretKeySpec skeySpec = new SecretKeySpec(bytedecrypted, "DESede");
+
+            File tempFolder = new File( Configuration.activFolder + File.separator + "TECHNIQUE");
+            tempFolder.mkdirs();
+            String tempDecryptedZipFile = Configuration.activFolder + File.separator + "TECHNIQUE" + File.separator
+                    + 1 + "_temp.zip";
+
+            is = new FileInputStream(cryptedZipFileName);
+            out = new FileOutputStream(tempDecryptedZipFile);
             Cipher cipher = Cipher.getInstance("DESede");
             cipher.init(Cipher.DECRYPT_MODE, skeySpec);
             CipherInputStream cis = new CipherInputStream(is, cipher);
@@ -257,15 +185,25 @@ public class Decrypt {
             out.close();
 
             // 3 acceder au fichier XML de signatures : le lire
-            int taille = (int) (new File(tempunzipfile)).length();
-            is = new FileInputStream(tempunzipfile);
+            int taille = (int) (new File(tempDecryptedZipFile)).length();
+            is = new FileInputStream(tempDecryptedZipFile);
 
             zin = new ZipInputStream(is);
-            String currentUnzippedFile;
-            details[6] = unzipDir;
-            File filetmp = new File(unzipDir);
-            if( !filetmp.mkdir())
-                System.out.println("cannnot create "+unzipDir);
+            details[6] = Configuration.activFolder + File.separator + enveloppe.getName() ;
+            String tmpzipdir = enveloppe.getName()+ "_";
+            if (enveloppe.getName().indexOf("36_") != -1) {
+                System.out.println(" 36 XXXXXXXXXXXXXXXXX");
+                tmpzipdir = enveloppe.getName().replaceFirst("36_", 1 + "_");
+            } else if (enveloppe.getName().indexOf("37_") != -1) {
+                System.out.println(" 37 XXXXXXXXXXXXXXXXX");
+                tmpzipdir = enveloppe.getName().replaceFirst("37_", 1 + "_");
+            } else if (enveloppe.getName().indexOf("38_") != -1) {
+                System.out.println(" 38 XXXXXXXXXXXXXXXXX");
+                tmpzipdir = enveloppe.getName().replaceFirst("38_", 1 + "_");
+            }
+            File extractionFolder = new File(Configuration.activFolder + File.separator + tmpzipdir);
+            extractionFolder.mkdirs();
+
             // System.out.println("unzip : satge 1");
             while ((e = zin.getNextEntry()) != null) {
                 // unzip(zin, e.getName());
@@ -273,32 +211,8 @@ public class Decrypt {
                 String entryname = e.getName();
                 System.out.println("Ouverture fichier :" + entryname);
                 nbdocs = nbdocs + 1;
-                if (unzipDir.indexOf("36_") != -1) {
-                    System.out.println(" 36 XXXXXXXXXXXXXXXXX");
-                    String tmpzipdir = unzipDir.replaceFirst("36_", 1 + "_");
-                    filetmp = new File(tmpzipdir);
-                    filetmp.mkdir();
-                    currentUnzippedFile = tmpzipdir + File.separator + entryname;
-                } else if (unzipDir.indexOf("37_") != -1) {
-                    System.out.println(" 37 XXXXXXXXXXXXXXXXX");
-                    String tmpzipdir = unzipDir.replaceFirst("37_", 1 + "_");
-                    filetmp = new File(tmpzipdir);
-                    filetmp.mkdir();
-                    currentUnzippedFile = tmpzipdir + File.separator + entryname;
-                } else if (unzipDir.indexOf("38_") != -1) {
-                    System.out.println(" 38 XXXXXXXXXXXXXXXXX");
-                    String tmpzipdir = unzipDir.replaceFirst("38_", 1 + "_");
-                    filetmp = new File(tmpzipdir);
-                    filetmp.mkdir();
-                    currentUnzippedFile = tmpzipdir + File.separator + entryname;
-                } else {
-                    currentUnzippedFile = unzipDir + File.separator + entryname;
-                }
+                String currentUnzippedFile = extractionFolder + File.separator + entryname;
                 if (entryname.indexOf("sig.xml") > 0) {
-                    // il n'y a qu'un fichier de cle
-                    // on considere que sa taille est negligeable pour le
-                    // process
-                    signatureFile = currentUnzippedFile;
                     iskeyfile = true;
                 }
 
@@ -320,10 +234,8 @@ public class Decrypt {
                         if (lastprog < prog) {
                             lastprog = prog;
                         }
-
                     }
                     out.close();
-
                 } else {
                     // recuperation du nom de l'entreprise
                     out = new FileOutputStream(currentUnzippedFile);
@@ -368,8 +280,8 @@ public class Decrypt {
                 }
                 // Ensure all the bytes have been read in
                 if (offset < bytes.length) {
-                    System.out.println("Could not completely read file " + envpCryptUnzippedFile + "\n");
-                    throw new IOException("Could not completely read file " + envpCryptUnzippedFile);
+                    System.out.println("Could not completely read file " + cryptedZipFileName + "\n");
+                    throw new IOException("Could not completely read file " + cryptedZipFileName);
                 }
                 is.close();
                 signatureXML = new String(bytes); // bytes.toString();
@@ -433,5 +345,15 @@ public class Decrypt {
         return details;
     }
 
+    public static DecryptOkMarchesService getInstance() {
+        if (null == instance) {
+            getUniqueInstance__();
+        }
+        return instance;
+    }
+    synchronized private static void getUniqueInstance__() {
+        instance =  new DecryptOkMarchesService();
+    }
 
+    private static DecryptOkMarchesService instance;
 }

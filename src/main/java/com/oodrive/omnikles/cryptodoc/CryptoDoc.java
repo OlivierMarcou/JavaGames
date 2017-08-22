@@ -44,7 +44,9 @@ public class CryptoDoc {
         CryptoDoc cryptoDoc = new CryptoDoc(args);
         System.out.println(Configuration.activFolder);
 
-        if(Configuration.parameters.get("action").equals("depot")) {
+        if(Configuration.parameters.get("action").equals("depot") || Configuration.parameters.get("action").equals("depotMarches")) {
+            if(Configuration.parameters.get("action").equals("depotMarches"))
+                Configuration.isOkMarches=true;
             new IntroWindow();
         }
 

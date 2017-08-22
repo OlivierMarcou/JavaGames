@@ -159,7 +159,7 @@ public class AESService {
                     progressBar.setActualIcon(percent + (maxPercent*jobNumber));
                     percentMem = percent;
                     progressBar.setText(CryptoDoc.textProperties.getProperty("depot.page4.sending") +
-                              (percent + (maxPercent*jobNumber)) + "%");
+                            (percent + (maxPercent*jobNumber)) + "%");
                 }
             }
         }
@@ -259,7 +259,7 @@ public class AESService {
             String encryptedKey = dataString
                     .substring(index2, dataString.indexOf("</ds:EncryptedKey>"));
             encryptedKey = encryptedKey.replaceAll("\n", "");
-                    BASE64Decoder decoder = new BASE64Decoder();
+            BASE64Decoder decoder = new BASE64Decoder();
             bytecrypted = decoder.decodeBuffer(encryptedKey);
         }
         bytedecrypted =decryptSecretKey(keyPair,bytecrypted);
@@ -293,6 +293,19 @@ public class AESService {
             e.printStackTrace();
         }catch (IllegalArgumentException e){
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public byte[] decryptMessage(byte[] crypted, KeyPair kp) throws Exception{
+        try {
+
+            PrivateKey mykey = kp.getPrivateKey();
+            Cipher cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME);
+            cipher.init(Cipher.DECRYPT_MODE, mykey);
+            return cipher.doFinal(crypted);
+        } catch (Exception exc){
+            exc.printStackTrace();
         }
         return null;
     }
@@ -425,8 +438,8 @@ public class AESService {
             field.set(null, Boolean.FALSE);
         } catch (Exception ex) {
         }
-            // La variable cert correspond au certificat du destinataire
-            // La clé publique de ce certificat servira à chiffrer la clé symétrique
+        // La variable cert correspond au certificat du destinataire
+        // La clé publique de ce certificat servira à chiffrer la clé symétrique
         Cipher cipher = null;
         try {
             cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME);

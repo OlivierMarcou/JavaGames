@@ -3,13 +3,11 @@ package com.oodrive.omnikles.cryptodoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.service.AESService;
-import com.oodrive.omnikles.cryptodoc.service.Decrypt;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.cert.CertificateException;
-import java.security.interfaces.RSAPrivateKey;
 import java.util.zip.ZipFile;
 
 /**
@@ -19,9 +17,6 @@ public class CryptoTests {
 
     private ZipService zs = ZipService.getInstance();
     private AESService aes = AESService.getInstance();
-    public void decryptOld(File zip, KeyPair pk) {
-        Decrypt.openEnveloppe(zip,  zip.getPath().replaceAll(zip.getName(), ""), (RSAPrivateKey) pk.getPrivateKey());
-    }
 
     public void decryptNew(File zip, KeyPair pk){
         byte[] secret = new byte[0];
@@ -31,7 +26,7 @@ public class CryptoTests {
             System.out.println("Zip path :"+zip.getPath());
             System.out.println("Zip size :"+zip.length());
             System.out.println("FILENAME_CRYPTED_KEYS : " + Configuration.FILENAME_CRYPTED_KEYS);
-            byte[] content  = zs.getContentFile(new ZipFile(zip), "ENVELOPPE.key.p7m");
+            byte[] content  = zs.getContentFile(new ZipFile(zip), Configuration.FILENAME_CRYPTED_KEYS);
             if(pk != null) {
                 System.out.println("Begin decode sercret key ...");
                 try {

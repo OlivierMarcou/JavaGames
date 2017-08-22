@@ -28,6 +28,7 @@ public class Configuration {
     public static final String JSON_ENCODING = "UTF-8";
     public static final String CIPHER_ALGORITHME = "RSA/ECB/PKCS1Padding";
     public static final String CRYPTED_KEY_ALGORITHME = "AES";
+    public static boolean isOkMarches = false;
 
     private static BASE64Decoder decode = new BASE64Decoder();
 
