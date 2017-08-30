@@ -159,8 +159,11 @@ public class ZipCryptAndSendWindow extends JFrame {
         System.out.println("Zip tous les fichiers selectionnes");
         animate.setVisible(true);
         Date now = new Date();
-        File zip = new File(Configuration.activFolder + File.separatorChar + "deposit"+ now.getTime() +".zip");
-        System.out.println("Zip path : " + Configuration.activFolder + File.separatorChar + "deposit"+ now.getTime() +".zip");
+        String fileName = "deposit"+ now.getTime();
+        if(Configuration.isOkMarches)
+            fileName = "ENVELOPPE";
+        File zip = new File(Configuration.activFolder + File.separatorChar + fileName +".zip");
+        System.out.println("Zip path : " + Configuration.activFolder + File.separatorChar + fileName +".zip");
         for( File file: files)
             System.out.println(file.getName());
         zt.setProgressBar(animate);

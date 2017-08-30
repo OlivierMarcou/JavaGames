@@ -2,7 +2,9 @@ package com.oodrive.omnikles.cryptodoc.thread;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.service.AESService;
+import com.oodrive.omnikles.cryptodoc.service.CryptOkMarchesService;
 import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
@@ -10,6 +12,7 @@ import org.json.JSONException;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +25,7 @@ public class DepositFilesRunnable implements Runnable{
     private List<File> files;
     private AnimatedProgressBar progressBar = null;
     AESService as = AESService.getInstance();
+    private CryptOkMarchesService cryptOkMarchesService = CryptOkMarchesService.getInstance();
 
     public AnimatedProgressBar getProgressBar() {
         return progressBar;
@@ -64,16 +68,16 @@ public class DepositFilesRunnable implements Runnable{
         System.out.println("zip ok");
 
         SslConnexionService ssl = SslConnexionService.getInstance();
-        List<String> certificats = null;
+        List<String> certificatesB64 = null;
         try {
-            certificats = ssl.getCertificatesWithJSessionId(Configuration.parameters.get("urlCertificat"));
+            certificatesB64 = ssl.getCertificatesB64WithJSessionId(Configuration.parameters.get("urlCertificat"));
         } catch (JSONException e) {
             JOptionPane.showMessageDialog(progressBar, CryptoDoc.textProperties.getProperty("message.error.text"),
             CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         }
-        if(certificats == null || certificats.size() <= 0) {
+        if(certificatesB64 == null || certificatesB64.size() <= 0) {
             JOptionPane.showMessageDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("message.error.text"),
                     CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             throw new NullPointerException("Aucun certificat trouvé pour : " + Configuration.parameters.get("urlCertificat"));
@@ -85,7 +89,16 @@ public class DepositFilesRunnable implements Runnable{
             as.setProgressBar(progressBar);
             as.setJobNumber(1);
             as.setMaxPercent(25);
-            enveloppe = as.cryptedByCertificates(zip, certificats);
+            if(Configuration.isOkMarches){
+                List<KeyPair> keyPairs = new ArrayList<>();
+                for(String certificateB64: certificatesB64)
+                    keyPairs.add(new KeyPair(certificateB64));
+                String pathCryptedKeyFile = Configuration.activFolder + File.separator + Configuration.FILENAME_CRYPTED_KEYS;
+                byte[] symKey = cryptOkMarchesService.genereSymKeyFile(pathCryptedKeyFile, keyPairs);
+                enveloppe = cryptOkMarchesService.cryptFileWithSymKey(symKey, zip, pathCryptedKeyFile);
+            }else{
+                enveloppe = as.cryptedByCertificates(zip, certificatesB64);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("message.error.text"),

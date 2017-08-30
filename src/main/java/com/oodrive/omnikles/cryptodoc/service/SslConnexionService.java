@@ -63,7 +63,7 @@ public class SslConnexionService{
         this.jobNumber = jobNumber;
     }
 
-    public List<String> getCertificatesWithJSessionId(String urlCertificate ) throws JSONException {
+    public List<String> getCertificatesB64WithJSessionId(String urlCertificate ) throws JSONException {
         System.out.println("getCertificatesWithJSessionId method");
         HttpEntity entity = getResponseHttpGet(urlCertificate).getEntity();
 
@@ -276,7 +276,9 @@ public class SslConnexionService{
 
     private List<String> getJSONCertificates(String jsonCertificate) throws JSONException {
         JSONObject obj  = new JSONObject(jsonCertificate);
-        JSONArray certificats = obj.getJSONArray("certificatesB64");
+        String certificateAttributName = "certificatesB64";
+
+        JSONArray certificats = obj.getJSONArray(certificateAttributName);
         List<String> certificatsB64 = new ArrayList();
         for(int i=0; i<certificats.length(); i++){
             certificatsB64.add(certificats.get(i).toString().replaceAll("\r", ""));

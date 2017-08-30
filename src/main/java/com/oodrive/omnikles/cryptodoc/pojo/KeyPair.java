@@ -45,6 +45,13 @@ public class KeyPair {
         initPkB64();
     }
 
+    public KeyPair(String certificateB64) throws CertificateException, NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+        this.X509CertificateB64 = certificateB64;
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        X509Certificate cert = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certificateB64.getBytes()));
+        this.certificate = cert;
+    }
+
     public KeyPair(String p12Path, String password) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
         KeyStore p12 = KeyStore.getInstance("pkcs12");
         p12.load(new FileInputStream(p12Path), password.toCharArray());
