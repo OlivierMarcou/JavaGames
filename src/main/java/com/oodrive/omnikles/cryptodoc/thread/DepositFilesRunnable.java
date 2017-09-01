@@ -109,7 +109,14 @@ public class DepositFilesRunnable implements Runnable{
         ssl.setMaxPercent(25);
         File podFile = null;
         try {
-            podFile = ssl.sslUploadFileAndDownloadProof(enveloppe, Configuration.parameters.get("urlDepot"), progressBar);
+            String hashFile = null;
+            if(Configuration.isOkMarches){
+                hashFile = ssl.getHashFileB64(enveloppe);
+            }else{
+                hashFile = ssl.getHashFile(enveloppe);
+            }
+            ssl.sendPostEnveloppeEmpreinte(Configuration.parameters.get("urlEmpreinte"), hashFile, false);
+            podFile = ssl.sslUploadFileAndDownloadProof(enveloppe, Configuration.parameters.get("urlDepot"), progressBar, hashFile);
         }catch(UnsupportedOperationException e){
             e.printStackTrace();
             JOptionPane.showMessageDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("message.error.text"),

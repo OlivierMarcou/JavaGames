@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -26,6 +27,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import sun.misc.BASE64Encoder;
 
 import java.io.*;
 import java.security.KeyManagementException;
@@ -97,10 +99,11 @@ public class SslConnexionService{
         return file;
     }
 
-    public File sslUploadFileAndDownloadProof(File file, String url,  AnimatedProgressBar animatedProgressBar){
+    public File sslUploadFileAndDownloadProof(File file, String url,  AnimatedProgressBar animatedProgressBar, String hashFile){
         this.uploadBar = animatedProgressBar;
         System.out.println("sslUploadFile method");
-        CloseableHttpResponse httpResponse= getResponseHttpPostFile(url, file);
+
+        CloseableHttpResponse httpResponse= getResponseHttpPostFile(url, file, hashFile);
         StatusLine statusLine = httpResponse.getStatusLine();
         if(statusLine.getStatusCode() != 200)
             throw new UnsupportedOperationException("Error server : "+statusLine.getStatusCode() + "\n" + statusLine.getReasonPhrase() );
@@ -175,18 +178,30 @@ public class SslConnexionService{
         return null;
     }
 
-    private CloseableHttpResponse getResponseHttpPostFile(String url, File file){
+    public void sendPostEnveloppeEmpreinte(String url, String hashFile, boolean envoiMailDepotEmprunte) {
+        System.out.println("Envoi de l'empreinte "+hashFile+" a "+url);
+        try {
+            getResponseHttpPostMultipart(url, getParametersEmpreinteOkMarches(hashFile, envoiMailDepotEmprunte));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private CloseableHttpResponse getResponseHttpPostFile(String url, File file, String hashFile){
         if (debug)
             System.out.println("... Debut upload file ...");
 
         MultipartEntityBuilder builderFile = MultipartEntityBuilder.create();
-
         builderFile.addBinaryBody("file", file,
                 ContentType.APPLICATION_OCTET_STREAM,
                 file.getName());
-        String hashFile = getHashFile(file);
 
+        ArrayList<NameValuePair> postParameters = getParametersDepotOkMarches();
+        for(NameValuePair parameter:postParameters) {
+            builderFile.addTextBody(parameter.getName(), parameter.getValue(), ContentType.TEXT_PLAIN);
+        }
         builderFile.addTextBody("hash_code", hashFile);
+
         HttpEntity multipart = builderFile.build();
         HttpPost httpPost = new HttpPost(url);
 
@@ -227,7 +242,51 @@ public class SslConnexionService{
         return null;
     }
 
-    private static String getHashFile(File file) {
+    private ArrayList<NameValuePair> getParametersEmpreinteOkMarches(String hashFile, boolean envoiMailDepotEmprunte) {
+        ArrayList<NameValuePair> postParameters = null;
+        if(Configuration.isOkMarches) {
+            try {
+                String[] idsStr = Configuration.parameters.get("ids").split("_");// <= idDossier +"_" + idLot + "_" + idUser
+                postParameters = new ArrayList<>();
+                postParameters.add(new BasicNameValuePair("rfq_id", idsStr[0]));
+                postParameters.add(new BasicNameValuePair("idlot", idsStr[1]));
+                postParameters.add(new BasicNameValuePair("user", idsStr[2]));
+                if(!envoiMailDepotEmprunte)
+                    postParameters.add(new BasicNameValuePair("typeEnvoi", "envoiuntemps"));
+                postParameters.add(new BasicNameValuePair("empreinte", hashFile));
+//              postParameters.add(new BasicNameValuePair("myEnvp", this.getParameter("dematfr.envptype"));
+            }catch(NullPointerException ex){
+                ex.printStackTrace();
+            }catch(IndexOutOfBoundsException ex){
+                ex.printStackTrace();
+            }
+        }
+        return postParameters;
+    }
+
+    private ArrayList<NameValuePair> getParametersDepotOkMarches() {
+        ArrayList<NameValuePair> postParameters = null;
+        if(Configuration.isOkMarches) {
+            try {
+                String[] idsStr = Configuration.parameters.get("ids").split("_");// <= idDossier +"_" + idLot + "_" + idUser
+                postParameters = new ArrayList<>();
+                postParameters.add(new BasicNameValuePair("rfq_id", idsStr[0]));
+                postParameters.add(new BasicNameValuePair("idlot", idsStr[1]));
+                postParameters.add(new BasicNameValuePair("user", idsStr[2]));
+//              postParameters.add(new BasicNameValuePair("organisme", idOrganisme));
+                //pour l'envoie du fichier en plusieurs partie partnum -> partie actuelle,  maxpart -> nombre total des parties
+//                postParameters.add(new BasicNameValuePair("partnum", partnum));
+//                postParameters.add(new BasicNameValuePair("maxpart", maxpart));
+            }catch(NullPointerException ex){
+                ex.printStackTrace();
+            }catch(IndexOutOfBoundsException ex){
+                ex.printStackTrace();
+            }
+        }
+        return postParameters;
+    }
+
+    public static String getHashFile(File file) {
         String hash = null;
         try {
             FileInputStream fin = new FileInputStream(file);
@@ -253,6 +312,29 @@ public class SslConnexionService{
             e.printStackTrace();
         }
         return hash;
+    }
+
+    public static String getHashFileB64(File file) {
+        try {
+            FileInputStream fin = new FileInputStream(file);
+            MessageDigest md = MessageDigest.getInstance("SHA1");
+            byte[] buf = new byte[4096];
+            int bread;
+            while ((bread = fin.read(buf)) != -1){
+                md.update(buf, 0, bread);
+            }
+            byte[] bytes = md.digest();
+            fin.close();
+            BASE64Encoder encoder = new BASE64Encoder();
+            return  encoder.encode(bytes);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private String getStringResponse(HttpEntity entity) {
@@ -309,6 +391,26 @@ public class SslConnexionService{
         HttpPost httpPost = new HttpPost(url);
         Header header = new BasicHeader("Cookie", "JSESSIONID=" + Configuration.parameters.get("sessionid"));
         httpPost.setEntity(new UrlEncodedFormEntity(parameters));
+        httpPost.setHeader(header);
+        if(httpclientSsl == null)
+            throw new NullPointerException("HTTPS client is null !");
+        if(httpPost == null)
+            throw new NullPointerException("POST Request is null !");
+        CloseableHttpResponse httpsReponse = httpclientSsl.execute(httpPost);
+        return httpsReponse;
+    }
+
+    private CloseableHttpResponse getResponseHttpPostMultipart(String url, List<NameValuePair> parameters) throws  IOException {
+        CloseableHttpClient httpclientSsl = initSSL();
+        HttpPost httpPost = new HttpPost(url);
+        Header header = new BasicHeader("Cookie", "JSESSIONID=" + Configuration.parameters.get("sessionid"));
+
+        MultipartEntityBuilder builderFile = MultipartEntityBuilder.create();
+        for(NameValuePair parameter:parameters) {
+            builderFile.addTextBody(parameter.getName(), parameter.getValue(), ContentType.TEXT_PLAIN);
+        }
+        HttpEntity multipart = builderFile.build();
+        httpPost.setEntity(new HttpEntityWrapper(multipart));
         httpPost.setHeader(header);
         if(httpclientSsl == null)
             throw new NullPointerException("HTTPS client is null !");
