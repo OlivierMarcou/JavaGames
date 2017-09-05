@@ -407,6 +407,7 @@ public class SslConnexionService{
 
         MultipartEntityBuilder builderFile = MultipartEntityBuilder.create();
         for(NameValuePair parameter:parameters) {
+            System.out.println("name : " + parameter.getName() + " - value : " + parameter.getValue());
             builderFile.addTextBody(parameter.getName(), parameter.getValue(), ContentType.TEXT_PLAIN);
         }
         HttpEntity multipart = builderFile.build();
