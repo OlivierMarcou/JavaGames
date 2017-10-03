@@ -1,10 +1,7 @@
 package com.oodrive.omnikles.cryptodoc;
 
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.swing.window.IntroWindow;
-import com.oodrive.omnikles.cryptodoc.swing.window.LogWindow;
-import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
-import com.oodrive.omnikles.cryptodoc.swing.window.TestWindow;
+import com.oodrive.omnikles.cryptodoc.swing.window.*;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -50,8 +47,11 @@ public class CryptoDoc {
             new IntroWindow();
         }
 
-        if(Configuration.parameters.get("action").equals("decrypt")){
+        if(Configuration.parameters.get("action").equals("decrypt") || Configuration.parameters.get("action").equals("decryptMarches")){
             OpenReceivership openReceivership = new OpenReceivership();
+            if(Configuration.parameters.get("action").equals("decryptMarches")) {
+                Configuration.isOkMarches=true;
+            }
             openReceivership.setVisible(true);
         }
 

@@ -142,7 +142,6 @@ public class TestWindow extends JFrame {
         decryptByP12OldBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CryptoTests cryptoTests = new CryptoTests();
                 zipFile =  fileChooser().getAbsoluteFile();
                 System.out.println(dk.openEnveloppe(zipFile));
             }
