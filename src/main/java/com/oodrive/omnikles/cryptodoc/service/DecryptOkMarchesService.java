@@ -25,6 +25,24 @@ public class DecryptOkMarchesService {
 
     private DecryptOkMarchesService(){}
 
+    private String makeCr(String[] mydet, String certificateB64) {
+        String mycr = "";
+        String mycr_ent = "<cr_entreprise>";
+        mycr_ent = mycr_ent + "<entreprise>" + mydet[0] + "</entreprise>";
+        mycr_ent = mycr_ent + "<fichiers>" + mydet[1] + "</fichiers>";
+        mycr_ent = mycr_ent + "<certificat_ent>" + mydet[2] + "</certificat_ent>";
+        mycr_ent = mycr_ent + "<nbdocs>" + mydet[3] + "</nbdocs>";
+        // FIXME - pas de transfert de validite
+        mycr_ent = mycr_ent + "<signature>" + mydet[5] + "</signature>";
+        mycr_ent = mycr_ent + "<repertoire>" + mydet[6] + "</repertoire>";
+        // new String(Base64.encode(cert))
+
+        mycr_ent = mycr_ent + "<certificat_ouverture>"+ certificateB64 + "</certificat_ouverture>";
+        mycr_ent = mycr_ent + "</cr_entreprise>";
+        mycr = mycr + mycr_ent;
+        return mycr;
+    }
+
     public String[] openEnveloppe(File enveloppe) {
         System.out.println("openEnveloppe");
 
