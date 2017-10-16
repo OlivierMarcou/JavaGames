@@ -57,7 +57,7 @@ public class CertificatesUtils {
 				ks.load(null, null);
 			}
 		} catch (Exception e) {
-			System.out.println("Erreur: keystore invalide ou passphrase incorrect");
+			Logs.sp("Erreur: keystore invalide ou passphrase incorrect");
 			return null;
 		}
 		return ks;
@@ -87,12 +87,12 @@ public class CertificatesUtils {
 				e.printStackTrace();
 			}
 			if (keytmp != null) {
-				System.out.println(
+				Logs.sp(
 						"Get private key (" + keytmp +
 								", encode : " + keytmp.getEncoded() +
 								", \n Algorithm : " + keytmp.getAlgorithm() +
 								", Format : " + keytmp.getFormat());
-				System.out.println("key alias : " + keyAlias);
+				Logs.sp("key alias : " + keyAlias);
 			}
 			try {
 				X509Certificate certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
@@ -142,8 +142,8 @@ public class CertificatesUtils {
 
 	public static KeyPair getKeyPairWithAlias(String alias, String password) throws Exception {
 		KeyStore ks = getKeyStore();
-		System.out.println("Alias : " + alias);
-		System.out.println("Password : " + password);
+		Logs.sp("Alias : " + alias);
+		Logs.sp("Password : " + password);
 		try {
 			ks.load(null, null);
 			java.util.Enumeration en = ks.aliases();
@@ -151,7 +151,7 @@ public class CertificatesUtils {
 				String aliasKey = (String) en.nextElement();
 				java.security.cert.Certificate c = ks.getCertificate(aliasKey);
 				if (aliasKey.equals(alias)) {
-					System.out.println("    Certificate : " + c.toString());
+					Logs.sp("    Certificate : " + c.toString());
 					PrivateKey key = (PrivateKey) ks.getKey(aliasKey, password.toCharArray());
 					X509Certificate certificate = (X509Certificate) ks.getCertificate(aliasKey);
 					return new KeyPair(certificate, key, aliasKey);
@@ -176,7 +176,7 @@ public class CertificatesUtils {
 			}
 			if(file.exists() && file.isDirectory()){
 				if(deep > actualDeep){
-					System.out.println(file.getAbsolutePath());
+					Logs.sp(file.getAbsolutePath());
 					actualDeep++;
 					recursiveFolder(filename, file, paths, deep, actualDeep);
 					actualDeep--;

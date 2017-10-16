@@ -8,6 +8,7 @@ import com.oodrive.omnikles.cryptodoc.service.CryptOkMarchesService;
 import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import org.json.JSONException;
 
 import javax.swing.*;
@@ -65,7 +66,7 @@ public class DepositFilesRunnable implements Runnable{
         zs.setJobNumber(0);
         zs.setMaxPercent(25);
         zs.addFilesToNewZip(zip, files);
-        System.out.println("zip ok");
+        Logs.sp("zip ok");
 
         SslConnexionService ssl = SslConnexionService.getInstance();
         List<String> certificatesB64 = null;
@@ -104,7 +105,7 @@ public class DepositFilesRunnable implements Runnable{
             JOptionPane.showMessageDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("message.error.text"),
                     CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
         }
-        System.out.println("crypt ok");
+        Logs.sp("crypt ok");
         ssl.setJobNumber(3);
         ssl.setMaxPercent(25);
         File podFile = null;
@@ -123,7 +124,7 @@ public class DepositFilesRunnable implements Runnable{
                     CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             return;
         }
-        System.out.println("send ok");
+        Logs.sp("send ok");
         progressBar.finish(podFile);
     }
 

@@ -5,6 +5,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.*;
 import com.oodrive.omnikles.cryptodoc.service.AESService;
 import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import org.json.JSONException;
 
 import javax.swing.*;
@@ -143,22 +144,22 @@ public class DepositFilePanel extends JPanel{
     public void decryptAction(KeyPair kp) throws CertificateEncodingException, IOException {
         byte[] secret = new byte[0];
         try {
-            System.out.println("Zip name :"+file.getName());
-            System.out.println("Zip exist :"+file.exists());
-            System.out.println("Zip path :"+file.getPath());
-            System.out.println("Zip size :"+file.length());
-            System.out.println("FILENAME_CRYPTED_KEYS : " + Configuration.FILENAME_CRYPTED_KEYS);
+            Logs.sp("Zip name :"+file.getName());
+            Logs.sp("Zip exist :"+file.exists());
+            Logs.sp("Zip path :"+file.getPath());
+            Logs.sp("Zip size :"+file.length());
+            Logs.sp("FILENAME_CRYPTED_KEYS : " + Configuration.FILENAME_CRYPTED_KEYS);
             byte[] content  = zs.getContentFile(new ZipFile(file), Configuration.FILENAME_CRYPTED_KEYS);
             if(kp != null) {
-                System.out.println("Begin decode sercret key ...");
+                Logs.sp("Begin decode sercret key ...");
                 secret = aes.decodeJSONSecretKeyByCertificate(content, kp);
-                System.out.println("End decode sercret key ...");
+                Logs.sp("End decode sercret key ...");
                 if(secret == null){
                     error(CryptoDoc.textProperties.getProperty("open.page2.decrypt.secret.fail").replace("<filename>",file.getName()));
                     return;
                 }
             }else {
-                System.out.println("aucun certificat selectionné." );
+                Logs.sp("aucun certificat selectionné." );
             }
         } catch (IOException exx) {
             exx.printStackTrace();

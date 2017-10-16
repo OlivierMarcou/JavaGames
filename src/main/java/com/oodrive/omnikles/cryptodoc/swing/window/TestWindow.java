@@ -10,6 +10,7 @@ import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTemplate;
 import com.oodrive.omnikles.cryptodoc.thread.TestRunnable;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.swing.*;
 import java.awt.*;
@@ -143,7 +144,7 @@ public class TestWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 zipFile =  fileChooser().getAbsoluteFile();
-                System.out.println(dk.openEnveloppe(zipFile));
+                Logs.spDump(dk.openEnveloppe(zipFile));
             }
         });
 
@@ -225,7 +226,7 @@ public class TestWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 long test = Math.round(Math.random()*3);
-                System.out.println(test);
+                Logs.sp(test);
                 CryptoDoc.changeLookAndFeel((int) test, TestWindow.this );
             }
         });

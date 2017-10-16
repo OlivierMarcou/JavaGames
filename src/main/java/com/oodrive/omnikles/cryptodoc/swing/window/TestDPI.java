@@ -1,5 +1,7 @@
 package com.oodrive.omnikles.cryptodoc.swing.window;
 
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Set;
@@ -48,7 +50,7 @@ public class TestDPI extends JFrame
 
             if (key != null && key.toString().toLowerCase().contains("font")) {
 
-                System.out.println(key);
+                Logs.sp(key);
                 Font font = UIManager.getDefaults().getFont(key);
                 if (font != null) {
                     font = font.deriveFont((float)size);

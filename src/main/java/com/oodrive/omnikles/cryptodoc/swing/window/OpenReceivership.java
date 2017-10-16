@@ -13,6 +13,7 @@ import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTempl
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GeneralTextTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.SummaryTextTemplate;
 import com.oodrive.omnikles.cryptodoc.thread.DecryptFilesRunnable;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -210,11 +211,11 @@ public class OpenReceivership extends JFrame {
                 java.util.List<DepositFilePanel> selectDeposit = new ArrayList<>();
                 for(Component component: selectDepositPanel.getScrollablePanel().getComponents()){
                     if(component instanceof DepositFilePanel && ((DepositFilePanel) component).getCheck().isSelected()) {
-                        System.out.println("Selected file name :  " + ((DepositFilePanel) component).getName());
+                        Logs.sp("Selected file name :  " + ((DepositFilePanel) component).getName());
                         selectDeposit.add((DepositFilePanel)component);
                     }
                 }
-                System.out.println("Selected files number :  " + selectDeposit.size());
+                Logs.sp("Selected files number :  " + selectDeposit.size());
                 DecryptFilesRunnable decryptFilesRunnable = new DecryptFilesRunnable(selectDeposit,
                                                             (KeyPair)getListCertificate().getSelectedItem(), OpenReceivership.this );
                 Thread decrypt = new Thread(decryptFilesRunnable);

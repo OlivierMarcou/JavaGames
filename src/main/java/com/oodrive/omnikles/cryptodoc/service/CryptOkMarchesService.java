@@ -3,6 +3,7 @@ package com.oodrive.omnikles.cryptodoc.service;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.utils.Base64;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
@@ -31,7 +32,7 @@ public class CryptOkMarchesService {
         byte[] raw = skey.getEncoded();
         // crypter cette cle symetrique a l'aide de la cle publique
         byte[] cryptKey = null;
-        System.out.println("clé symétrique non cryptee : "+raw.length);
+        Logs.sp("clé symétrique non cryptee : "+raw.length);
         StringBuffer sb = new StringBuffer();
 //        BASE64Encoder encode = new BASE64Encoder();
         for (KeyPair certificate : certificates) {
@@ -48,7 +49,7 @@ public class CryptOkMarchesService {
             if ((cryptKey == null) || (cryptKey.length == 0)) {
                 // Erreur au niveau du cryptage
                 // dans ce cas, on met la cle symetrique en clair ...
-                System.out.println("Attention une erreur est survenue, la clef symétrique n'est pas cryptée !");
+                Logs.sp("Attention une erreur est survenue, la clef symétrique n'est pas cryptée !");
                 sb.append("\n<ds:EncryptedKey>\n");
                 sb.append(new String(Base64.encode(raw)));
                 sb.append("\n</ds:EncryptedKey>\n");
@@ -61,7 +62,7 @@ public class CryptOkMarchesService {
                 sb.append("\n</ds:EncryptedExchangeKey>\n");
             }
         }
-        System.out.println("la taille du fichier de clef est:" + cryptKey.length);
+        Logs.sp("la taille du fichier de clef est:" + cryptKey.length);
         //String outputKeyFileName = this.NomEnveloppe+".key";
         String outputKeyFile = pathsymkey;// pathEnveloppe + File.separator + enveloppe +".key.p7m";
         try {
@@ -72,12 +73,11 @@ public class CryptOkMarchesService {
             outkCF.close();
             return raw;
         } catch (Exception exc) {
-            System.out.println("Exception lors de l'ecriture du fichier de cle :" + exc);
+            Logs.sp("Exception lors de l'ecriture du fichier de cle :" + exc);
         }
         return null;
     }
 
-    public static final String CRYPT_TYPE = "DESede";
 
     public File cryptFileWithSymKey(byte[] rawkey, File zipToCrypt, String keyFile){
         byte[] buf = new byte[1024];
@@ -86,10 +86,10 @@ public class CryptOkMarchesService {
 
         // initialisation du moteur crypto
         // -> note l'algo 3DES est le plus commun sur les JVM dispos
-        SecretKeySpec skeySpec = new SecretKeySpec(rawkey, CRYPT_TYPE);
+        SecretKeySpec skeySpec = new SecretKeySpec(rawkey, Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
         Cipher cipher = null;
         try {
-            cipher = Cipher.getInstance(CRYPT_TYPE);
+            cipher = Cipher.getInstance(Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
             cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
 
             // a  present on initialise l'entree et la sortie
@@ -155,7 +155,7 @@ public class CryptOkMarchesService {
     /** Generate a secret TripleDES encryption/decryption key */
     public SecretKey generateKey() throws NoSuchAlgorithmException {
         // Get a key generator for Triple DES (a.k.a DESede)
-        KeyGenerator keygen = KeyGenerator.getInstance("DESede");
+        KeyGenerator keygen = KeyGenerator.getInstance(Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
         keygen.init(168);
         // Use it to generate a key
         return keygen.generateKey();

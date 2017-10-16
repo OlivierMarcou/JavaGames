@@ -1,5 +1,6 @@
 package com.oodrive.omnikles.cryptodoc.service;
 
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import sun.misc.BASE64Encoder;
 
 import javax.crypto.*;
@@ -50,8 +51,8 @@ public class TripleDES {
                 System.out.flush();
                 SecretKey key = generateKey();
                 writeKey(key, keyfile);
-                System.out.println("done.");
-                System.out.println("Secret key written to " + args[1]
+                Logs.sp("done.");
+                Logs.sp("Secret key written to " + args[1]
                         + ". Protect that file carefully!");
             } else if (args[0].equals("-e")) { // Encrypt stdin to stdout
                 SecretKey key = readKey(keyfile);
@@ -85,7 +86,7 @@ public class TripleDES {
                 DESedeKeySpec.class);
         byte[] rawkey = keyspec.getKey();
         BASE64Encoder encode = new BASE64Encoder();
-        System.out.println(encode.encode(rawkey));
+        Logs.sp(encode.encode(rawkey));
         // Write the raw key to the file
         FileOutputStream out = new FileOutputStream(f);
         out.write(rawkey);

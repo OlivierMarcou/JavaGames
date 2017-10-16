@@ -130,8 +130,10 @@ public class SelectDepositPanel extends JPanel {
         HashMap<String, Long> ids = new HashMap<>();
         for(int i =0; i < idsStr.length; i++){
             if(idsStr[i] != null){
-                long id = Long.parseLong(idsStr[i]);
-                ids.put(nameIds[i], id);
+                try {
+                    long id = Long.parseLong(idsStr[i]);
+                    ids.put(nameIds[i], id);
+                }catch(NumberFormatException ex){}
             }
         }
         return ids;

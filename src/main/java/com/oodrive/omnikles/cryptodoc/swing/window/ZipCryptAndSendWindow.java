@@ -9,6 +9,7 @@ import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTempl
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GeneralTextTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.SummaryTextTemplate;
 import com.oodrive.omnikles.cryptodoc.thread.DepositFilesRunnable;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.swing.*;
 import java.awt.*;
@@ -156,16 +157,16 @@ public class ZipCryptAndSendWindow extends JFrame {
     }
 
     public void depot() throws IOException {
-        System.out.println("Zip tous les fichiers selectionnes");
+        Logs.sp("Zip tous les fichiers selectionnes");
         animate.setVisible(true);
         Date now = new Date();
         String fileName = "deposit"+ now.getTime();
         if(Configuration.isOkMarches)
             fileName = "ENVELOPPE";
         File zip = new File(Configuration.activFolder + File.separatorChar + fileName +".zip");
-        System.out.println("Zip path : " + Configuration.activFolder + File.separatorChar + fileName +".zip");
+        Logs.sp("Zip path : " + Configuration.activFolder + File.separatorChar + fileName +".zip");
         for( File file: files)
-            System.out.println(file.getName());
+            Logs.sp(file.getName());
         zt.setProgressBar(animate);
         zt.setFiles(files);
         zt.setZip(zip);

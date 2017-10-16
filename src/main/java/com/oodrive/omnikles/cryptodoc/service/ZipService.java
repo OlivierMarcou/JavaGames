@@ -3,6 +3,7 @@ package com.oodrive.omnikles.cryptodoc.service;
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -68,7 +69,7 @@ public class ZipService {
             while(ze != null){
                 String fileName = ze.getName();
                 File newFile = new File(destDir + File.separator + fileName);
-                System.out.println("Unzipping to "+newFile.getAbsolutePath());
+                Logs.sp("Unzipping to "+newFile.getAbsolutePath());
                 //create directories for sub directories in zip
                 new File(newFile.getParent()).mkdirs();
                 FileOutputStream fos = new FileOutputStream(newFile);
@@ -122,17 +123,17 @@ public class ZipService {
             zos.close();
             fos.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File not found : " + e);
+            Logs.sp("File not found : " + e);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public byte[] getContentFile(ZipFile zip, String fileName) throws IOException {
-        System.out.println("Methode getContentFile");
-        System.out.println("Arguments :" + zip.getName() + " | " + fileName);
+        Logs.sp("Methode getContentFile");
+        Logs.sp("Arguments :" + zip.getName() + " | " + fileName);
         if(zip != null && zip.size() > 0) {
-            System.out.println("Zip size : " + zip.size());
+            Logs.sp("Zip size : " + zip.size());
             ZipEntry entry = zip.getEntry(fileName);
             InputStream stream = zip.getInputStream(entry);
             return IOUtils.toByteArray(stream);

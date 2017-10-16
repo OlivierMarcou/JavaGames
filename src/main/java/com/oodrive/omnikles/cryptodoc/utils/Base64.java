@@ -137,7 +137,7 @@ public final class  Base64 {
         int dataIndex = 0;
         int i = 0;
         if (fDebug) {
-            System.out.println("number of triplets = " + numberTriplets);
+            Logs.sp("number of triplets = " + numberTriplets);
         }
         for (i = 0; i < numberTriplets; i++) {
 
@@ -147,7 +147,7 @@ public final class  Base64 {
             b3 = binaryData[dataIndex + 2];
 
             if (fDebug) {
-                System.out.println("b1= " + b1 + ", b2= " + b2 + ", b3= " + b3);
+                Logs.sp("b1= " + b1 + ", b2= " + b2 + ", b3= " + b3);
             }
 
             l = (byte) (b2 & 0x0f);
@@ -161,9 +161,9 @@ public final class  Base64 {
 
             encodedData[encodedIndex] = lookUpBase64Alphabet[val1];
             if (fDebug) {
-                System.out.println("val2 = " + val2);
-                System.out.println("k4   = " + (k << 4));
-                System.out.println("vak  = " + (val2 | (k << 4)));
+                Logs.sp("val2 = " + val2);
+                Logs.sp("k4   = " + (k << 4));
+                Logs.sp("vak  = " + (val2 | (k << 4)));
             }
 
             encodedData[encodedIndex + 1] = lookUpBase64Alphabet[val2 | (k << 4)];
@@ -178,8 +178,8 @@ public final class  Base64 {
             b1 = binaryData[dataIndex];
             k = (byte) (b1 & 0x03);
             if (fDebug) {
-                System.out.println("b1=" + b1);
-                System.out.println("b1<<2 = " + (b1 >> 2));
+                Logs.sp("b1=" + b1);
+                Logs.sp("b1<<2 = " + (b1 >> 2));
             }
             byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2) : (byte) ((b1) >> 2 ^ 0xc0);
             encodedData[encodedIndex] = lookUpBase64Alphabet[val1];

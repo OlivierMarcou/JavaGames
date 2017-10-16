@@ -1,7 +1,11 @@
 package com.oodrive.omnikles.cryptodoc;
 
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.swing.window.*;
+import com.oodrive.omnikles.cryptodoc.swing.window.IntroWindow;
+import com.oodrive.omnikles.cryptodoc.swing.window.LogWindow;
+import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
+import com.oodrive.omnikles.cryptodoc.swing.window.TestWindow;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -28,7 +32,7 @@ public class CryptoDoc {
         }
         initContext();
 
-        System.out.println("WebStart CryptoDoc - version : " + contextProperties.getProperty("build.version"));
+        Logs.sp("WebStart CryptoDoc - version : " + contextProperties.getProperty("build.version"));
         if(Configuration.parameters.get("language") == null || Configuration.parameters.get("language").isEmpty()) {
             Configuration.parameters.put("language", "fr");
         }
@@ -39,7 +43,7 @@ public class CryptoDoc {
             IOException, ClassNotFoundException, IllegalAccessException,
             InstantiationException, UnsupportedLookAndFeelException {
         CryptoDoc cryptoDoc = new CryptoDoc(args);
-        System.out.println(Configuration.activFolder);
+        Logs.sp(Configuration.activFolder);
 
         if(Configuration.parameters.get("action").equals("depot") || Configuration.parameters.get("action").equals("depotMarches")) {
             if(Configuration.parameters.get("action").equals("depotMarches"))

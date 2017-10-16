@@ -2,8 +2,8 @@ package com.oodrive.omnikles.cryptodoc.service;
 
 
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
-import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
-import com.oodrive.omnikles.cryptodoc.utils.Base64;
+import com.oodrive.omnikles.cryptodoc.pojo.SecretAndPublicKey;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -12,7 +12,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -25,26 +24,25 @@ public class DecryptOkMarchesService {
 
     private DecryptOkMarchesService(){}
 
-    private String makeCr(String[] mydet, String certificateB64) {
+    private String makeCr(String[] mydet) {
         String mycr = "";
         String mycr_ent = "<cr_entreprise>";
         mycr_ent = mycr_ent + "<entreprise>" + mydet[0] + "</entreprise>";
         mycr_ent = mycr_ent + "<fichiers>" + mydet[1] + "</fichiers>";
         mycr_ent = mycr_ent + "<certificat_ent>" + mydet[2] + "</certificat_ent>";
         mycr_ent = mycr_ent + "<nbdocs>" + mydet[3] + "</nbdocs>";
-        // FIXME - pas de transfert de validite
+
         mycr_ent = mycr_ent + "<signature>" + mydet[5] + "</signature>";
         mycr_ent = mycr_ent + "<repertoire>" + mydet[6] + "</repertoire>";
-        // new String(Base64.encode(cert))
 
-        mycr_ent = mycr_ent + "<certificat_ouverture>"+ certificateB64 + "</certificat_ouverture>";
+        mycr_ent = mycr_ent + "<certificat_ouverture>"+ mydet[7] + "</certificat_ouverture>";
         mycr_ent = mycr_ent + "</cr_entreprise>";
         mycr = mycr + mycr_ent;
         return mycr;
     }
 
     public String[] openEnveloppe(File enveloppe) {
-        System.out.println("openEnveloppe");
+        Logs.sp("openEnveloppe");
 
         // 1 dezipper clef symetrique et enveloppe
         String signatureFile = "";
@@ -71,7 +69,7 @@ public class DecryptOkMarchesService {
             while ((e = zin.getNextEntry()) != null) {
                 // unzip(zin, e.getName());
                 String entryname = e.getName();
-                // System.out.println(entryname);
+                // Logs.sp(entryname);
                 int index = entryname.lastIndexOf("/");
                 if (index > 0) {
                     entryname = entryname.substring(index + 1);
@@ -91,7 +89,7 @@ public class DecryptOkMarchesService {
                 byte[] b = new byte[512];
                 int len = 0;
                 while ((len = zin.read(b)) != -1) {
-                    // System.out.println("1");
+                    // Logs.sp("1");
                     out.write(b, 0, len);
                 }
                 out.close();
@@ -107,7 +105,7 @@ public class DecryptOkMarchesService {
             FileInputStream is = new FileInputStream(keyUnzippedFile);
             long length = (new File(keyUnzippedFile)).length();
             if (length > Integer.MAX_VALUE) {
-                System.out.println("File is too large to process");
+                Logs.sp("File is too large to process");
                 // return null;
             }
             // Create the byte array to hold the data
@@ -124,64 +122,10 @@ public class DecryptOkMarchesService {
                 throw new IOException("Could not completely read file " + keyUnzippedFile);
             }
             is.close();
-            // ok on accepte le decryptage
-            boolean ok4decrypt = true;
-            // if (!test) {
-            ok4decrypt = false;
-            // il y a eu un reel cryptage donc il faut parser le fichier de cle
-            // et le lire
-            String contenuFichier = new String(bytes);
-            int indexCert = 0;
-            boolean loop = true;// le parametre pour savoir si il faut continuer
-            // e chercher
-            boolean hascert2decrypt = false; // le parametre pour savoir si
-            // il y a du cryptage
-            // donc des infos pour decrypter
-            String certAanalyser = "";
-            byte[] bytedecrypted = null;
-            while (loop) {
-                indexCert = contenuFichier.indexOf("<ds:X509Certificate>");
-                if (indexCert > 0) {
-                    indexCert = indexCert + 20;
-                    certAanalyser = contenuFichier.substring(indexCert, contenuFichier.indexOf("</ds:X509Certificate>"));
-                    certAanalyser = certAanalyser.replaceAll("\n", "");
-                    details[7] = certAanalyser;
-                    List<KeyPair> kps = aes.getInstalledCertificates();
-                    for(KeyPair kp:kps){
-                        String certInstalled = kp.getX509CertificateB64().replaceAll("\n", "");
-                        if(certInstalled.equals(certAanalyser)){
-                            System.out.println("loop - recherche de certificat - Fin de la boucle : la cle privee a ete trouvee ");
-                            int index2 = contenuFichier.indexOf("<ds:EncryptedKey>") + 17;
-                            String encryptedKey = contenuFichier.substring(index2, contenuFichier.indexOf("</ds:EncryptedKey>"));
-                            try {
-                                encryptedKey = encryptedKey.replaceAll("\n", "");
-                                System.out.println("Valeur de la cle symetrique cryptee = " + encryptedKey + "\n\n");
-                                byte[] bytecrypted = Base64.decode(encryptedKey.getBytes());
-                                System.out.println(" ------------------- Crypted byte ? => " + bytecrypted.length);
-
-                                AESService aes = AESService.getInstance();
-                                bytedecrypted = aes.decryptMessage(bytecrypted, kp);
-                                System.out.println("cle symetrique decryptee - taille=" + bytedecrypted.length);
-                                if ((bytedecrypted != null) || bytedecrypted.length > 0) {
-                                    loop = false;
-                                    break;
-                                }
-                            } catch (Exception exc) {
-                                System.out.println("Exception lors du decryptage=" + exc + "\n\n");
-                                return null;
-                            }
-                        }
-                    }
-                    contenuFichier = contenuFichier
-                            .substring(contenuFichier.indexOf("</ds:EncryptedExchangeKey>") + 26);
-                } else {
-                    loop = false;
-                    System.out.println("Erreur : certificat pour dechiffrer non trouve dans l'enveloppe.");
-                    return null;
-                }
-            }
-
-            SecretKeySpec skeySpec = new SecretKeySpec(bytedecrypted, "DESede");
+            SecretAndPublicKey secretAndPublicKey = new SecretAndPublicKey(new String(bytes));
+            byte[] bytedecrypted = secretAndPublicKey.getSecretKey();
+            details[7] = secretAndPublicKey.getPublicCertificate();
+            SecretKeySpec skeySpec = new SecretKeySpec(bytedecrypted, Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
 
             File tempFolder = new File( Configuration.activFolder + File.separator + "TECHNIQUE");
             tempFolder.mkdirs();
@@ -190,7 +134,7 @@ public class DecryptOkMarchesService {
 
             is = new FileInputStream(cryptedZipFileName);
             out = new FileOutputStream(tempDecryptedZipFile);
-            Cipher cipher = Cipher.getInstance("DESede");
+            Cipher cipher = Cipher.getInstance(Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
             cipher.init(Cipher.DECRYPT_MODE, skeySpec);
             CipherInputStream cis = new CipherInputStream(is, cipher);
             byte[] buffer = new byte[1024];
@@ -210,24 +154,24 @@ public class DecryptOkMarchesService {
             details[6] = Configuration.activFolder + File.separator + enveloppe.getName() ;
             String tmpzipdir = enveloppe.getName()+ "_";
             if (enveloppe.getName().indexOf("36_") != -1) {
-                System.out.println(" 36 XXXXXXXXXXXXXXXXX");
+                Logs.sp(" 36 XXXXXXXXXXXXXXXXX");
                 tmpzipdir = enveloppe.getName().replaceFirst("36_", 1 + "_");
             } else if (enveloppe.getName().indexOf("37_") != -1) {
-                System.out.println(" 37 XXXXXXXXXXXXXXXXX");
+                Logs.sp(" 37 XXXXXXXXXXXXXXXXX");
                 tmpzipdir = enveloppe.getName().replaceFirst("37_", 1 + "_");
             } else if (enveloppe.getName().indexOf("38_") != -1) {
-                System.out.println(" 38 XXXXXXXXXXXXXXXXX");
+                Logs.sp(" 38 XXXXXXXXXXXXXXXXX");
                 tmpzipdir = enveloppe.getName().replaceFirst("38_", 1 + "_");
             }
             File extractionFolder = new File(Configuration.activFolder + File.separator + tmpzipdir);
             extractionFolder.mkdirs();
 
-            // System.out.println("unzip : satge 1");
+            // Logs.sp("unzip : satge 1");
             while ((e = zin.getNextEntry()) != null) {
                 // unzip(zin, e.getName());
                 boolean iskeyfile = false;
                 String entryname = e.getName();
-                System.out.println("Ouverture fichier :" + entryname);
+                Logs.sp("Ouverture fichier :" + entryname);
                 nbdocs = nbdocs + 1;
                 String currentUnzippedFile = extractionFolder + File.separator + entryname;
                 if (entryname.indexOf("sig.xml") > 0) {
@@ -243,7 +187,7 @@ public class DecryptOkMarchesService {
                     int compt = 0; // pour la barre de progression
                     int lastprog = 0; // pour la barre de progression
                     while ((len = zin.read(b)) != -1) {
-                        // System.out.println("1");
+                        // Logs.sp("1");
                         out.write(b, 0, len);
                         // barre de progression
                         compt = compt + len;
@@ -260,7 +204,7 @@ public class DecryptOkMarchesService {
                     byte[] b = new byte[512];
                     int len = 0;
                     while ((len = zin.read(b)) != -1) {
-                        // System.out.println("1");
+                        // Logs.sp("1");
                         out.write(b, 0, len);
                     }
                     out.close();
@@ -284,7 +228,7 @@ public class DecryptOkMarchesService {
                 is = new FileInputStream(signatureFile);
                 length = (new File(signatureFile)).length();
                 if (length > Integer.MAX_VALUE) {
-                    System.out.println("File is too large to process");
+                    Logs.sp("File is too large to process");
                     // return null;
                 }
                 // Create the byte array to hold the data
@@ -298,12 +242,12 @@ public class DecryptOkMarchesService {
                 }
                 // Ensure all the bytes have been read in
                 if (offset < bytes.length) {
-                    System.out.println("Could not completely read file " + cryptedZipFileName + "\n");
+                    Logs.sp("Could not completely read file " + cryptedZipFileName + "\n");
                     throw new IOException("Could not completely read file " + cryptedZipFileName);
                 }
                 is.close();
                 signatureXML = new String(bytes); // bytes.toString();
-                // System.out.println("valeur du fichier de signature
+                // Logs.sp("valeur du fichier de signature
                 // :"+signatureXML);
                 // e present, parser le fichier xml de signature
                 // le certificat du signataire <ds:X509Certificate> et
@@ -311,28 +255,28 @@ public class DecryptOkMarchesService {
                 details[5] = signatureXML;
                 // on distingue les cas
                 if (signatureXML.indexOf("<ds:X509Certificate type=\"base64Binary\">") > 0) {
-                    indexCert = signatureXML.indexOf("<ds:X509Certificate type=\"base64Binary\">") + 40;
+                    int indexCert = signatureXML.indexOf("<ds:X509Certificate type=\"base64Binary\">") + 40;
                     if (indexCert > 0) {
-                        System.out.println("valeur originale:"
+                        Logs.sp("valeur originale:"
                                 + signatureXML
                                 .substring(signatureXML.indexOf("<ds:X509Certificate type=\"base64Binary\">")));
                         details[2] = signatureXML.substring(indexCert, signatureXML.indexOf("</ds:X509Certificate>"));
                         // "\n"
-                        System.out.println("nombre de \\n :" + details[2].indexOf("\n"));
-                        System.out.println("valeur de la chaine :" + details[2]);
+                        Logs.sp("nombre de \\n :" + details[2].indexOf("\n"));
+                        Logs.sp("valeur de la chaine :" + details[2]);
                     }
                 } else if (signatureXML.indexOf("<ds:X509Certificate>") > 0) {
-                    indexCert = signatureXML.indexOf("<ds:X509Certificate>") + 20;
+                    int indexCert = signatureXML.indexOf("<ds:X509Certificate>") + 20;
                     if (indexCert > 0) {
-                        System.out.println("valeur originale:"
+                        Logs.sp("valeur originale:"
                                 + signatureXML.substring(signatureXML.indexOf("<ds:X509Certificate>")));
                         details[2] = signatureXML.substring(indexCert, signatureXML.indexOf("</ds:X509Certificate>"));
                         // "\n"
-                        System.out.println("nombre de \\n :" + details[2].indexOf("\n"));
-                        System.out.println("valeur de la chaene :" + details[2]);
+                        Logs.sp("nombre de \\n :" + details[2].indexOf("\n"));
+                        Logs.sp("valeur de la chaene :" + details[2]);
                     }
                 } else {
-                    System.out.println("Erreur balise de signature X509certificate non trouvee");
+                    Logs.sp("Erreur balise de signature X509certificate non trouvee");
                 }
             }
             // nombre de documents dans l'enveloppe
@@ -353,15 +297,17 @@ public class DecryptOkMarchesService {
             details = null;
         }catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
-            System.out.println("Erreur de fichier non trouve" + fnfe);
+            Logs.sp("Erreur de fichier non trouve" + fnfe);
             return null;
         } catch (IOException ex) {
             ex.printStackTrace();
-            System.out.println("Erreur IO:" + ex);
+            Logs.sp("Erreur IO:" + ex);
             return null;
         }
+        makeCr(details);//a retourner lors de l'update du status du pli ouvert
         return details;
     }
+
 
     public static DecryptOkMarchesService getInstance() {
         if (null == instance) {

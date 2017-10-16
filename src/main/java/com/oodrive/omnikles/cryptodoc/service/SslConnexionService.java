@@ -7,6 +7,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.ExchangeDocumentState;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressEntityWrapper;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
@@ -66,7 +67,7 @@ public class SslConnexionService{
     }
 
     public List<String> getCertificatesB64WithJSessionId(String urlCertificate ) throws JSONException {
-        System.out.println("getCertificatesWithJSessionId method");
+        Logs.sp("getCertificatesWithJSessionId method");
         HttpEntity entity = getResponseHttpGet(urlCertificate).getEntity();
 
         String jsonCertificate = getStringResponse(entity);
@@ -75,7 +76,7 @@ public class SslConnexionService{
     }
 
     public HashMap<Long, DepositStatus> getDepositStatusesWithJSessionId(String urlDepositStatus) throws JSONException, ConnectionClosedException {
-        System.out.println("getDepositStatusesWithJSessionId method");
+        Logs.sp("getDepositStatusesWithJSessionId method");
         HttpEntity entity = getResponseHttpGet(urlDepositStatus).getEntity();
 
         String jsonDepositStatus = getStringResponse(entity);
@@ -84,7 +85,7 @@ public class SslConnexionService{
     }
 
     public File sslDownloadFile(String url, String filename){
-        System.out.println("sslDownloadFile method");
+        Logs.sp("sslDownloadFile method");
         File file = new File(Configuration.activFolder + File.separatorChar + filename);
         try {
             HttpEntity entity = getResponseHttpGet(url).getEntity();
@@ -101,7 +102,7 @@ public class SslConnexionService{
 
     public File sslUploadFileAndDownloadProof(File file, String url,  AnimatedProgressBar animatedProgressBar, String hashFile){
         this.uploadBar = animatedProgressBar;
-        System.out.println("sslUploadFile method");
+        Logs.sp("sslUploadFile method");
 
         CloseableHttpResponse httpResponse= getResponseHttpPostFile(url, file, hashFile);
         StatusLine statusLine = httpResponse.getStatusLine();
@@ -109,8 +110,8 @@ public class SslConnexionService{
             throw new UnsupportedOperationException("Error server : "+statusLine.getStatusCode() + "\n" + statusLine.getReasonPhrase() );
         HttpEntity entity = httpResponse.getEntity();
 
-        System.out.println("sslDownloadFile method");
-        System.out.println("Download File in " + Configuration.activFolder + File.separatorChar + "pod.pdf");
+        Logs.sp("sslDownloadFile method");
+        Logs.sp("Download File in " + Configuration.activFolder + File.separatorChar + "pod.pdf");
         File podFile = new File(Configuration.activFolder + File.separatorChar + "pod.pdf");
         try {
             entity.writeTo(new FileOutputStream(podFile));
@@ -124,7 +125,7 @@ public class SslConnexionService{
     }
 
     public void updateExchangeDocumentState(long documentId, String urlUpdateStatus) throws IOException {
-        System.out.println("updateExchangeDocumentState method");
+        Logs.sp("updateExchangeDocumentState method");
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("state", ExchangeDocumentState.OPEN.name()));
         HttpEntity entity = getResponseHttpPost(urlUpdateStatus+documentId,params).getEntity();
@@ -135,14 +136,14 @@ public class SslConnexionService{
     private CloseableHttpClient initSSL(){
         SSLContextBuilder builder = new SSLContextBuilder();
         try {
-            System.out.println("loadTrustMaterial");
+            Logs.sp("loadTrustMaterial");
             builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (KeyStoreException e) {
             e.printStackTrace();
         }
-        System.out.println("Connection ssl socket ");
+        Logs.sp("Connection ssl socket ");
         SSLConnectionSocketFactory sslsf = null;
         try {
             sslsf = new SSLConnectionSocketFactory(builder.build());
@@ -151,7 +152,7 @@ public class SslConnexionService{
         } catch (KeyManagementException e) {
             e.printStackTrace();
         }
-        System.out.println("HttpClient post SSL");
+        Logs.sp("HttpClient post SSL");
         return HttpClients.custom()
                 .setSSLSocketFactory(sslsf)
                 .build();
@@ -159,9 +160,9 @@ public class SslConnexionService{
 
     private CloseableHttpResponse getResponseHttpGet(String url){
         if (debug)
-            System.out.println("... Debut connexion ...");
-        System.out.println("HttpClient");
-        System.out.println("url : " + url);
+            Logs.sp("... Debut connexion ...");
+        Logs.sp("HttpClient");
+        Logs.sp("url : " + url);
         CloseableHttpClient httpclientSsl = initSSL();
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("Cookie", "JSESSIONID="+Configuration.parameters.get("sessionid"));
@@ -169,7 +170,7 @@ public class SslConnexionService{
             throw new NullPointerException("HTTP client is null !");
         if(httpGet == null)
             throw new NullPointerException("GET Request is null !");
-        System.out.println("Start request");
+        Logs.sp("Start request");
         try {
             return httpclientSsl.execute(httpGet);
         } catch (IOException e) {
@@ -179,7 +180,7 @@ public class SslConnexionService{
     }
 
     public void sendPostEnveloppeEmpreinte(String url, String hashFile, boolean envoiMailDepotEmprunte) {
-        System.out.println("Envoi de l'empreinte "+hashFile+" a "+url);
+        Logs.sp("Envoi de l'empreinte "+hashFile+" a "+url);
         try {
             getResponseHttpPostMultipart(url, getParametersEmpreinteOkMarches(hashFile, envoiMailDepotEmprunte));
         } catch (IOException e) {
@@ -189,7 +190,7 @@ public class SslConnexionService{
     
     private CloseableHttpResponse getResponseHttpPostFile(String url, File file, String hashFile){
         if (debug)
-            System.out.println("... Debut upload file ...");
+            Logs.sp("... Debut upload file ...");
 
         MultipartEntityBuilder builderFile = MultipartEntityBuilder.create();
         builderFile.addBinaryBody("file", file,
@@ -232,7 +233,7 @@ public class SslConnexionService{
         if(httpPost == null)
             throw new NullPointerException("POST Request is null !");
         try {
-            System.out.println("Start request upload ");
+            Logs.sp("Start request upload ");
             return httpclientSsl.execute(httpPost);
         } catch (ClientProtocolException e) {
             e.printStackTrace();
@@ -342,14 +343,14 @@ public class SslConnexionService{
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(entity.getContent()));
             String sLine = "";
-            System.out.println("Read response");
+            Logs.sp("Read response");
             StringBuffer responseBuffer = new StringBuffer();
             while ((sLine = in.readLine()) != null) {
                 responseBuffer.append(sLine);
             }
-            System.out.println("Reponse : ");
+            Logs.sp("Reponse : ");
             content = responseBuffer.toString();
-            System.out.println(content);
+            Logs.sp(content);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -407,7 +408,7 @@ public class SslConnexionService{
 
         MultipartEntityBuilder builderFile = MultipartEntityBuilder.create();
         for(NameValuePair parameter:parameters) {
-            System.out.println("name : " + parameter.getName() + " - value : " + parameter.getValue());
+            Logs.sp("name : " + parameter.getName() + " - value : " + parameter.getValue());
             builderFile.addTextBody(parameter.getName(), parameter.getValue(), ContentType.TEXT_PLAIN);
         }
         HttpEntity multipart = builderFile.build();
