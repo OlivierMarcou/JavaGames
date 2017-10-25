@@ -3,6 +3,7 @@ package com.oodrive.omnikles.cryptodoc.service;
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
+import com.oodrive.omnikles.cryptodoc.pojo.DepositStatusMarches;
 import com.oodrive.omnikles.cryptodoc.pojo.ExchangeDocumentState;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.swing.component.ProgressEntityWrapper;
@@ -80,7 +81,12 @@ public class SslConnexionService{
         HttpEntity entity = getResponseHttpGet(urlDepositStatus).getEntity();
 
         String jsonDepositStatus = getStringResponse(entity);
-        HashMap<Long, DepositStatus> depositStatuses = getJSONDepositStatuses(jsonDepositStatus);
+        HashMap<Long, DepositStatus> depositStatuses = null;
+        if(Configuration.isOkMarches){
+            depositStatuses = getJSONDepositStatusesMarches(jsonDepositStatus);
+        }else{
+            depositStatuses = getJSONDepositStatuses(jsonDepositStatus);
+        }
         return depositStatuses;
     }
 
@@ -367,6 +373,25 @@ public class SslConnexionService{
             certificatsB64.add(certificats.get(i).toString().replaceAll("\r", ""));
         }
         return certificatsB64;
+    }
+
+    private HashMap<Long, DepositStatus> getJSONDepositStatusesMarches(String jsonDepositStatus) throws JSONException, ConnectionClosedException {
+        JSONObject obj = new JSONObject(jsonDepositStatus);
+        JSONArray depositStatusesArray = null;
+        try {
+            depositStatusesArray = obj.getJSONArray("data");
+        }catch(JSONException e){
+            throw new ConnectionClosedException("\n" + obj.getJSONObject("status").get("message"));
+        }
+        HashMap<Long, DepositStatus> depositStatuses = new HashMap<>();
+        for(int i=0; i<depositStatusesArray.length(); i++){
+            String line = depositStatusesArray.get(i).toString();
+            line = line.replaceAll("[{}]", "");
+            DepositStatusMarches depositStatusMarches = new DepositStatusMarches(line.split(","));
+            DepositStatus depositStatus = new DepositStatus(depositStatusMarches);
+            depositStatuses.put(depositStatus.getId(), depositStatus);
+        }
+        return depositStatuses;
     }
 
     private HashMap<Long, DepositStatus> getJSONDepositStatuses(String jsonDepositStatus) throws JSONException, ConnectionClosedException {

@@ -74,7 +74,10 @@ public class SelectDepositPanel extends JPanel {
     public void parseFile(File zipFile) {
         try {
             depositStatuses = null;
-            depositStatuses = ssl.getDepositStatusesWithJSessionId(Configuration.parameters.get("urlReadStatus"));
+            String urlGet = Configuration.parameters.get("urlReadStatus");
+            if(Configuration.isOkMarches)
+                urlGet += "?iddossier=" + Configuration.parameters.get("idDossier");
+            depositStatuses = ssl.getDepositStatusesWithJSessionId(urlGet);
         } catch (JSONException e) {
             e.printStackTrace();
             error(CryptoDoc.textProperties.getProperty("message.error.text"));
@@ -107,7 +110,17 @@ public class SelectDepositPanel extends JPanel {
         HashMap<String, Long> ids = getIdsFile(file.getName());
         DepositFilePanel filePanel = null;
         if(depositStatuses != null && depositStatuses.size() > 0){
-            filePanel = new DepositFilePanel(file, depositStatuses.get(ids.get("documentId")));
+            if(Configuration.isOkMarches){
+                String idFileName = file.getName().substring(0,file.getName().lastIndexOf("_"));
+                for(DepositStatus depositStatus: depositStatuses.values()) {
+                    if(depositStatus.getFilename().equals(idFileName)){
+                        filePanel = new DepositFilePanel(file,depositStatus);
+                        break;
+                    }
+                }
+            }else{
+                filePanel = new DepositFilePanel(file, depositStatuses.get(ids.get("documentId")));
+            }
         }else{
             filePanel = new DepositFilePanel(file, null);
         }

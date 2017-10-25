@@ -83,6 +83,7 @@ public class CryptoDoc {
             JFrame test = (JFrame) Class.forName("com.oodrive.omnikles.cryptodoc.swing.window."+Configuration.parameters.get("class")).newInstance();
             test.setVisible(true);
         }
+        Logs.sp("End Init");
     }
 
     public static void changeLookAndFeel(int index, JFrame frame){

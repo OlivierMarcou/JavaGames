@@ -16,38 +16,80 @@ public class DepositStatus {
     private String supplierOrganism;
     private long tenderId;
 
+    public DepositStatus(DepositStatusMarches depositMarches){
+        this.id = depositMarches.getId();
+        this.exchangeDocumentState = ExchangeDocumentState.getExchangeDocumentState(depositMarches.getStatus());
+        this.exchangeState = ExchangeState.IN_TIME;
+        this.filename = depositMarches.getFileName();
+    }
+
     public DepositStatus(String[] keysValues){
         for(String line:keysValues){
             String[] keyValue = line.replaceAll("\"", "").split(":");
-            if(keyValue[0] != null && keyValue[1] != null ){
-                switch (keyValue[0]){
-                    case "id":
-                        this.id = Long.parseLong(keyValue[1]);
-                        break;
-                    case "idExchange":
-                        this.idExchange = Long.parseLong(keyValue[1]);
-                        break;
-                    case "filename":
-                        this.filename = keyValue[1];
-                        break;
-                    case "exchangeState":
-                        this.exchangeState = ExchangeState.valueOf(keyValue[1]);
-                        break;
-                    case "exchangeDocumentState":
-                        this.exchangeDocumentState = ExchangeDocumentState.valueOf(keyValue[1]);
-                        break;
-                    case "supplierId":
-                        this.supplierId = Long.parseLong(keyValue[1]);
-                        break;
-                    case "supplierName":
-                        this.supplierName = keyValue[1];
-                        break;
-                    case "supplierOrganism":
-                        this.supplierOrganism = keyValue[1];
-                        break;
-                    case "tenderId":
-                        this.tenderId = Long.parseLong(keyValue[1]);
-                        break;
+            if(Configuration.isOkMarches){
+
+                if(keyValue[0] != null && keyValue[1] != null ){
+                    switch (keyValue[0]){
+                        case "id":
+                            this.id = Long.parseLong(keyValue[1]);
+                            break;
+                        case "idExchange":
+                            this.idExchange = Long.parseLong(keyValue[1]);
+                            break;
+                        case "filename":
+                            this.filename = keyValue[1];
+                            break;
+                        case "exchangeState":
+                            this.exchangeState = ExchangeState.valueOf(keyValue[1]);
+                            break;
+                        case "exchangeDocumentState":
+                            this.exchangeDocumentState = ExchangeDocumentState.valueOf(keyValue[1]);
+                            break;
+                        case "supplierId":
+                            this.supplierId = Long.parseLong(keyValue[1]);
+                            break;
+                        case "supplierName":
+                            this.supplierName = keyValue[1];
+                            break;
+                        case "supplierOrganism":
+                            this.supplierOrganism = keyValue[1];
+                            break;
+                        case "tenderId":
+                            this.tenderId = Long.parseLong(keyValue[1]);
+                            break;
+                    }
+                }
+            }else{
+                if(keyValue[0] != null && keyValue[1] != null ){
+                    switch (keyValue[0]){
+                        case "id":
+                            this.id = Long.parseLong(keyValue[1]);
+                            break;
+                        case "idExchange":
+                            this.idExchange = Long.parseLong(keyValue[1]);
+                            break;
+                        case "filename":
+                            this.filename = keyValue[1];
+                            break;
+                        case "exchangeState":
+                            this.exchangeState = ExchangeState.valueOf(keyValue[1]);
+                            break;
+                        case "exchangeDocumentState":
+                            this.exchangeDocumentState = ExchangeDocumentState.valueOf(keyValue[1]);
+                            break;
+                        case "supplierId":
+                            this.supplierId = Long.parseLong(keyValue[1]);
+                            break;
+                        case "supplierName":
+                            this.supplierName = keyValue[1];
+                            break;
+                        case "supplierOrganism":
+                            this.supplierOrganism = keyValue[1];
+                            break;
+                        case "tenderId":
+                            this.tenderId = Long.parseLong(keyValue[1]);
+                            break;
+                    }
                 }
             }
         }

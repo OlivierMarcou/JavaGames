@@ -92,6 +92,10 @@ public class OpenReceivership extends JFrame {
     }
 
     public OpenReceivership(){
+        if(Configuration.isOkMarches) {
+            lblCertificates.setVisible(false);
+            listCertificate.setVisible(false);
+        }
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
         setMaximumSize(new Dimension(800, 600));
@@ -108,85 +112,48 @@ public class OpenReceivership extends JFrame {
 
         activateScreen();
 
+        int line = 0;
+
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
-        c.gridy=0;
+        c.gridy=line;
         c.gridwidth=1;
         c.insets = new Insets(5, 10, 5, 10);
         centerPanel.add(page1Paragraphe1, c);
-
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
-        c.gridy=0;
+        c.gridy=line;
         c.gridwidth=2;
         centerPanel.add(page2Paragraphe1, c);
-
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
-        c.gridy=1;
-        c.gridwidth=1;
-        centerPanel.add(selectBtn, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=1;
-        c.gridwidth=2;
-        centerPanel.add(selectDepositPanel, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=2;
-        c.gridwidth=2;
-        centerPanel.add(infos, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=3;
-        c.gridwidth=1;
-        centerPanel.add(lblCertificates, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=1;
-        c.gridy=3;
-        c.gridwidth=1;
-        centerPanel.add(listCertificate, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=4;
-        c.gridwidth=1;
-        centerPanel.add(backBtn, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=1;
-        c.gridy=4;
-        c.gridwidth=1;
-        centerPanel.add(openBtn, c);
-
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=0;
+        c.gridy=line;
         c.gridwidth=2;
         centerPanel.add(page3Paragraphe1, c);
 
+        line++;
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(selectBtn, c);
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=line;
+        c.gridwidth=2;
+        centerPanel.add(selectDepositPanel, c);
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
         centerPanel.add(loadingIcon, c);
-
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=1;
@@ -194,13 +161,50 @@ public class OpenReceivership extends JFrame {
         c.gridwidth=1;
         centerPanel.add(page3Paragraphe2, c);
 
+        line++;
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
-        c.gridy=2;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(lblCertificates, c);
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=1;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(listCertificate, c);
+
+        line++;
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=line;
+        c.gridwidth=2;
+        centerPanel.add(infos, c);
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=line;
         c.gridwidth=2;
         centerPanel.add(exitBtn, c);
+
+        line++;
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(backBtn, c);
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=1;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(openBtn, c);
 
         openBtn.addActionListener(new ActionListener() {
             @Override
@@ -302,8 +306,10 @@ public class OpenReceivership extends JFrame {
         infos.setVisible(two);
         openBtn.setVisible(two);
         backBtn.setVisible((two || three));
-        lblCertificates.setVisible(two);
-        listCertificate.setVisible(two);
+        if(!Configuration.isOkMarches) {
+            lblCertificates.setVisible(two);
+            listCertificate.setVisible(two);
+        }
 
         loadingIcon.setVisible(three);
         page3Paragraphe1.setVisible(three);

@@ -76,12 +76,12 @@ public class DecryptOkMarchesService {
                 }
                 if (entryname.indexOf(".key.p7m") > 0) {
                     // alors c'est le fichier de cle
-                    keyUnzippedFile = Configuration.activFolder + File.separator + entryname;
+                    keyUnzippedFile = enveloppe.getParent() + File.separator + entryname;
                     // entryname;
                     out = new FileOutputStream(keyUnzippedFile);
                 } else {
                     // alors c'est l'enveloppe cryptee
-                    cryptedZipFileName = Configuration.activFolder + File.separator + entryname;
+                    cryptedZipFileName = enveloppe.getParent() + File.separator + entryname;
                     // File.separator
                     // + entryname;
                     out = new FileOutputStream(cryptedZipFileName);
@@ -127,9 +127,9 @@ public class DecryptOkMarchesService {
             details[7] = secretAndPublicKey.getPublicCertificate();
             SecretKeySpec skeySpec = new SecretKeySpec(bytedecrypted, Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
 
-            File tempFolder = new File( Configuration.activFolder + File.separator + "TECHNIQUE");
+            File tempFolder = new File( enveloppe.getParent() + File.separator + "TECHNIQUE");
             tempFolder.mkdirs();
-            String tempDecryptedZipFile = Configuration.activFolder + File.separator + "TECHNIQUE" + File.separator
+            String tempDecryptedZipFile = enveloppe.getParent() + File.separator + "TECHNIQUE" + File.separator
                     + 1 + "_temp.zip";
 
             is = new FileInputStream(cryptedZipFileName);
@@ -151,7 +151,7 @@ public class DecryptOkMarchesService {
             is = new FileInputStream(tempDecryptedZipFile);
 
             zin = new ZipInputStream(is);
-            details[6] = Configuration.activFolder + File.separator + enveloppe.getName() ;
+            details[6] = enveloppe.getParent() + File.separator + enveloppe.getName().replace(".zip.crypt", "");
             String tmpzipdir = enveloppe.getName()+ "_";
             if (enveloppe.getName().indexOf("36_") != -1) {
                 Logs.sp(" 36 XXXXXXXXXXXXXXXXX");
@@ -163,7 +163,7 @@ public class DecryptOkMarchesService {
                 Logs.sp(" 38 XXXXXXXXXXXXXXXXX");
                 tmpzipdir = enveloppe.getName().replaceFirst("38_", 1 + "_");
             }
-            File extractionFolder = new File(Configuration.activFolder + File.separator + tmpzipdir);
+            File extractionFolder = new File(enveloppe.getParent() + File.separator + tmpzipdir);
             extractionFolder.mkdirs();
 
             // Logs.sp("unzip : satge 1");
