@@ -2,8 +2,8 @@ package com.oodrive.omnikles.cryptodoc.swing.component.template.easter.puissance
 
 public class Verification
 {
-	Colonne[] col;		//tableau de 'colonne' faisant référence aux JPanel
-	boolean trouve;		//vrai si on a trouvé un alignement
+	Colonne[] col;		//tableau de 'colonne' faisant rÃ©fÃ©rence aux JPanel
+	boolean trouve;		//vrai si on a trouvÃ© un alignement
 	
 	int x,y;
 	int alg;
@@ -11,22 +11,22 @@ public class Verification
 	//constructeur de verification
 	public Verification(Colonne[] c)
 	{
-		this.col=c;				//on effectue une référence vers les colonnes
+		this.col=c;				//on effectue une rÃ©fÃ©rence vers les colonnes
 		this.trouve=false;		//on n'a pas encore d'alignement
 	}
 	
 	//**************************************************************************
-	// Vérifie si 4 pions du joueur ayant le numéro passé en paramètre
-	// sont alignés
+	// VÃ©rifie si 4 pions du joueur ayant le numÃ©ro passÃ© en paramÃ¨tre
+	// sont alignÃ©s
 	public boolean verifie(int joueur)
 	{
 		int posx,posy;	//position courante dans les cases
-		boolean possible;	//vrai si C possible qu'il y ait un alignement à cette position
+		boolean possible;	//vrai si C possible qu'il y ait un alignement Ã  cette position
 		int alg=0;			//valeur de l'alignement
 		int savex=0,savey=0;
 		int nbr=0;
 		
-		//test pour voir si 4 pions sont alignés horizontalement (6)
+		//test pour voir si 4 pions sont alignÃ©s horizontalement (6)
 		
 		//pour chaque ligne du puissance 4
 		for (y=0;y<7 && !this.trouve;y++)
@@ -36,14 +36,14 @@ public class Verification
 			{
 				possible=true;
 				nbr=0;
-				//pour chaque case correspondant à l'alignement
+				//pour chaque case correspondant Ã  l'alignement
 				for (posx=x;possible && posx<x+4;posx++)
 				{
 					//l'alignement est possible si la valeur de la case
-					//est la même que le numéro du joueur
+					//est la mÃªme que le numÃ©ro du joueur
 					
-					//on effectue un try/carch, ainsi on n'a pas à se soucier des dépassement
-					//de capacité des tableaux
+					//on effectue un try/carch, ainsi on n'a pas Ã  se soucier des dÃ©passement
+					//de capacitÃ© des tableaux
 					try
 					{
 						possible=(col[posx].element(y)==joueur);
@@ -56,21 +56,21 @@ public class Verification
 					}
 				}	
 				
-				//si on a trouvé 4 pions alignés
+				//si on a trouvÃ© 4 pions alignÃ©s
 				if (possible && nbr==4)
 				{
-					//alors on a trouvé un alignement
+					//alors on a trouvÃ© un alignement
 					this.trouve=true;
 					//on sauvegarde sa direction
 					alg=6;
-					//ainsi que ses coordonnées de départ
+					//ainsi que ses coordonnÃ©es de dÃ©part
 					savex=x;
 					savey=y;
 				}
 			}	
 		}
 		
-		//test pour voir si 4 pions sont alignés verticalement (8)
+		//test pour voir si 4 pions sont alignÃ©s verticalement (8)
 		for (x=0;x<7 && !this.trouve;x++)
 		{
 			for (y=0;y<7 && !this.trouve;y++)
@@ -100,7 +100,7 @@ public class Verification
 			}
 		}
 		
-		//test pour voir si 4 pions sont alignés en diagonale (9)	
+		//test pour voir si 4 pions sont alignÃ©s en diagonale (9)
 		for (x=0;x<7 && !this.trouve;x++)
 		{
 			for (y=0;y<7 && !this.trouve;y++)
@@ -132,7 +132,7 @@ public class Verification
 			}
 		}
 		
-		//test pour voir si 4 pions sont alignés en diagonale (3)	
+		//test pour voir si 4 pions sont alignÃ©s en diagonale (3)
 		for (x=0;x<7 && !this.trouve;x++)
 		{
 			for (y=6;y>=0 && !this.trouve;y--)
@@ -170,7 +170,7 @@ public class Verification
 	}
 	
 	//**************************************************************************
-	//réinitialisation de la vérification
+	//rÃ©initialisation de la vÃ©rification
 	public void reinit()
 	{
 		this.trouve=false;

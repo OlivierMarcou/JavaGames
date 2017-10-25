@@ -8,10 +8,10 @@ import java.awt.*;
 
 public class Joueur extends JFrame
 {
-	String j1,j2;			//Chaine de caractère ou seront stockés les noms des jouers
-	JTextField jtf_j1;		//JTextField ou seront entrés les noms des joueurs
+	String j1,j2;			//Chaine de caractÃ¨re ou seront stockÃ©s les noms des jouers
+	JTextField jtf_j1;		//JTextField ou seront entrÃ©s les noms des joueurs
 	JTextField jtf_j2;
-	Joueur j;				//référence vers soi-même necessaire pour l'appel de puissance4IHM
+	Joueur j;				//rÃ©fÃ©rence vers soi-meme necessaire pour l'appel de puissance4IHM
 	
 	//Constructuer
 	public Joueur()
@@ -19,7 +19,7 @@ public class Joueur extends JFrame
 		//titre
 		super("Joueurs");
 		
-		//référence vers soi
+		//rÃ©fÃ©rence vers soi
 		j=this;
 		
 		//initialisation des JTextField
@@ -34,40 +34,40 @@ public class Joueur extends JFrame
 		ActionListener al_ok=new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
-				//on récupère les noms des deux joueurs
+				//on rÃ©cupÃ©re les noms des deux joueurs
 				j1=jtf_j1.getText();
 				j2=jtf_j2.getText();
 				
-				//on cache la fenêtre courante
+				//on cache la fenÃ©tre courante
 				setVisible(false);
 				
-				//Création de la JFrame du puissance 4
+				//CrÃ©ation de la JFrame du puissance 4
 				JFrame jf=new Puissance4IHM("Puissance 4",j);
 				
 				//calcul de la dimension de la JFrame
 				jf.pack();
 				//on rend visible la JFrame
 				jf.setVisible(true);
-				//on lui affecte l'opération de fermeture par défaut lorsqu'on
+				//on lui affecte l'opÃ©ration de fermeture par dÃ©faut lorsqu'on
 				//clique sur la croix
 				jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				
 				}
 			};
 		
-		//création du bouton
+		//crÃ©ation du bouton
 		JButton jb_ok=new JButton("OK");
 		
-		//ajout de l'écouteur
+		//ajout de l'Ã©couteur
 		jb_ok.addActionListener(al_ok);
 		
-		//Création des JPanel
+		//CrÃ©ation des JPanel
 		JPanel jp1=new JPanel();
 		JPanel jp2=new JPanel();
 		JPanel jpb=new JPanel(); 
 		
 		
-		//rajout des différents éléments dans les JPanel
+		//rajout des diffÃ©rents Ã©lÃ©ments dans les JPanel
 		jp1.add(jl_j1);
 		jp1.add(jtf_j1);
 		jp2.add(jl_j2);

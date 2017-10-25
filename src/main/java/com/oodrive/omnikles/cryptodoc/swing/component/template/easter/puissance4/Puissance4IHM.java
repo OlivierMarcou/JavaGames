@@ -9,8 +9,8 @@ import java.awt.*;
 public class Puissance4IHM extends JFrame
 {
 	JPanel tout;		//JPanel contenant toutes les colonnes du puissance 4
-	Colonne[] col;		//tableau de 'colonne' contenant les références vers chaque objet 'colonne'
-	int joueurCur;		//numéro du joueur courant (1 ou 2)
+	Colonne[] col;		//tableau de 'colonne' contenant les rÃ©fÃ©rences vers chaque objet 'colonne'
+	int joueurCur;		//numÃ©ro du joueur courant (1 ou 2)
 	Verification v;
 	Joueur j;
 	JLabel jl;
@@ -20,7 +20,7 @@ public class Puissance4IHM extends JFrame
 	//constructeur de l'IHM principale
 	public Puissance4IHM(String titre, Joueur jo)
 	{
-		//affectation du titre à la Frame
+		//affectation du titre Ã  la Frame
 		super(titre);
 	
 		this.j=jo;
@@ -28,7 +28,7 @@ public class Puissance4IHM extends JFrame
 		//Le joueur courant est le joueur 1
 		this.joueurCur=1;
 		
-		//instanciation du JPanel général 
+		//instanciation du JPanel gÃ©nÃ©ral
 		this.tout=new JPanel(new GridLayout(1,7));
 
 		//instanciation du tableau de 'colonne'
@@ -37,13 +37,13 @@ public class Puissance4IHM extends JFrame
 		//pour toutes les colonnes du puissance 4
 		for (int i=0;i<7;i++)
 		{
-			//on crée un nouvel objet colonne
+			//on crÃ©e un nouvel objet colonne
 			this.col[i]=new Colonne(this);
-			//et on récupère le JPanel correspondant qu'on ajoute dans 'tout'
+			//et on rÃ©cupÃ©re le JPanel correspondant qu'on ajoute dans 'tout'
 			(this.tout).add((this.col[i]).renvoyer());
 		}
 		
-		//Création d'une instance de vérification
+		//CrÃ©ation d'une instance de vÃ©rification
 		v=new Verification(this.col);
 
 		jl=new JLabel(defaut + this.j.j1);
@@ -58,13 +58,13 @@ public class Puissance4IHM extends JFrame
 
 
 	//**************************************************************************
-	// Réinitialisation du programme
+	// RÃ©initialisation du programme
 	public void reinit()
 	{
-		//on réinititalise la vérification
+		//on rÃ©inititalise la vÃ©rification
 		v.reinit();
 		
-		//on réinitialise les colonnes
+		//on rÃ©initialise les colonnes
 		for (int i=0;i<7;i++)
 		{
 			this.col[i].reinit();

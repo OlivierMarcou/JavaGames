@@ -2,18 +2,18 @@ package com.oodrive.omnikles.cryptodoc.swing.component.template.easter.puissance
  *																			   *
  * 							Puissance 4 v1.0								   *
  *																			   *
- *					réalisé par Cyril Kern "DeathAngel"						   *
+ *					rÃ©alisÃ© par Cyril Kern "DeathAngel"						   *
  *							cyril.kern@free.fr								   *
  *																			   *
  *******************************************************************************/
  
  
- /* Régles du jeu :
+ /* RÃ¨gles du jeu :
   *
   *	Le puissance 4 est un jeu pour deux joueurs
   * Le but est d'aligner en premier 4 pions de sa couleur (bleu ou rouge)
   *
-  * Chaque joueur joue à tour de rôle, la partie s'arrête dès que 4 pions sont alignés
+  * Chaque joueur joue Ã  tour de role, la partie s'arrÃ¨te dÃ©s que 4 pions sont alignÃ©s
   *
   */							
 
