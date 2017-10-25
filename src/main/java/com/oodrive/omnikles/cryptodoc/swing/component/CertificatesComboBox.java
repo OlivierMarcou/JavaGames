@@ -2,6 +2,7 @@ package com.oodrive.omnikles.cryptodoc.swing.component;
 
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.service.AESService;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -18,13 +19,13 @@ public class CertificatesComboBox extends JComboBox<KeyPair> implements ActionLi
         List<KeyPair> certificats = aes.getInstalledCertificates();
         for(KeyPair certificat:certificats){
             addItem(certificat);
-            System.out.println(certificat.getPkB64());
+            Logs.sp(certificat.getPkB64());
         }addActionListener(this);
     }
 
     protected void initSelected(ActionEvent evt) {
         if (getSelectedItem() != null) {
-            System.out.println("DN : " + getSelectedItem().toString());
+            Logs.sp("DN : " + getSelectedItem().toString());
         }
     }
 

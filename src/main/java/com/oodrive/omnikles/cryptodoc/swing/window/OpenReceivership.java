@@ -13,6 +13,7 @@ import com.oodrive.omnikles.cryptodoc.swing.component.template.GenaralPanelTempl
 import com.oodrive.omnikles.cryptodoc.swing.component.template.GeneralTextTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.SummaryTextTemplate;
 import com.oodrive.omnikles.cryptodoc.thread.DecryptFilesRunnable;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -91,6 +92,10 @@ public class OpenReceivership extends JFrame {
     }
 
     public OpenReceivership(){
+        if(Configuration.isOkMarches) {
+            lblCertificates.setVisible(false);
+            listCertificate.setVisible(false);
+        }
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
         setMaximumSize(new Dimension(800, 600));
@@ -107,85 +112,48 @@ public class OpenReceivership extends JFrame {
 
         activateScreen();
 
+        int line = 0;
+
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
-        c.gridy=0;
+        c.gridy=line;
         c.gridwidth=1;
         c.insets = new Insets(5, 10, 5, 10);
         centerPanel.add(page1Paragraphe1, c);
-
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
-        c.gridy=0;
+        c.gridy=line;
         c.gridwidth=2;
         centerPanel.add(page2Paragraphe1, c);
-
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
-        c.gridy=1;
-        c.gridwidth=1;
-        centerPanel.add(selectBtn, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=1;
-        c.gridwidth=2;
-        centerPanel.add(selectDepositPanel, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=2;
-        c.gridwidth=2;
-        centerPanel.add(infos, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=3;
-        c.gridwidth=1;
-        centerPanel.add(lblCertificates, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=1;
-        c.gridy=3;
-        c.gridwidth=1;
-        centerPanel.add(listCertificate, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=4;
-        c.gridwidth=1;
-        centerPanel.add(backBtn, c);
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=1;
-        c.gridy=4;
-        c.gridwidth=1;
-        centerPanel.add(openBtn, c);
-
-
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx=0;
-        c.gridy=0;
+        c.gridy=line;
         c.gridwidth=2;
         centerPanel.add(page3Paragraphe1, c);
 
+        line++;
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(selectBtn, c);
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=line;
+        c.gridwidth=2;
+        centerPanel.add(selectDepositPanel, c);
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
         c.gridy=1;
         c.gridwidth=1;
         centerPanel.add(loadingIcon, c);
-
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=1;
@@ -193,13 +161,50 @@ public class OpenReceivership extends JFrame {
         c.gridwidth=1;
         centerPanel.add(page3Paragraphe2, c);
 
+        line++;
 
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
-        c.gridy=2;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(lblCertificates, c);
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=1;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(listCertificate, c);
+
+        line++;
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=line;
+        c.gridwidth=2;
+        centerPanel.add(infos, c);
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=line;
         c.gridwidth=2;
         centerPanel.add(exitBtn, c);
+
+        line++;
+
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=0;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(backBtn, c);
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx=1;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(openBtn, c);
 
         openBtn.addActionListener(new ActionListener() {
             @Override
@@ -210,11 +215,11 @@ public class OpenReceivership extends JFrame {
                 java.util.List<DepositFilePanel> selectDeposit = new ArrayList<>();
                 for(Component component: selectDepositPanel.getScrollablePanel().getComponents()){
                     if(component instanceof DepositFilePanel && ((DepositFilePanel) component).getCheck().isSelected()) {
-                        System.out.println("Selected file name :  " + ((DepositFilePanel) component).getName());
+                        Logs.sp("Selected file name :  " + ((DepositFilePanel) component).getName());
                         selectDeposit.add((DepositFilePanel)component);
                     }
                 }
-                System.out.println("Selected files number :  " + selectDeposit.size());
+                Logs.sp("Selected files number :  " + selectDeposit.size());
                 DecryptFilesRunnable decryptFilesRunnable = new DecryptFilesRunnable(selectDeposit,
                                                             (KeyPair)getListCertificate().getSelectedItem(), OpenReceivership.this );
                 Thread decrypt = new Thread(decryptFilesRunnable);
@@ -301,8 +306,10 @@ public class OpenReceivership extends JFrame {
         infos.setVisible(two);
         openBtn.setVisible(two);
         backBtn.setVisible((two || three));
-        lblCertificates.setVisible(two);
-        listCertificate.setVisible(two);
+        if(!Configuration.isOkMarches) {
+            lblCertificates.setVisible(two);
+            listCertificate.setVisible(two);
+        }
 
         loadingIcon.setVisible(three);
         page3Paragraphe1.setVisible(three);

@@ -1,10 +1,12 @@
 package com.oodrive.omnikles.cryptodoc;
 
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.swing.component.template.easter.MenuEasterEggs;
 import com.oodrive.omnikles.cryptodoc.swing.window.IntroWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.LogWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
 import com.oodrive.omnikles.cryptodoc.swing.window.TestWindow;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -31,7 +33,7 @@ public class CryptoDoc {
         }
         initContext();
 
-        System.out.println("WebStart CryptoDoc - version : " + contextProperties.getProperty("build.version"));
+        Logs.sp("WebStart CryptoDoc - version : " + contextProperties.getProperty("build.version"));
         if(Configuration.parameters.get("language") == null || Configuration.parameters.get("language").isEmpty()) {
             Configuration.parameters.put("language", "fr");
         }
@@ -42,19 +44,31 @@ public class CryptoDoc {
             IOException, ClassNotFoundException, IllegalAccessException,
             InstantiationException, UnsupportedLookAndFeelException {
         CryptoDoc cryptoDoc = new CryptoDoc(args);
-        System.out.println(Configuration.activFolder);
+        Logs.sp(Configuration.activFolder);
 
-        if(Configuration.parameters.get("action").equals("depot")) {
+        if(Configuration.parameters.get("action").equals("depot") || Configuration.parameters.get("action").equals("depotMarches")) {
+            if(Configuration.parameters.get("action").equals("depotMarches"))
+                Configuration.isOkMarches=true;
             new IntroWindow();
         }
 
-        if(Configuration.parameters.get("action").equals("decrypt")){
+        if(Configuration.parameters.get("action").equals("decrypt") || Configuration.parameters.get("action").equals("decryptMarches")){
             OpenReceivership openReceivership = new OpenReceivership();
+            if(Configuration.parameters.get("action").equals("decryptMarches")) {
+                Configuration.isOkMarches=true;
+            }
             openReceivership.setVisible(true);
         }
+
         if(Configuration.parameters.get("action").equals("test")){
             TestWindow test = new TestWindow();
             changeLookAndFeel(2, test);
+        }
+
+        if(Configuration.parameters.get("action").equals("easter")){
+            new TestWindow();
+            new MenuEasterEggs();
+
         }
 
         if(Configuration.parameters.get("action").equals("class")){
@@ -69,7 +83,7 @@ public class CryptoDoc {
             JFrame test = (JFrame) Class.forName("com.oodrive.omnikles.cryptodoc.swing.window."+Configuration.parameters.get("class")).newInstance();
             test.setVisible(true);
         }
-
+        Logs.sp("End Init");
     }
 
     public static void changeLookAndFeel(int index, JFrame frame){
@@ -96,8 +110,6 @@ public class CryptoDoc {
             Configuration.version = contextProperties.getProperty("actual.version");
         }
     }
-
-
 
     public void initTextes(String language) throws IOException{
         URL url = this.getClass().getResource("/texts_" + language + ".properties");

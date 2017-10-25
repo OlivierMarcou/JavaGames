@@ -5,6 +5,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.swing.component.template.ButtonTemplate;
 import com.oodrive.omnikles.cryptodoc.swing.window.SelectFilesDepositWindow;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.swing.*;
 import java.awt.*;
@@ -242,7 +243,7 @@ public class SelectFilesPanel extends JPanel {
     }
 
     private String getFileType(String fileName) {
-        System.out.println(fileName);
+        Logs.sp(fileName);
         String[] filename_array = fileName.split("\\.");
         String extension = filename_array[filename_array.length - 1];
         switch (extension.toLowerCase()) {

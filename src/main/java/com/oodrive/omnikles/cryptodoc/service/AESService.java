@@ -6,6 +6,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.utils.CertificatesUtils;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,18 +19,15 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Permission;
+import java.security.PermissionCollection;
 import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.security.spec.KeySpec;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by olivier on 14/11/16.
@@ -80,7 +78,7 @@ public class AESService {
     public File cryptedByCertificates(File depositZipFile, List<String> certificats) throws IOException, InvalidKeySpecException {
         if(depositZipFile.exists()) {
             List<CertificateInformations> certs = CertificatesUtils.getCertificatesX509(certificats);
-            System.out.println("utils");
+            Logs.sp("utils");
 
             List<File> contentZip = new ArrayList<>();
 
@@ -125,10 +123,6 @@ public class AESService {
         return CertificatesUtils.getKeyPairWithAlias(alias, password);
     }
 
-    public List<KeyPair> getKeyPairList( char[] password, File p12Filename) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
-        return CertificatesUtils.getKeyPairList(p12Filename, password);
-    }
-
     private void generateAES256Key(char[] password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         KeySpec spec = new PBEKeySpec(password, salt, 65536, 128);
@@ -164,7 +158,7 @@ public class AESService {
                     progressBar.setActualIcon(percent + (maxPercent*jobNumber));
                     percentMem = percent;
                     progressBar.setText(CryptoDoc.textProperties.getProperty("depot.page4.sending") +
-                              (percent + (maxPercent*jobNumber)) + "%");
+                            (percent + (maxPercent*jobNumber)) + "%");
                 }
             }
         }
@@ -175,36 +169,90 @@ public class AESService {
         return cryptedFile;
     }
 
-    public byte[] decodeSecretKeyByCertificate(byte[] data, KeyPair keyPair) throws CertificateEncodingException {
+    public byte[] decodeJSONSecretKeyByCertificate(byte[] data, KeyPair keyPair) throws CertificateEncodingException {
         byte[] encryptedSecretKey = null;
         try {
             String dataString = new String(data);
             JSONObject arr = new JSONObject(dataString);
-            System.out.println("Key File data : "+ dataString);
+            Logs.sp("Key File data : "+ dataString);
             JSONObject certificatsSecretKeys = arr.getJSONObject("data");
 
-            System.out.println("JSON certificatsSecretKeys : "+certificatsSecretKeys);
+            Logs.sp("JSON certificatsSecretKeys : "+certificatsSecretKeys);
 
             for (Iterator it = certificatsSecretKeys.keys(); it.hasNext(); ) {
                 CertificateInformations certificateInformations = new CertificateInformations((String)it.next());
                 if(certificateInformations != null && keyPair.getCertificate() != null
                         && certificateInformations.getX509Certificate().hashCode() == keyPair.getCertificate().hashCode()){
-                    System.out.println("IF keyPair == " + keyPair.toString());
+                    Logs.sp("IF keyPair == " + keyPair.toString());
                     String encryptedSecretKeyB64 = (String)certificatsSecretKeys.get(certificateInformations.getB64Certificate());
-                    System.out.println("Secret : "+encryptedSecretKeyB64);
+                    Logs.sp("Secret : "+encryptedSecretKeyB64);
                     BASE64Decoder decoder = new BASE64Decoder();
                     encryptedSecretKey = decoder.decodeBuffer(encryptedSecretKeyB64);
-                    System.out.println("encryptedSecretKey length  == " + encryptedSecretKey.length);
+                    Logs.sp("encryptedSecretKey length  == " + encryptedSecretKey.length);
                 }
             }
         } catch (JSONException | NullPointerException | IOException e) {
             e.printStackTrace();
         }
+        return decryptSecretKey(keyPair, encryptedSecretKey);
+    }
+
+    private static boolean isRestrictedCryptography() {
+        return "Java(TM) SE Runtime Environment".equals(System.getProperty("java.runtime.name"));
+    }
+
+    private static void removeCryptographyRestrictions() {
+        if (!isRestrictedCryptography()) {
+            Logs.sp("Cryptography restrictions removal not needed");
+            return;
+        }
         try {
-            System.out.println("CertificatesUtils.provider " + CertificatesUtils.provider.getName() + " " + CertificatesUtils.provider.getInfo());
-            Cipher dcipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME, CertificatesUtils.provider);
+            final Class<?> jceSecurity = Class.forName("javax.crypto.JceSecurity");
+            final Class<?> cryptoPermissions = Class.forName("javax.crypto.CryptoPermissions");
+            final Class<?> cryptoAllPermission = Class.forName("javax.crypto.CryptoAllPermission");
+
+            final Field isRestrictedField = jceSecurity.getDeclaredField("isRestricted");
+            isRestrictedField.setAccessible(true);
+            isRestrictedField.set(null, false);
+
+            final Field defaultPolicyField = jceSecurity.getDeclaredField("defaultPolicy");
+            defaultPolicyField.setAccessible(true);
+            final PermissionCollection defaultPolicy = (PermissionCollection) defaultPolicyField.get(null);
+
+            final Field perms = cryptoPermissions.getDeclaredField("perms");
+            perms.setAccessible(true);
+            ((Map<?, ?>) perms.get(defaultPolicy)).clear();
+
+            final Field instance = cryptoAllPermission.getDeclaredField("INSTANCE");
+            instance.setAccessible(true);
+            defaultPolicy.add((Permission) instance.get(null));
+
+            Logs.sp("Successfully removed cryptography restrictions");
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public byte[] decryptSecretKey(KeyPair keyPair, byte[] encryptedSecretKey) {
+        try {
+            Logs.sp(Cipher.getMaxAllowedKeyLength("AES"));
+            Logs.sp(Cipher.getMaxAllowedKeyLength("RSA"));
+            Logs.sp(Cipher.getMaxAllowedKeyLength("DESede"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        try {
+            removeCryptographyRestrictions();
+            Cipher dcipher = null;
+            String cipherAlorithme = Configuration.CIPHER_ALGORITHME;
+            if(CertificatesUtils.provider != null) {
+                Logs.sp("CertificatesUtils.provider " + CertificatesUtils.provider.getName() + " " + CertificatesUtils.provider.getInfo());
+                dcipher = Cipher.getInstance(cipherAlorithme, CertificatesUtils.provider);
+            }else{
+                dcipher = Cipher.getInstance(cipherAlorithme);
+            }
             dcipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
-            System.out.println( "PK " + keyPair.getPrivateKey());
+            Logs.sp( "PK " + keyPair.getPrivateKey());
             byte[] secretKey = dcipher.doFinal(encryptedSecretKey);
             return secretKey;
         } catch (IllegalBlockSizeException e) {
@@ -223,40 +271,23 @@ public class AESService {
         return null;
     }
 
-    public JSONObject getAllCryptedKey(File fileEncryptKey){
-        List<String> encryptedKeys = new ArrayList<>();
-
-        String content = null;
-        try {
-            content = FileUtils.readFileToString(fileEncryptKey, Configuration.JSON_ENCODING);
-            try {
-                return new JSONObject(content);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public void decryptFileWithSecretKey(File encryptFile, File decryptedFile, byte[] secret)
             throws Exception {
-        System.out.println("Methode decryptFileWithSecretKey...");
-        System.out.println("EncryptFile existe ?" + encryptFile.exists());
+        Logs.sp("Methode decryptFileWithSecretKey...");
+        Logs.sp("EncryptFile existe ?" + encryptFile.exists());
         try {
             SecretKey secretKey = new SecretKeySpec(secret, Configuration.CRYPTED_KEY_ALGORITHME);
-            System.out.println("SecretKey : " + secretKey.getEncoded());
-            System.out.println("CRYPTED_KEY_ALGORITHME : " + Configuration.CRYPTED_KEY_ALGORITHME);
+            Logs.sp("SecretKey : " + secretKey.getEncoded());
+            Logs.sp("CRYPTED_KEY_ALGORITHME : " + Configuration.CRYPTED_KEY_ALGORITHME);
             Cipher cipher = Cipher.getInstance(Configuration.CRYPTED_KEY_ALGORITHME);
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            System.out.println("Cipher init ok.");
+            Logs.sp("Cipher init ok.");
             FileInputStream inputStream = new FileInputStream(encryptFile);
-            System.out.println("Encrypted file length" + encryptFile.length());
+            Logs.sp("Encrypted file length" + encryptFile.length());
 
             byte[] buffer = new byte[8192];
             int count;
-            System.out.println("Send inputBytes to cipher ...");
+            Logs.sp("Send inputBytes to cipher ...");
             CipherInputStream cis = new CipherInputStream(inputStream, cipher);
             FileOutputStream fos = new FileOutputStream(decryptedFile);
             while ((count = cis.read(buffer)) != -1) {
@@ -266,7 +297,7 @@ public class AESService {
             inputStream.close();
             cis.close();
 
-            System.out.println("decryptedFile : " + decryptedFile);
+            Logs.sp("decryptedFile : " + decryptedFile);
 
         } catch (NoSuchPaddingException | NoSuchAlgorithmException
                 | InvalidKeyException
@@ -309,8 +340,8 @@ public class AESService {
             field.set(null, Boolean.FALSE);
         } catch (Exception ex) {
         }
-            // La variable cert correspond au certificat du destinataire
-            // La clé publique de ce certificat servira à chiffrer la clé symétrique
+        // La variable cert correspond au certificat du destinataire
+        // La clé publique de ce certificat servira à chiffrer la clé symétrique
         Cipher cipher = null;
         try {
             cipher = Cipher.getInstance(Configuration.CIPHER_ALGORITHME);
@@ -318,7 +349,7 @@ public class AESService {
             // Encrypt the message
             return cipher.doFinal(data);
         } catch (InvalidKeyException e) {
-            System.out.println("Le certificat : "+x509Certificate.getSubjectDN() +" \n n'est pas conçu pour crypter un fichier");
+            Logs.sp("Le certificat : "+x509Certificate.getSubjectDN() +" \n n'est pas conçu pour crypter un fichier");
         }  catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {

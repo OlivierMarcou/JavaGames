@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.cryptodoc.swing.component.template;
 
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.swing.component.template.easter.MenuEasterEggs;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +44,9 @@ public class ButtonTemplate extends JButton{
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                if(e.getClickCount() == 3){
+                    new MenuEasterEggs();
+                }
             }
 
             @Override
