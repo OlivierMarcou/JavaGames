@@ -16,8 +16,12 @@ public class DepositStatus {
     private String supplierOrganism;
     private long tenderId;
 
+    private long lotId;
+
     public DepositStatus(DepositStatusMarches depositMarches){
         this.id = depositMarches.getId();
+        this.supplierId = depositMarches.getIdFournisseur();
+        this.lotId = depositMarches.getIdLot();
         this.exchangeDocumentState = ExchangeDocumentState.getExchangeDocumentState(depositMarches.getStatus());
         this.exchangeState = ExchangeState.IN_TIME;
         this.filename = depositMarches.getFileName();
@@ -166,4 +170,13 @@ public class DepositStatus {
     public void setSupplierOrganism(String supplierOrganism) {
         this.supplierOrganism = supplierOrganism;
     }
+
+    public long getLotId() {
+        return lotId;
+    }
+
+    public void setLotId(long lotId) {
+        this.lotId = lotId;
+    }
+
 }

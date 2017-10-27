@@ -134,7 +134,12 @@ public class SslConnexionService{
         Logs.sp("updateExchangeDocumentState method");
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("state", ExchangeDocumentState.OPEN.name()));
-        HttpEntity entity = getResponseHttpPost(urlUpdateStatus+documentId,params).getEntity();
+        getResponseHttpPost(urlUpdateStatus+documentId,params).getEntity();
+    }
+
+    public void updateExchangeDocumentState(String urlUpdateStatus, List<NameValuePair> params) throws IOException  {
+        Logs.sp("updateExchangeDocumentState method");
+        getResponseHttpPost(urlUpdateStatus,params).getEntity();
     }
 
     /* -------------------------------- PRIVATE ------------------------------*/
