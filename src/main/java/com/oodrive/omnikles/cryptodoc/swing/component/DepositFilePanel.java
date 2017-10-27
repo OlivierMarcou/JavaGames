@@ -50,6 +50,14 @@ public class DepositFilePanel extends JPanel{
         this.check = check;
     }
 
+    public DepositStatus getDepositStatus() {
+        return depositStatus;
+    }
+
+    public void setDepositStatus(DepositStatus depositStatus) {
+        this.depositStatus = depositStatus;
+    }
+
     private MouseListener checkedListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {

@@ -24,7 +24,7 @@ public class DecryptOkMarchesService {
 
     private DecryptOkMarchesService(){}
 
-    private String makeCr(String[] mydet) {
+    public String makeCr(String[] mydet) {
         String mycr = "";
         String mycr_ent = "<cr_entreprise>";
         mycr_ent = mycr_ent + "<entreprise>" + mydet[0] + "</entreprise>";
@@ -304,7 +304,6 @@ public class DecryptOkMarchesService {
             Logs.sp("Erreur IO:" + ex);
             return null;
         }
-        makeCr(details);//a retourner lors de l'update du status du pli ouvert
         return details;
     }
 

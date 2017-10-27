@@ -2,16 +2,21 @@ package com.oodrive.omnikles.cryptodoc.thread;
 
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.service.AESService;
 import com.oodrive.omnikles.cryptodoc.service.DecryptOkMarchesService;
+import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.swing.component.DepositFilePanel;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +25,7 @@ import java.util.List;
 public class DecryptFilesRunnable implements Runnable{
 
     private AESService aes = AESService.getInstance();
+    private SslConnexionService ssl = SslConnexionService.getInstance();
 
     private String errorOpener = null;
     private List< DepositFilePanel > selectDeposit;
@@ -41,7 +47,22 @@ public class DecryptFilesRunnable implements Runnable{
                 Logs.sp("Selected zip :  " + selectDeposit.get(i).getFile().getName());
                 if(Configuration.isOkMarches){
                     DecryptOkMarchesService dos = DecryptOkMarchesService.getInstance();
-                    Logs.spDump(dos.openEnveloppe(selectDeposit.get(i).getFile()));
+                    Logs.sp("Debut decrypt plis ...");
+
+                    String compteRenduFile = dos.makeCr(dos.openEnveloppe(selectDeposit.get(i).getFile()));//a retourner lors de l'update du status du pli ouvert
+                    Logs.sp("Compte rendu ... " + compteRenduFile);
+                    Logs.sp("Fin decrypt plis ... ");
+                        DepositStatus depositStatus = selectDeposit.get(i).getDepositStatus();
+                    try {
+                        List<NameValuePair> params = new ArrayList<>();
+                        params.add(new BasicNameValuePair("idcand", "" + depositStatus.getId()));
+                        params.add(new BasicNameValuePair("crfile", compteRenduFile));
+                        ssl.updateExchangeDocumentState(Configuration.parameters.get("urlUpdateStatus"), params);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
                 }else{
                     KeyPair kp = null;
                     try {

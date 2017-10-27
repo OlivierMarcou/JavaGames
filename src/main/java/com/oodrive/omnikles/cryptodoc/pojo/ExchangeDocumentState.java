@@ -5,7 +5,7 @@ package com.oodrive.omnikles.cryptodoc.pojo;
  */
 public enum ExchangeDocumentState {
 
-    CLOSE(0), OPEN(1);
+    CLOSE(0), OPEN(1), OPEN_MARCHES(2);
 
     private int value;
 
