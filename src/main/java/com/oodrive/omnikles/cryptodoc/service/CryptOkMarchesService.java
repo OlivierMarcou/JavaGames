@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * TODO : OLD CODE SOURCE OK-MARCHES need refactoring
+ */
 public class CryptOkMarchesService {
 
     AESService aes = AESService.getInstance();
@@ -62,7 +65,7 @@ public class CryptOkMarchesService {
                 sb.append("\n</ds:EncryptedExchangeKey>\n");
             }
         }
-        Logs.sp("la taille du fichier de clef est:" + cryptKey.length);
+        Logs.sp("la taille du fichier de clef est:"+cryptKey.length);
         //String outputKeyFileName = this.NomEnveloppe+".key";
         String outputKeyFile = pathsymkey;// pathEnveloppe + File.separator + enveloppe +".key.p7m";
         try {
@@ -72,12 +75,11 @@ public class CryptOkMarchesService {
             outkCF.write(towrite);
             outkCF.close();
             return raw;
-        } catch (Exception exc) {
-            Logs.sp("Exception lors de l'ecriture du fichier de cle :" + exc);
+        } catch (Exception exc){
+            Logs.sp("Exception lors de l'ecriture du fichier de cle :"+exc);
         }
         return null;
     }
-
 
     public File cryptFileWithSymKey(byte[] rawkey, File zipToCrypt, String keyFile){
         byte[] buf = new byte[1024];
