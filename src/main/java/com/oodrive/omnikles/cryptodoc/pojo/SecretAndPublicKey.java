@@ -3,8 +3,13 @@ package com.oodrive.omnikles.cryptodoc.pojo;
 import com.oodrive.omnikles.cryptodoc.service.AESService;
 import com.oodrive.omnikles.cryptodoc.utils.Base64;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
+import org.apache.kerby.asn1.Asn1;
+import org.apache.kerby.asn1.parse.Asn1Container;
+import org.apache.kerby.asn1.parse.Asn1Item;
+import org.apache.kerby.asn1.parse.Asn1ParseResult;
 
 import java.util.List;
+import java.util.ListIterator;
 
 public class SecretAndPublicKey {
 
@@ -56,7 +61,7 @@ public class SecretAndPublicKey {
                             Logs.sp("Valeur de la cle symetrique cryptee = " + encryptedKey + "\n\n");
                             byte[] bytecrypted = Base64.decode(encryptedKey.getBytes());
                             Logs.sp(" ------------------- Crypted byte ? => " + bytecrypted.length);
-
+                            bytecrypted = getAsn1Key((Asn1Container) Asn1.parse(bytecrypted));
                             AESService aes = AESService.getInstance();
                             bytedecrypted = aes.decryptSecretKey(kp, bytecrypted);
                             Logs.sp("cle symetrique decryptee - taille=" + bytedecrypted.length);
@@ -74,5 +79,28 @@ public class SecretAndPublicKey {
                 Logs.sp("Erreur : certificat pour dechiffrer non trouve dans l'enveloppe.");
             }
         }
+    }
+
+
+
+    private static byte[] getAsn1Key(Asn1Container container) {
+        List<Asn1ParseResult> parseResults = container.getChildren();
+        byte[] key = null;
+        for (ListIterator<Asn1ParseResult> it = parseResults.listIterator(); it.hasNext(); ) {
+            Object asn1Result = it.next();
+            if(asn1Result.getClass().equals(Asn1Item.class)){
+                Asn1Item itemResult = (Asn1Item)asn1Result;
+                if(itemResult.getHeader().getLength() == 128){
+                    return itemResult.readBodyBytes();
+                }
+            }
+            if(asn1Result.getClass().equals(Asn1Container.class)){
+                Asn1Container containerResult = (Asn1Container)asn1Result;
+                key = getAsn1Key(containerResult);
+                if(key != null)
+                    return key;
+            }
+        }
+        return key;
     }
 }
