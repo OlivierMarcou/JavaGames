@@ -62,7 +62,7 @@ public class CryptoDoc {
 
         if(Configuration.parameters.get("action").equals("test")){
             TestWindow test = new TestWindow();
-            changeLookAndFeel(2, test);
+            changeLookAndFeel(0, test);
         }
 
         if(Configuration.parameters.get("action").equals("easter")){
