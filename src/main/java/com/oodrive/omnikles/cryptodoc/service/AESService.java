@@ -18,10 +18,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Permission;
-import java.security.PermissionCollection;
+import java.security.*;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
@@ -194,7 +191,7 @@ public class AESService {
         } catch (JSONException | NullPointerException | IOException e) {
             e.printStackTrace();
         }
-        return decryptSecretKey(keyPair, encryptedSecretKey);
+        return decryptSecretKey(keyPair, encryptedSecretKey, Configuration.CIPHER_ALGORITHME);
     }
 
     private static boolean isRestrictedCryptography() {
@@ -233,7 +230,7 @@ public class AESService {
         }
     }
 
-    public byte[] decryptSecretKey(KeyPair keyPair, byte[] encryptedSecretKey) {
+    public byte[] decryptSecretKey(KeyPair keyPair, byte[] encryptedSecretKey, String cipherAlgorithm) {
         try {
             Logs.sp(Cipher.getMaxAllowedKeyLength("AES"));
             Logs.sp(Cipher.getMaxAllowedKeyLength("RSA"));
@@ -242,9 +239,8 @@ public class AESService {
             e.printStackTrace();
         }
         try {
-            removeCryptographyRestrictions();
             Cipher dcipher = null;
-            String cipherAlorithme = Configuration.CIPHER_ALGORITHME;
+            String cipherAlorithme = cipherAlgorithm;
             if(CertificatesUtils.provider != null) {
                 Logs.sp("CertificatesUtils.provider " + CertificatesUtils.provider.getName() + " " + CertificatesUtils.provider.getInfo());
                 dcipher = Cipher.getInstance(cipherAlorithme, CertificatesUtils.provider);
