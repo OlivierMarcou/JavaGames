@@ -124,9 +124,8 @@ public class DecryptOkMarchesService {
             }
             is.close();
             SecretAndPublicKey secretAndPublicKey = new SecretAndPublicKey(new String(bytes));
-            byte[] bytedecrypted = secretAndPublicKey.getSecretKey();
             details[7] = secretAndPublicKey.getPublicCertificate();
-            SecretKeySpec skeySpec = new SecretKeySpec(bytedecrypted, Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
+            SecretKeySpec skeySpec = new SecretKeySpec(secretAndPublicKey.getSecretKey(), Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
 
             File tempFolder = new File( enveloppe.getParent() + File.separator + "TECHNIQUE");
             tempFolder.mkdirs();
@@ -274,7 +273,7 @@ public class DecryptOkMarchesService {
                         details[2] = signatureXML.substring(indexCert, signatureXML.indexOf("</ds:X509Certificate>"));
                         // "\n"
                         Logs.sp("nombre de \\n :" + details[2].indexOf("\n"));
-                        Logs.sp("valeur de la chaene :" + details[2]);
+                        Logs.sp("valeur de la chaine :" + details[2]);
                     }
                 } else {
                     Logs.sp("Erreur balise de signature X509certificate non trouvee");
