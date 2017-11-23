@@ -113,10 +113,10 @@ public class DepositFilesRunnable implements Runnable{
             String hashFile = null;
             if(Configuration.isOkMarches){
                 hashFile = ssl.getHashFileB64(enveloppe);
+                ssl.sendPostEnveloppeEmpreinte(Configuration.parameters.get("urlEmpreinte"), hashFile, false);
             }else{
                 hashFile = ssl.getHashFile(enveloppe);
             }
-            ssl.sendPostEnveloppeEmpreinte(Configuration.parameters.get("urlEmpreinte"), hashFile, false);
             podFile = ssl.sslUploadFileAndDownloadProof(enveloppe, Configuration.parameters.get("urlDepot"), progressBar, hashFile);
         }catch(UnsupportedOperationException e){
             e.printStackTrace();
