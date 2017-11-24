@@ -207,10 +207,11 @@ public class SslConnexionService{
         builderFile.addBinaryBody("file", file,
                 ContentType.APPLICATION_OCTET_STREAM,
                 file.getName());
-
-        ArrayList<NameValuePair> postParameters = getParametersDepotOkMarches();
-        for(NameValuePair parameter:postParameters) {
-            builderFile.addTextBody(parameter.getName(), parameter.getValue(), ContentType.TEXT_PLAIN);
+        if(Configuration.isOkMarches) {
+            ArrayList<NameValuePair> postParameters = getParametersDepotOkMarches();
+            for (NameValuePair parameter : postParameters) {
+                builderFile.addTextBody(parameter.getName(), parameter.getValue(), ContentType.TEXT_PLAIN);
+            }
         }
         builderFile.addTextBody("hash_code", hashFile);
 
