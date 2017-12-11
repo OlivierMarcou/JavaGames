@@ -4,6 +4,7 @@ import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import sun.misc.BASE64Decoder;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 
 /**
@@ -46,7 +47,7 @@ public class Configuration {
             keyValue[0].replaceFirst("-","");
             keyValue[1] = parameter.substring(indexEqual+1);
             if(keyValue[0].equals("titleProcedure") || keyValue[0].equals("organismName"))
-                keyValue[1] = new String(decode.decodeBuffer(keyValue[1]));
+                keyValue[1] = new String(decode.decodeBuffer(keyValue[1]), Charset.forName("UTF-8"));
             Logs.sp(keyValue[0] + " " + keyValue[1]);
             if(keyValue[0].toLowerCase().equals("activfolder")) {
                 activFolder = keyValue[1];
