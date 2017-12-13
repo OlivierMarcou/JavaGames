@@ -120,14 +120,15 @@ public class SslConnexionService{
         Logs.sp("Download File in " + Configuration.activFolder + File.separatorChar + "pod.pdf");
         File podFile = new File(Configuration.activFolder + File.separatorChar + "pod.pdf");
         try {
-            entity.writeTo(new FileOutputStream(podFile));
-            return podFile;
+            FileOutputStream out = new FileOutputStream(podFile);
+            entity.writeTo(out);
+            out.close();
         }catch (FileNotFoundException e1) {
             e1.printStackTrace();
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        return null;
+        return podFile;
     }
 
     public void updateExchangeDocumentState(long documentId, String urlUpdateStatus) throws IOException {
