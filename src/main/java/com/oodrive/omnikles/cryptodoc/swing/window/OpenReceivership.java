@@ -225,7 +225,7 @@ public class OpenReceivership extends JFrame {
                     Thread decrypt = new Thread(decryptFilesRunnable);
                     decrypt.start();
                 }else
-                    OpenReceivership.this.error(CryptoDoc.textProperties.getProperty("message.error.emptyselection"));
+                    OpenReceivership.this.warning(CryptoDoc.textProperties.getProperty("message.error.emptyselection"));
             }
         });
         exitBtn.addActionListener(new ActionListener() {
@@ -242,6 +242,10 @@ public class OpenReceivership extends JFrame {
     private void error(String msg){
         JOptionPane.showMessageDialog(this, msg,
                 CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
+    }
+    private void warning(String msg){
+        JOptionPane.showMessageDialog(this, msg,
+                CryptoDoc.textProperties.getProperty("message.warning.title"), JOptionPane.WARNING_MESSAGE);
     }
 
     private void initListener(){
