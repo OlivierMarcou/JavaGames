@@ -225,7 +225,7 @@ public class OpenReceivership extends JFrame {
                     Thread decrypt = new Thread(decryptFilesRunnable);
                     decrypt.start();
                 }else
-                    OpenReceivership.this.warning(CryptoDoc.textProperties.getProperty("message.error.emptyselection"));
+                    OpenReceivership.this.warning(CryptoDoc.textProperties.getProperty("message.warning.emptyselection"));
             }
         });
         exitBtn.addActionListener(new ActionListener() {
