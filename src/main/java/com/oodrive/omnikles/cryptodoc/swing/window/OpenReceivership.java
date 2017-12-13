@@ -209,9 +209,6 @@ public class OpenReceivership extends JFrame {
         openBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectDepositPanel.getScrollablePanel().getComponents();
-                screenNumber = 3;
-                activateScreen();
                 java.util.List<DepositFilePanel> selectDeposit = new ArrayList<>();
                 for(Component component: selectDepositPanel.getScrollablePanel().getComponents()){
                     if(component instanceof DepositFilePanel && ((DepositFilePanel) component).getCheck().isSelected()) {
@@ -219,12 +216,16 @@ public class OpenReceivership extends JFrame {
                         selectDeposit.add((DepositFilePanel)component);
                     }
                 }
-                Logs.sp("Selected files number :  " + selectDeposit.size());
-                DecryptFilesRunnable decryptFilesRunnable = new DecryptFilesRunnable(selectDeposit,
-                                                            (KeyPair)getListCertificate().getSelectedItem(), OpenReceivership.this );
-                Thread decrypt = new Thread(decryptFilesRunnable);
-                decrypt.start();
-
+                if(selectDeposit.size()>0) {
+                    screenNumber = 3;
+                    activateScreen();
+                    Logs.sp("Selected files number :  " + selectDeposit.size());
+                    DecryptFilesRunnable decryptFilesRunnable = new DecryptFilesRunnable(selectDeposit,
+                            (KeyPair) getListCertificate().getSelectedItem(), OpenReceivership.this);
+                    Thread decrypt = new Thread(decryptFilesRunnable);
+                    decrypt.start();
+                }else
+                    OpenReceivership.this.error(CryptoDoc.textProperties.getProperty("message.error.emptyselection"));
             }
         });
         exitBtn.addActionListener(new ActionListener() {
