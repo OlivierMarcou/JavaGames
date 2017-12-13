@@ -72,10 +72,10 @@ public class DecryptFilesRunnable implements Runnable{
                         errorOpener += e1.getMessage()+" \n";
                     }
                     try {
-                        selectDeposit.get(i).decryptAction(kp);
+                        selectDeposit.get(i).initDecryptAction(kp);
                     } catch (IOException e2) {
                         e2.printStackTrace();
-                        errorOpener +=CryptoDoc.textProperties.getProperty("open.page3.upload.fail")+ " \n";
+                        errorOpener +=CryptoDoc.textProperties.getProperty("open.page3.decrypt.fail").replace("<filename>", selectDeposit.get(i).getName())+ " \n";
                     } catch (CertificateEncodingException e) {
                         e.printStackTrace();
                         errorOpener += e.getMessage()+" \n";

@@ -149,7 +149,28 @@ public class DepositFilePanel extends JPanel{
         add(labelOpenIcon, fileConstraints);
     }
 
-    public void decryptAction(KeyPair kp) throws CertificateEncodingException, IOException {
+    public void initDecryptAction(KeyPair kp) throws CertificateEncodingException, IOException {
+        String decryptedFoldernameDestination= Configuration.destinationFolderPath
+                + File.separatorChar + file.getName().replace(".zip", "");
+        File decryptedFileDestination = new File(decryptedFoldernameDestination
+                + File.separatorChar
+                + depositStatus.getSupplierName().toUpperCase()
+                + "_"
+                + depositStatus.getSupplierOrganism().toUpperCase()
+                + "_"
+                + depositStatus.getTenderId()
+                + "_"
+                + Configuration.FILENAME_DECRYPTED_ZIP);
+
+        File decryptedFolderDestination = new File(decryptedFoldernameDestination);
+        int choose = -1;
+        if(decryptedFolderDestination.exists() && decryptedFolderDestination.isDirectory())
+            choose = chooser(CryptoDoc.textProperties.getProperty("message.chooser.folder.exist").replace("<depot>", file.getName()));
+        if(choose != 1)
+            decryptAction(kp, decryptedFileDestination, decryptedFoldernameDestination);
+    }
+
+    public void decryptAction(KeyPair kp, File decryptedFileDestination, String decryptedFoldernameDestination) throws CertificateEncodingException, IOException {
         byte[] secret = new byte[0];
         try {
             Logs.sp("Zip name :"+file.getName());
@@ -164,7 +185,7 @@ public class DepositFilePanel extends JPanel{
                 Logs.sp("End decode sercret key ...");
                 if(secret == null){
                     error(CryptoDoc.textProperties.getProperty("open.page2.decrypt.secret.fail").replace("<filename>",file.getName()));
-                    return;
+//                    return;
                 }
             }else {
                 Logs.sp("aucun certificat selectionné." );
@@ -172,29 +193,20 @@ public class DepositFilePanel extends JPanel{
         } catch (IOException exx) {
             exx.printStackTrace();
             error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + file.getName());
-            return;
+//            return;
         }
-        zs.unzip(file.getPath(), Configuration.destinationFolderPath, false);
-        File cryptedFile = new File(Configuration.destinationFolderPath
+        zs.unzip(file.getPath(), decryptedFoldernameDestination , false);
+        File cryptedFile = new File(decryptedFoldernameDestination
                 + File.separatorChar
                 + Configuration.FILENAME_CRYPTED_ZIP);
         try {
-            aes.decryptFileWithSecretKey(cryptedFile
-                    , new File(Configuration.destinationFolderPath
-                            + File.separatorChar
-                            + depositStatus.getSupplierName().toUpperCase()
-                            + "_"
-                            + depositStatus.getSupplierOrganism().toUpperCase()
-                            + "_"
-                            + depositStatus.getTenderId()
-                            + "_"
-                            + Configuration.FILENAME_DECRYPTED_ZIP), secret);
+            aes.decryptFileWithSecretKey(cryptedFile, decryptedFileDestination, secret);
         } catch (Exception e1) {
             e1.printStackTrace();
             error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + file.getName());
         }
         if(depositStatus == null) {
-            error(CryptoDoc.textProperties.getProperty("open.page3.upload.fail"));
+            error(CryptoDoc.textProperties.getProperty("open.page3.decrypt.fail").replace("<filename>", file.getName()));
         }else{
             ssl.updateExchangeDocumentState(depositStatus.getId(), Configuration.parameters.get("urlUpdateStatus"));
         }
@@ -203,6 +215,11 @@ public class DepositFilePanel extends JPanel{
     private void error(String msg){
         JOptionPane.showMessageDialog(this, msg,
                 CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
+    }
+
+    private int chooser(String msg){
+        return JOptionPane.showConfirmDialog(this, msg,
+                CryptoDoc.textProperties.getProperty("message.warning.title"), JOptionPane.YES_NO_OPTION);
     }
 
 }
