@@ -44,9 +44,9 @@ public class ButtonTemplate extends JButton{
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 3){
-                    new MenuEasterEggs();
-                }
+//                if(e.getClickCount() == 3){
+//                    new MenuEasterEggs();
+//                }
             }
 
             @Override
