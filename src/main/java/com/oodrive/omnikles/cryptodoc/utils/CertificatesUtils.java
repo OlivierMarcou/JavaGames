@@ -4,7 +4,6 @@ import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.pojo.CertificateInformations;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
-import sun.security.mscapi.SunMSCAPI;
 import sun.security.pkcs11.SunPKCS11;
 
 import java.io.ByteArrayInputStream;
@@ -51,9 +50,8 @@ public class CertificatesUtils {
 				ks.load(null, null);
 			}
 			if (Configuration.isWindows) {
-				provider = new SunMSCAPI();
 				Security.addProvider(provider);
-				ks = KeyStore.getInstance(Configuration.WINDOWS_KEYSTORE, provider);
+				ks = KeyStore.getInstance(Configuration.WINDOWS_KEYSTORE, "SunMSCAPI");
 				ks.load(null, null);
 			}
 		} catch (Exception e) {
