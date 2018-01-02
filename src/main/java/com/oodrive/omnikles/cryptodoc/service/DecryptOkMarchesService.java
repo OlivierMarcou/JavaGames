@@ -211,11 +211,6 @@ public class DecryptOkMarchesService {
                 }
                 details[1] = details[1] + "<fichier_ouvert><nomfichier>" + entryname + "</nomfichier>";
                 File f = new File(currentUnzippedFile);
-                // on met les fichiers ouverts en readonly
-                try {
-                    f.setReadOnly();
-                } catch (Exception exc) {
-                }
                 details[1] = details[1] + "<taillefichier>" + f.length() + "</taillefichier>";
                 details[1] = details[1] + "</fichier_ouvert>";
             } // fin du while de dezipp
