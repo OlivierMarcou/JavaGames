@@ -260,6 +260,7 @@ public class SslConnexionService{
         ArrayList<NameValuePair> postParameters = null;
         if(Configuration.isOkMarches) {
             try {
+                Logs.sp(Configuration.parameters.get("ids"));
                 String[] idsStr = Configuration.parameters.get("ids").split("_");// <= idDossier +"_" + idLot + "_" + idUser
                 postParameters = new ArrayList<>();
                 postParameters.add(new BasicNameValuePair("rfq_id", idsStr[0]));
