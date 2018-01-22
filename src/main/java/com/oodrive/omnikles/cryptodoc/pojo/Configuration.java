@@ -38,10 +38,10 @@ public class Configuration {
 
     public static final void initParameters(String[] args) throws IOException {
         activFolder = System.getProperty("user.home");
-        Logs.sp(activFolder);
+        Logs.sp("Activ folder : "+activFolder);
         parameters = new HashMap<>();
         String[] keyValue = new String[2];
-            for (String parameter: args ){
+        for (String parameter: args ){
             int indexEqual = parameter.trim().indexOf("=");
             keyValue[0] = parameter.substring(0, indexEqual);
             keyValue[0].replaceFirst("-","");
