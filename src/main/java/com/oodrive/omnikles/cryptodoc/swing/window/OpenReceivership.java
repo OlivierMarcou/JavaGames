@@ -222,8 +222,7 @@ public class OpenReceivership extends JFrame {
                     Logs.sp("Selected files number :  " + selectDeposit.size());
                     DecryptFilesRunnable decryptFilesRunnable = new DecryptFilesRunnable(selectDeposit,
                             (KeyPair) getListCertificate().getSelectedItem(), OpenReceivership.this);
-                    Thread decrypt = new Thread(decryptFilesRunnable);
-                    decrypt.start();
+                    decryptFilesRunnable.start();
                 }else
                     OpenReceivership.this.warning(CryptoDoc.textProperties.getProperty("message.warning.emptyselection"));
             }
