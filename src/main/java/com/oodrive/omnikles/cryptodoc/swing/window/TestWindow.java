@@ -238,7 +238,7 @@ public class TestWindow extends JFrame {
         TestRunnable test = new TestRunnable();
         test.setProgressBar(progressBar);
         test.file=  fileChooser();
-        new Thread(test).start();
+        test.start();
     }
 
 

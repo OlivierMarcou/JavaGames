@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Created by olivier on 10/02/17.
  */
-public class DecryptFilesRunnable implements Runnable{
+public class DecryptFilesRunnable extends Thread{
 
     private AESService aes = AESService.getInstance();
     private SslConnexionService ssl = SslConnexionService.getInstance();
@@ -92,6 +92,7 @@ public class DecryptFilesRunnable implements Runnable{
             parent.getPage3Paragraphe2().setText(CryptoDoc.textProperties.getProperty("open.page3.sending.result.ok"));
         }
         parent.getLoadingIcon().setVisible(false);
+        this.interrupt();
     }
 
     private void error(String msg){

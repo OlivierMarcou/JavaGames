@@ -8,7 +8,7 @@ import java.io.File;
 /**
  * Created by olivier on 10/02/17.
  */
-public class TestRunnable implements Runnable{
+public class TestRunnable extends Thread{
 
     private AnimatedProgressBar progressBar = null;
     public AnimatedProgressBar getProgressBar() {
@@ -29,6 +29,7 @@ public class TestRunnable implements Runnable{
         sc.setMaxPercent(25);
         if(file != null && file.exists())
             sc.sslUploadFileAndDownloadProof(file, "http://localhost/upload/upld.php", progressBar, null);
+        this.interrupt();
     }
 
 }
