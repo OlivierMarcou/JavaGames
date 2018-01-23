@@ -117,8 +117,11 @@ public class SslConnexionService{
         HttpEntity entity = httpResponse.getEntity();
 
         Logs.sp("sslDownloadFile method");
-        Logs.sp("Download File in " + Configuration.activFolder + File.separatorChar + "pod.pdf");
-        File podFile = new File(Configuration.activFolder + File.separatorChar + "pod.pdf");
+        String extension = "pdf";
+        if(Configuration.isOkMarches)
+            extension = "xml";
+        Logs.sp("Download File in " + Configuration.activFolder + File.separatorChar + "pod." + extension);
+        File podFile = new File(Configuration.activFolder + File.separatorChar + "pod." + extension);
         try {
             FileOutputStream out = new FileOutputStream(podFile);
             entity.writeTo(out);
