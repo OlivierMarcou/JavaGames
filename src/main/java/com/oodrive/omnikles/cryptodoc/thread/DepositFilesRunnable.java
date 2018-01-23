@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by olivier on 10/02/17.
  */
-public class DepositFilesRunnable implements Runnable{
+public class DepositFilesRunnable extends Thread{
 
     private ZipService zs = ZipService.getInstance();
     private File zip ;
@@ -126,6 +126,7 @@ public class DepositFilesRunnable implements Runnable{
         }
         Logs.sp("send ok");
         progressBar.finish(podFile);
+        this.interrupt();
     }
 
 }

@@ -170,6 +170,6 @@ public class ZipCryptAndSendWindow extends JFrame {
         zt.setProgressBar(animate);
         zt.setFiles(files);
         zt.setZip(zip);
-        new Thread(zt).start();
+        zt.start();
     }
 }
