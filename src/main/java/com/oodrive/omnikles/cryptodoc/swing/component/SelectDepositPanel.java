@@ -22,7 +22,6 @@ public class SelectDepositPanel extends JPanel {
 
     private SslConnexionService ssl = SslConnexionService.getInstance();
     private HashMap<Long, DepositStatus> depositStatuses = null;
-    private String[] nameIds = new String[]{"buyerId","tenderId","phaseId","publicationId","supplierId","documentId"};
     private JScrollPane scrollPane;
     private OpenReceivership parent;
     private ZipService zs = ZipService.getInstance();
@@ -107,7 +106,7 @@ public class SelectDepositPanel extends JPanel {
     }
 
     private void getZipLinePanel(File file, int indexLine) throws JSONException, NumberFormatException {
-        HashMap<String, Long> ids = getIdsFile(file.getName());
+        HashMap<String, Long> ids = Configuration.getIdsFile(file.getName());
         DepositFilePanel filePanel = null;
         if(depositStatuses != null && depositStatuses.size() > 0){
             if(Configuration.isOkMarches){
@@ -137,18 +136,4 @@ public class SelectDepositPanel extends JPanel {
                 CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
     }
 
-    private HashMap<String, Long> getIdsFile(String filename) throws NumberFormatException{
-        String line = filename.toLowerCase().substring(filename.indexOf("_")+1,filename.lastIndexOf("."));
-        String[] idsStr = line.split("_");
-        HashMap<String, Long> ids = new HashMap<>();
-        for(int i =0; i < idsStr.length; i++){
-            if(idsStr[i] != null){
-                try {
-                    long id = Long.parseLong(idsStr[i]);
-                    ids.put(nameIds[i], id);
-                }catch(NumberFormatException ex){}
-            }
-        }
-        return ids;
-    }
 }
