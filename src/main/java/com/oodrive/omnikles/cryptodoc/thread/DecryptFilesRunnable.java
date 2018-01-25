@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -57,6 +58,13 @@ public class DecryptFilesRunnable extends Thread{
                         List<NameValuePair> params = new ArrayList<>();
                         params.add(new BasicNameValuePair("idcand", "" + depositStatus.getId()));
                         params.add(new BasicNameValuePair("crfile", compteRenduFile));
+                        params.add(new BasicNameValuePair("iddossier", Configuration.parameters.get("idDossier")));
+                        HashMap<String, Long> ids = Configuration.getIdsFile(selectDeposit.get(i).getFile().getName());
+                        String idlot = "0";
+                        if(ids.get("idlot") != null){
+                            idlot = ""+ids.get("idlot");
+                        }
+                        params.add(new BasicNameValuePair("idlot",  idlot));
                         ssl.updateExchangeDocumentState(Configuration.parameters.get("urlUpdateStatus"), params);
                     } catch (IOException e) {
                         e.printStackTrace();

@@ -12,6 +12,9 @@ import java.util.HashMap;
  */
 public class Configuration {
 
+    private static final String[] nameIdsTender = new String[]{"buyerId","tenderId","phaseId","publicationId","supplierId","documentId"};
+    private static final String[] nameIdsMarches = new String[]{"buyerId","lotId","timestamp","type"};
+
     public static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
     public static final boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
     public static boolean debug = false;
@@ -57,6 +60,25 @@ public class Configuration {
         }
         debug = Boolean.parseBoolean(parameters.get("debug"));
         tests = Boolean.parseBoolean(parameters.get("tests"));
+    }
+
+
+    public static HashMap<String, Long> getIdsFile(String filename) throws NumberFormatException{
+        String line = filename.toLowerCase().substring(filename.indexOf("_")+1,filename.lastIndexOf("."));
+        String[] idsStr = line.split("_");
+        HashMap<String, Long> ids = new HashMap<>();
+        String[] nameIds = nameIdsTender;
+        if(Configuration.isOkMarches)
+            nameIds = nameIdsMarches;
+        for(int i =0; i < idsStr.length; i++){
+            if(idsStr[i] != null){
+                try {
+                    long id = Long.parseLong(idsStr[i]);
+                    ids.put(nameIds[i], id);
+                }catch(NumberFormatException ex){}
+            }
+        }
+        return ids;
     }
 
 }
