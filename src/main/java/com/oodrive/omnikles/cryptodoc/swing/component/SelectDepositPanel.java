@@ -7,6 +7,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
+import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import org.apache.http.ConnectionClosedException;
 import org.json.JSONException;
 
@@ -76,6 +77,7 @@ public class SelectDepositPanel extends JPanel {
             String urlGet = Configuration.parameters.get("urlReadStatus");
             if(Configuration.isOkMarches)
                 urlGet += "?iddossier=" + Configuration.parameters.get("idDossier");
+            Logs.sp("URL status : " + urlGet);
             depositStatuses = ssl.getDepositStatusesWithJSessionId(urlGet);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -106,13 +108,18 @@ public class SelectDepositPanel extends JPanel {
     }
 
     private void getZipLinePanel(File file, int indexLine) throws JSONException, NumberFormatException {
+        Logs.sp(file.getName() + " exist ? " + file.exists());
+        String idFileName = getIdFileName(file.getName(),1);
         HashMap<String, Long> ids = Configuration.getIdsFile(file.getName());
         DepositFilePanel filePanel = null;
+        Logs.sp( "depositStatuses null pointer ? " + (depositStatuses==null));
+        Logs.sp( "depositStatuses size ? " + (depositStatuses.size()));
         if(depositStatuses != null && depositStatuses.size() > 0){
             if(Configuration.isOkMarches){
-                String idFileName = file.getName().substring(0,file.getName().lastIndexOf("_"));
                 for(DepositStatus depositStatus: depositStatuses.values()) {
-                    if(depositStatus.getFilename().equals(idFileName)){
+                    String idDepositFileName = getIdFileName(depositStatus.getFilename(),0);
+                    Logs.sp(idDepositFileName + " = " + idFileName);
+                    if(idDepositFileName.equals(idFileName)){
                         filePanel = new DepositFilePanel(file,depositStatus);
                         break;
                     }
@@ -128,7 +135,20 @@ public class SelectDepositPanel extends JPanel {
         listFileContraints.anchor = GridBagConstraints.BASELINE;
         listFileContraints.gridx = 0;
         listFileContraints.gridy = indexLine;
+        Logs.sp( "filePanel null pointer ? " + (filePanel==null));
+        Logs.sp( "listFileContraints null pointer ? " + (listFileContraints==null));
+        Logs.sp( "scrollablePanel null pointer ? " + (scrollablePanel==null));
         scrollablePanel.add(filePanel, listFileContraints);
+    }
+
+    private String getIdFileName(String fileName, int count) {
+        String idFileName = fileName.substring(0,fileName.lastIndexOf("_"));
+        int i = 0;
+        while(i<count) {
+            idFileName = idFileName.substring(0, idFileName.lastIndexOf("_"));
+            i++;
+        }
+        return idFileName;
     }
 
     private void error(String msg){

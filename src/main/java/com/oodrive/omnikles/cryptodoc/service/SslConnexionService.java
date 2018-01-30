@@ -82,6 +82,7 @@ public class SslConnexionService{
 
         String jsonDepositStatus = getStringResponse(entity);
         HashMap<Long, DepositStatus> depositStatuses = null;
+        Logs.sp(jsonDepositStatus);
         if(Configuration.isOkMarches){
             depositStatuses = getJSONDepositStatusesMarches(jsonDepositStatus);
         }else{
