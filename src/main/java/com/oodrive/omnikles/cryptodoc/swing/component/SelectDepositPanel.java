@@ -75,9 +75,9 @@ public class SelectDepositPanel extends JPanel {
         try {
             depositStatuses = null;
             String urlGet = Configuration.parameters.get("urlReadStatus");
-            urlGet += "?typeEnveloppe=" + Configuration.parameters.get("typeDepot");
             if(Configuration.isOkMarches){
-                urlGet += "?iddossier=" + Configuration.parameters.get("idDossier");
+                urlGet +=  "?typeEnveloppe=" + Configuration.parameters.get("typeDepot")
+                        +"&iddossier=" + Configuration.parameters.get("idDossier");
             }
             Logs.sp("URL status : " + urlGet);
             depositStatuses = ssl.getDepositStatusesWithJSessionId(urlGet);
