@@ -76,8 +76,7 @@ public class SelectDepositPanel extends JPanel {
             depositStatuses = null;
             String urlGet = Configuration.parameters.get("urlReadStatus");
             if(Configuration.isOkMarches){
-                urlGet +=  "?typeEnveloppe=" + Configuration.parameters.get("typeDepot")
-                        +"&iddossier=" + Configuration.parameters.get("idDossier");
+                urlGet +=  "&iddossier=" + Configuration.parameters.get("idDossier");
             }
             Logs.sp("URL status : " + urlGet);
             depositStatuses = ssl.getDepositStatusesWithJSessionId(urlGet);
@@ -140,7 +139,8 @@ public class SelectDepositPanel extends JPanel {
         Logs.sp( "filePanel null pointer ? " + (filePanel==null));
         Logs.sp( "listFileContraints null pointer ? " + (listFileContraints==null));
         Logs.sp( "scrollablePanel null pointer ? " + (scrollablePanel==null));
-        scrollablePanel.add(filePanel, listFileContraints);
+        if(filePanel==null)
+            scrollablePanel.add(filePanel, listFileContraints);
     }
 
     private String getIdFileName(String fileName, int count) {
