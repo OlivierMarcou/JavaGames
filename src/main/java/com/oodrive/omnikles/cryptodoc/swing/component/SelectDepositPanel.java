@@ -113,8 +113,6 @@ public class SelectDepositPanel extends JPanel {
         String idFileName = getIdFileName(file.getName(),1);
         HashMap<String, Long> ids = Configuration.getIdsFile(file.getName());
         DepositFilePanel filePanel = null;
-        Logs.sp( "depositStatuses null pointer ? " + (depositStatuses==null));
-        Logs.sp( "depositStatuses size ? " + (depositStatuses.size()));
         if(depositStatuses != null && depositStatuses.size() > 0){
             if(Configuration.isOkMarches){
                 for(DepositStatus depositStatus: depositStatuses.values()) {
