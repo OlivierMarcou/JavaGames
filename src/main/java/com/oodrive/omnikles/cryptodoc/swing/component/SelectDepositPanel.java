@@ -139,7 +139,7 @@ public class SelectDepositPanel extends JPanel {
         Logs.sp( "filePanel null pointer ? " + (filePanel==null));
         Logs.sp( "listFileContraints null pointer ? " + (listFileContraints==null));
         Logs.sp( "scrollablePanel null pointer ? " + (scrollablePanel==null));
-        if(filePanel==null)
+        if(filePanel != null)
             scrollablePanel.add(filePanel, listFileContraints);
     }
 
