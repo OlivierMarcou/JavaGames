@@ -6,7 +6,7 @@
 
     <groupId>com.oodrive.omnikles.cryptographie</groupId>
     <artifactId>CryptoDoc</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -178,9 +178,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<keystore>win.cert.p12</keystore>
-					<alias>1</alias>
-					<storepass><![CDATA[mcFr#kt6W_78&ay+{VYL]]></storepass>
+                    <keystore>certificate.pfx</keystore>
+                    <alias>1</alias>
+                    <storepass><![CDATA[vOlOBCrtgajl93Of7oXW]]></storepass>
 				</configuration>
 			</plugin>
             <plugin>
