@@ -50,7 +50,7 @@ public class DecryptFilesRunnable extends Thread{
                     DecryptOkMarchesService dos = DecryptOkMarchesService.getInstance();
                     Logs.sp("Debut decrypt plis ...");
 
-                    String compteRenduFile = dos.makeCr(dos.openEnveloppe(selectDeposit.get(i).getFile()));//a retourner lors de l'update du status du pli ouvert
+                    String compteRenduFile = dos.makeCr(dos.openEnveloppe(selectDeposit.get(i).getFile(), selectDeposit.get(i).getDepositStatus()));//a retourner lors de l'update du status du pli ouvert
                     Logs.sp("Compte rendu ... " + compteRenduFile);
                     Logs.sp("Fin decrypt plis ... ");
                         DepositStatus depositStatus = selectDeposit.get(i).getDepositStatus();

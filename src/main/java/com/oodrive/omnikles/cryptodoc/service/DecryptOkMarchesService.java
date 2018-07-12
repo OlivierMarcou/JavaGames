@@ -2,6 +2,7 @@ package com.oodrive.omnikles.cryptodoc.service;
 
 
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
 import com.oodrive.omnikles.cryptodoc.pojo.SecretAndPublicKey;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
@@ -10,6 +11,7 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.ZipEntry;
@@ -42,7 +44,7 @@ public class DecryptOkMarchesService {
         return mycr;
     }
 
-    public String[] openEnveloppe(File enveloppe) {
+    public String[] openEnveloppe(File enveloppe, DepositStatus depositeStatus) {
         Logs.sp("openEnveloppe");
 
         // 1 dezipper clef symetrique et enveloppe
@@ -127,10 +129,10 @@ public class DecryptOkMarchesService {
             details[7] = secretAndPublicKey.getPublicCertificate();
             SecretKeySpec skeySpec = new SecretKeySpec(secretAndPublicKey.getSecretKey(), Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
 
-            File tempFolder = new File( enveloppe.getParent() + File.separator + "TECHNIQUE");
-            tempFolder.mkdirs();
-            String tempDecryptedZipFile = enveloppe.getParent() + File.separator + "TECHNIQUE" + File.separator
-                    + 1 + "_temp.zip";
+            File homeFolder = new File(enveloppe.getParent()+ File.separator  + depositeStatus.getSupplierName() + File.separator + depositeStatus.getNumLot());
+            File tempsFolder = new File( homeFolder.getPath() + File.separator + "TECHNIQUE");
+            Files.createDirectories(tempsFolder.toPath());
+            String tempDecryptedZipFile =  tempsFolder.getPath() + File.separator + File.separator + 1 + "_temp.zip";
 
             is = new FileInputStream(cryptedZipFileName);
             out = new FileOutputStream(tempDecryptedZipFile);
@@ -151,7 +153,7 @@ public class DecryptOkMarchesService {
             is = new FileInputStream(tempDecryptedZipFile);
 
             zin = new ZipInputStream(is);
-            details[6] = enveloppe.getParent() + File.separator + enveloppe.getName().replace(".zip.crypt", "");
+            details[6] = homeFolder.getPath() + File.separator + enveloppe.getName().replace(".zip.crypt", "");
             String tmpzipdir = enveloppe.getName()+ "_";
             if (enveloppe.getName().indexOf("36_") != -1) {
                 Logs.sp(" 36 XXXXXXXXXXXXXXXXX");
@@ -163,7 +165,7 @@ public class DecryptOkMarchesService {
                 Logs.sp(" 38 XXXXXXXXXXXXXXXXX");
                 tmpzipdir = enveloppe.getName().replaceFirst("38_", 1 + "_");
             }
-            File extractionFolder = new File(enveloppe.getParent() + File.separator + tmpzipdir);
+            File extractionFolder = new File(homeFolder + File.separator + tmpzipdir);
             extractionFolder.mkdirs();
 
             // Logs.sp("unzip : satge 1");
