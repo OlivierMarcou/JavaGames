@@ -12,8 +12,26 @@ public class DepositStatusMarches {
     private long id;
     private int status;
     private long idFournisseur;
-    private long idLot;
+    private long idLot = 0;
+    private long numLot = 0 ;
+    private String fournisseur;
     private Timestamp dateReponse;
+
+    public long getNumLot() {
+        return numLot;
+    }
+
+    public void setNumLot(long numLot) {
+        this.numLot = numLot;
+    }
+
+    public String getFournisseur() {
+        return fournisseur;
+    }
+
+    public void setFournisseur(String fournisseur) {
+        this.fournisseur = fournisseur;
+    }
 
     public long  getId() {
         return id;
@@ -74,6 +92,12 @@ public class DepositStatusMarches {
                         break;
                     case "dateReponse":
                         this.dateReponse = new Timestamp(Long.parseLong(keyValue[1]));
+                        break;
+                    case "nomFournisseur":
+                        this.fournisseur = keyValue[1];
+                        break;
+                    case "numLot":
+                        this.numLot = Long.parseLong(keyValue[1]);
                         break;
                 }
             }

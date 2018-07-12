@@ -58,6 +58,8 @@ public class CryptoDoc {
                 Configuration.isOkMarches=true;
             }
             openReceivership.setVisible(true);
+
+          //  changeLookAndFeel(1, openReceivership);
         }
 
         if(Configuration.parameters.get("action").equals("test")){
