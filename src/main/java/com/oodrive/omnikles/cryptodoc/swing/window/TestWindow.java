@@ -3,6 +3,7 @@ package com.oodrive.omnikles.cryptodoc.swing.window;
 import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 import com.oodrive.omnikles.cryptodoc.CryptoTests;
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.service.CryptOkMarchesService;
 import com.oodrive.omnikles.cryptodoc.service.DecryptOkMarchesService;
@@ -144,7 +145,7 @@ public class TestWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 zipFile =  fileChooser().getAbsoluteFile();
-                Logs.spDump(dk.openEnveloppe(zipFile));
+//                Logs.spDump(dk.openEnveloppe(zipFile, new DepositStatus({"idCand":2013621,"ouvertcand":1,"idFournisseur":98930,"idlot":999252833,"numLot":1,"nomFournisseur":"titi","dateReponse":1516639975000}));
             }
         });
 

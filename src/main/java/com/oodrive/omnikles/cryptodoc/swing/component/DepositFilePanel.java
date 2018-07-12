@@ -85,7 +85,13 @@ public class DepositFilePanel extends JPanel{
 
     public DepositFilePanel(File file, DepositStatus depositStatus) throws JSONException, NumberFormatException {
         this.file = file;
-        text.setText(file.getName());
+        if(Configuration.isOkMarches)
+            if (depositStatus.getSupplierName() == null)
+                text.setText( depositStatus.getNumLot() + " " + file.getName());
+            else
+                text.setText(depositStatus.getSupplierName() + " " + depositStatus.getNumLot() + " " + file.getName());
+        else
+            text.setText(depositStatus.getSupplierName() + " " + depositStatus.getNumLot() + " " + file.getName());
         this.depositStatus = depositStatus;
         setLayout(new GridBagLayout());
         setPreferredSize(new Dimension(580, 40));

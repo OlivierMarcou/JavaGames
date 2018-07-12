@@ -17,6 +17,7 @@ public class DepositStatus {
     private long tenderId;
 
     private long lotId;
+    private long numLot;
 
     public DepositStatus(DepositStatusMarches depositMarches){
         this.id = depositMarches.getId();
@@ -25,6 +26,8 @@ public class DepositStatus {
         this.exchangeDocumentState = ExchangeDocumentState.getExchangeDocumentState(depositMarches.getStatus());
         this.exchangeState = ExchangeState.IN_TIME;
         this.filename = depositMarches.getFileName();
+        this.supplierName = depositMarches.getFournisseur();
+        this.numLot = depositMarches.getNumLot();
     }
 
     public DepositStatus(String[] keysValues){
@@ -179,4 +182,11 @@ public class DepositStatus {
         this.lotId = lotId;
     }
 
+    public long getNumLot() {
+        return numLot;
+    }
+
+    public void setNumLot(long numLot) {
+        this.numLot = numLot;
+    }
 }
