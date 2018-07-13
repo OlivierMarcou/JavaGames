@@ -129,7 +129,7 @@ public class DecryptOkMarchesService {
             details[7] = secretAndPublicKey.getPublicCertificate();
             SecretKeySpec skeySpec = new SecretKeySpec(secretAndPublicKey.getSecretKey(), Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
 
-            File homeFolder = new File(enveloppe.getParent()+ File.separator  + depositeStatus.getSupplierName() + File.separator + depositeStatus.getNumLot());
+            File homeFolder = new File(enveloppe.getParent()+ File.separator  + depositeStatus.getNumLot() + File.separator + depositeStatus.getSupplierName());
             File tempsFolder = new File( homeFolder.getPath() + File.separator + "TECHNIQUE");
             Files.createDirectories(tempsFolder.toPath());
             String tempDecryptedZipFile =  tempsFolder.getPath() + File.separator + File.separator + 1 + "_temp.zip";
@@ -279,7 +279,7 @@ public class DecryptOkMarchesService {
             // nombre de documents dans l'enveloppe
             details[3] = String.valueOf(nbdocs);
             // Verifier les signatures des differents fichiers
-
+            tempsFolder.delete();
         } catch (IllegalStateException ex4) {
             ex4.printStackTrace();
             details = null;
