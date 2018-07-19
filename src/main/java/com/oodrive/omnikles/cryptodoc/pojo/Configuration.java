@@ -12,7 +12,7 @@ import java.util.HashMap;
  */
 public class Configuration {
 
-    private static final String[] nameIdsTender = new String[]{"buyerId","tenderId","phaseId","publicationId","supplierId","documentId"};
+    private static final String[] nameIdsTender = new String[]{"buyerId","lotId","tenderId","phaseId","publicationId","supplierId","documentId"};
     private static final String[] nameIdsMarches = new String[]{"buyerId","lotId","timestamp","type"};
 
     public static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
