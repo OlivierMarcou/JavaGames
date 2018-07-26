@@ -74,7 +74,7 @@ public class SelectDepositPanel extends JPanel {
     public void parseFile(File zipFile) {
         try {
             depositStatuses = null;
-            String urlGet = Configuration.parameters.get("urlReadStatus");
+            String urlGet = Configuration.parameters.get("urlReadStatus").replaceAll("&amp;", "&");
             if(Configuration.isOkMarches){
                 urlGet +=  "&iddossier=" + Configuration.parameters.get("idDossier");
             }
