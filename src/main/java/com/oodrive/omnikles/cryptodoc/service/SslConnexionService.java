@@ -111,6 +111,7 @@ public class SslConnexionService{
         this.uploadBar = animatedProgressBar;
         Logs.sp("sslUploadFile method");
 
+        Logs.sp(url);
         CloseableHttpResponse httpResponse= getResponseHttpPostFile(url, file, hashFile);
         StatusLine statusLine = httpResponse.getStatusLine();
         if(statusLine.getStatusCode() != 200)
