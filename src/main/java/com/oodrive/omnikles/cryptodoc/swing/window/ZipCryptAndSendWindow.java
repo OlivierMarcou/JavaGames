@@ -127,10 +127,12 @@ public class ZipCryptAndSendWindow extends JFrame {
         centerPanel.add(emptyPanel2, c);
 
         if(Configuration.debug) {
-            c.fill = GridBagConstraints.NONE;
-            c.anchor = GridBagConstraints.CENTER;
+            c.fill = GridBagConstraints.BOTH;
+            c.anchor = GridBagConstraints.LINE_START;
+            c.weightx=1;
+            c.weighty=0;
             c.gridx = 0;
-            c.gridy = 3;
+            c.gridy = 5;
             c.gridwidth = 1;
             centerPanel.add(retryBtn, c);
 
