@@ -6,7 +6,7 @@
 
     <groupId>com.oodrive.omnikles.cryptographie</groupId>
     <artifactId>CryptoDoc</artifactId>
-    <version>0.0.13-QA</version>
+    <version>0.0.14-QA</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -73,6 +73,12 @@
             <groupId>org.apache.kerby</groupId>
             <artifactId>kerby-asn1</artifactId>
             <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -178,9 +184,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<keystore>win.cert.p12</keystore>
-					<alias>1</alias>
-					<storepass><![CDATA[mcFr#kt6W_78&ay+{VYL]]></storepass>
+                    <keystore>certificate.pfx</keystore>
+                    <alias>1</alias>
+                    <storepass><![CDATA[vOlOBCrtgajl93Of7oXW]]></storepass>
 				</configuration>
 			</plugin>
             <plugin>
