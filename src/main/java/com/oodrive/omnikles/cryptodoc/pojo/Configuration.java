@@ -59,7 +59,7 @@ public class Configuration {
             }
         }
         debug = Boolean.parseBoolean(parameters.get("debug"));
-        tests = Boolean.parseBoolean(parameters.get("tests"));
+        tests = Boolean.parseBoolean(parameters.get("src/main/test"));
     }
 
 

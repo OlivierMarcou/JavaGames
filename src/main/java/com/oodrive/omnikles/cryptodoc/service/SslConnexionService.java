@@ -388,7 +388,7 @@ public class SslConnexionService{
         return certificatsB64;
     }
 
-    private HashMap<Long, DepositStatus> getJSONDepositStatusesMarches(String jsonDepositStatus) throws JSONException, ConnectionClosedException {
+    public HashMap<Long, DepositStatus> getJSONDepositStatusesMarches(String jsonDepositStatus) throws JSONException, ConnectionClosedException {
         JSONObject obj = new JSONObject(jsonDepositStatus);
         JSONArray depositStatusesArray = null;
         try {
@@ -398,9 +398,7 @@ public class SslConnexionService{
         }
         HashMap<Long, DepositStatus> depositStatuses = new HashMap<>();
         for(int i=0; i<depositStatusesArray.length(); i++){
-            String line = depositStatusesArray.get(i).toString();
-            line = line.replaceAll("[{}]", "");
-            DepositStatusMarches depositStatusMarches = new DepositStatusMarches(line.split(","));
+            DepositStatusMarches depositStatusMarches = new DepositStatusMarches(depositStatusesArray.getJSONObject(i));
             DepositStatus depositStatus = new DepositStatus(depositStatusMarches);
             depositStatuses.put(depositStatus.getId(), depositStatus);
         }
