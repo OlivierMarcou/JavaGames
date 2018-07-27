@@ -1,5 +1,9 @@
 package com.oodrive.omnikles.cryptodoc.pojo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -16,6 +20,49 @@ public class DepositStatusMarches {
     private long numLot = 0 ;
     private String fournisseur;
     private Timestamp dateReponse;
+
+    public DepositStatusMarches(JSONObject jsonObject) throws JSONException {
+        if(jsonObject != null){
+            this.id = Long.parseLong(jsonObject.get("idCand").toString());
+            this.status = Integer.parseInt(jsonObject.get("ouvertcand").toString());
+            this.idFournisseur = Long.parseLong(jsonObject.get("idFournisseur").toString());
+            this.idLot = Long.parseLong(jsonObject.get("idlot").toString());
+            this.dateReponse = new Timestamp(Long.parseLong(jsonObject.get("dateReponse").toString()));
+            this.fournisseur = jsonObject.get("nomFournisseur").toString();
+            this.numLot = Long.parseLong(jsonObject.get("numLot").toString());
+        }
+    }
+
+    public DepositStatusMarches(String[] keysValues){
+        for(String line:keysValues){
+            String[] keyValue = line.replaceAll("\"", "").split(":");
+            if(keyValue[0] != null && keyValue[1] != null ){
+                switch (keyValue[0]){
+                    case "idCand":
+                        this.id = Long.parseLong(keyValue[1]);
+                        break;
+                    case "ouvertcand":
+                        this.status = Integer.parseInt(keyValue[1]);
+                        break;
+                    case "idFournisseur":
+                        this.idFournisseur = Long.parseLong(keyValue[1]);
+                        break;
+                    case "idlot":
+                        this.idLot = Long.parseLong(keyValue[1]);
+                        break;
+                    case "dateReponse":
+                        this.dateReponse = new Timestamp(Long.parseLong(keyValue[1]));
+                        break;
+                    case "nomFournisseur":
+                        this.fournisseur = keyValue[1];
+                        break;
+                    case "numLot":
+                        this.numLot = Long.parseLong(keyValue[1]);
+                        break;
+                }
+            }
+        }
+    }
 
     public long getNumLot() {
         return numLot;
@@ -73,37 +120,6 @@ public class DepositStatusMarches {
         this.dateReponse = dateReponse;
     }
 
-    public DepositStatusMarches(String[] keysValues){
-        for(String line:keysValues){
-            String[] keyValue = line.replaceAll("\"", "").split(":");
-            if(keyValue[0] != null && keyValue[1] != null ){
-                switch (keyValue[0]){
-                    case "idCand":
-                        this.id = Long.parseLong(keyValue[1]);
-                        break;
-                    case "ouvertcand":
-                        this.status = Integer.parseInt(keyValue[1]);
-                        break;
-                    case "idFournisseur":
-                        this.idFournisseur = Long.parseLong(keyValue[1]);
-                        break;
-                    case "idlot":
-                        this.idLot = Long.parseLong(keyValue[1]);
-                        break;
-                    case "dateReponse":
-                        this.dateReponse = new Timestamp(Long.parseLong(keyValue[1]));
-                        break;
-                    case "nomFournisseur":
-                        this.fournisseur = keyValue[1];
-                        break;
-                    case "numLot":
-                        this.numLot = Long.parseLong(keyValue[1]);
-                        break;
-                }
-            }
-        }
-    }
-    
     public String getFileName(){
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss", Locale.FRANCE);
         String strDate = format.format(dateReponse);
