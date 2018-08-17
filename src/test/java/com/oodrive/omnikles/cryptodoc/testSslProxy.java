@@ -15,8 +15,8 @@ public class testSslProxy {
 //        System.setProperty("http.proxySet", "true");
 //        System.setProperty("http.proxyHost", "192.168.5.72");
 //        System.setProperty("http.proxyPort", "808");
-//        System.setProperty("http.proxyUser", "oliv");
-//        System.setProperty("http.proxyPassword", "1234");
+//        System.setProperty("http.proxyUser", "");
+//        System.setProperty("http.proxyPassword", "");
 
     }
 
