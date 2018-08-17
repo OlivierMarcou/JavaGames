@@ -12,9 +12,10 @@ public class testSslProxy {
     @Before
     public void init(){
 
-//        System.setProperty("http.proxyHost", "192.168.10.64");
-//        System.setProperty("http.proxyPort", "3128");
-//        System.setProperty("http.proxyUser", "des");
+//        System.setProperty("http.proxySet", "true");
+//        System.setProperty("http.proxyHost", "192.168.5.72");
+//        System.setProperty("http.proxyPort", "808");
+//        System.setProperty("http.proxyUser", "oliv");
 //        System.setProperty("http.proxyPassword", "1234");
 
     }
@@ -22,7 +23,7 @@ public class testSslProxy {
     @Test
     public void testproxyAuthOk(){
         Logs.sp(System.getProperty("http.proxyHost"));
-        Logs.sp(ssl.getResponseHttpGet("http://www.google.fr").toString());
+        Logs.sp(ssl.getResponseHttpGet("https://www.google.fr").toString());
     }
 
     @Test
