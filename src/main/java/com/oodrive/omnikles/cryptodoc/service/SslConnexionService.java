@@ -22,7 +22,9 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -32,6 +34,8 @@ import org.json.JSONObject;
 import sun.misc.BASE64Encoder;
 
 import java.io.*;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.MessageDigest;
@@ -150,7 +154,7 @@ public class SslConnexionService{
 
     /* -------------------------------- PRIVATE ------------------------------*/
 
-    private CloseableHttpClient initSSL(){
+    private SSLConnectionSocketFactory initSSL(){
         SSLContextBuilder builder = new SSLContextBuilder();
         try {
             Logs.sp("loadTrustMaterial");
@@ -170,26 +174,73 @@ public class SslConnexionService{
             e.printStackTrace();
         }
         Logs.sp("HttpClient post SSL");
-        return HttpClients.custom()
-                .setSSLSocketFactory(sslsf)
-                .build();
+        return sslsf;
     }
 
-    private CloseableHttpResponse getResponseHttpGet(String url){
+    public CloseableHttpClient createHttpClientOrProxy() {
+        return createHttpClientOrProxy(true);
+    }
+
+    public CloseableHttpClient createHttpClientOrProxy(boolean isNotSSL) {
+        HttpClientBuilder hcBuilder = HttpClients.custom();
+        if((System.getProperty("http.proxyHost") != null && !System.getProperty("http.proxyHost").equals("null"))
+            || (System.getProperty("https.proxyHost") != null && !System.getProperty("https.proxyHost").equals("null"))){
+            int port = 80;
+            String protocol = "http";
+            if( System.getProperty("https.proxyHost") != null && !System.getProperty("https.proxyHost").equals("null")){
+                port = 443;
+                protocol = "https";
+            }
+            if( System.getProperty(protocol + ".proxyPort") != null
+                    && !System.getProperty(protocol + ".proxyPort").equals("null") ) {
+                port = Integer.parseInt(System.getProperty(protocol + ".proxyPort"));
+            }
+            HttpHost proxy = new HttpHost(System.getProperty(protocol + ".proxyHost"), port, protocol);
+            DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+            hcBuilder.setRoutePlanner(routePlanner);
+            initializeSSLProxyAuthenticator(protocol);
+        }
+        CloseableHttpClient httpClient;
+        if(isNotSSL)
+            httpClient = hcBuilder.build();
+        else
+            httpClient = hcBuilder.setSSLSocketFactory(initSSL()).build();
+        return httpClient;
+    }
+
+    private void initializeSSLProxyAuthenticator(String protocol) {
+        final String proxyUser = System.getProperty(protocol + ".proxyUser");
+        final String proxyPassword = System.getProperty(protocol + ".proxyPassword");
+
+        if (proxyUser != null && !proxyUser.equals("null")
+                && proxyPassword != null && !proxyPassword.equals("null")) {
+            Authenticator.setDefault(
+                new Authenticator() {
+                    public PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(
+                                proxyUser, proxyPassword.toCharArray()
+                        );
+                    }
+                }
+            );
+        }
+    }
+
+    public CloseableHttpResponse getResponseHttpGet(String url){
         if (debug)
             Logs.sp("... Debut connexion ...");
         Logs.sp("HttpClient");
         Logs.sp("url : " + url);
-        CloseableHttpClient httpclientSsl = initSSL();
+        CloseableHttpClient httpclient = createHttpClientOrProxy();
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("Cookie", "JSESSIONID="+Configuration.parameters.get("sessionid"));
-        if(httpclientSsl == null)
+        if(httpclient == null)
             throw new NullPointerException("HTTP client is null !");
         if(httpGet == null)
             throw new NullPointerException("GET Request is null !");
         Logs.sp("Start request");
         try {
-            return httpclientSsl.execute(httpGet);
+            return httpclient.execute(httpGet);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -244,7 +295,7 @@ public class SslConnexionService{
         httpPost.setEntity(new ProgressEntityWrapper(multipart, pListener));
         httpPost.setHeader("Cookie", "JSESSIONID="+Configuration.parameters.get("sessionid"));
 
-        CloseableHttpClient httpclientSsl = initSSL();
+        CloseableHttpClient httpclientSsl = createHttpClientOrProxy();
 
         if(httpclientSsl == null)
             throw new NullPointerException("HTTP client is null !");
@@ -424,7 +475,7 @@ public class SslConnexionService{
     }
 
     private CloseableHttpResponse getResponseHttpPost(String url, List<NameValuePair> parameters) throws  IOException {
-        CloseableHttpClient httpclientSsl = initSSL();
+        CloseableHttpClient httpclientSsl = createHttpClientOrProxy();
         HttpPost httpPost = new HttpPost(url);
         Header header = new BasicHeader("Cookie", "JSESSIONID=" + Configuration.parameters.get("sessionid"));
         httpPost.setEntity(new UrlEncodedFormEntity(parameters));
@@ -438,7 +489,7 @@ public class SslConnexionService{
     }
 
     private CloseableHttpResponse getResponseHttpPostMultipart(String url, List<NameValuePair> parameters) throws  IOException {
-        CloseableHttpClient httpclientSsl = initSSL();
+        CloseableHttpClient httpclientSsl = createHttpClientOrProxy();
         HttpPost httpPost = new HttpPost(url);
         Header header = new BasicHeader("Cookie", "JSESSIONID=" + Configuration.parameters.get("sessionid"));
 
