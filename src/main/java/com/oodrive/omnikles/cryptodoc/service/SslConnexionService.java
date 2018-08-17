@@ -13,7 +13,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.NTCredentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -25,8 +24,10 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.*;
-import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.SystemDefaultCredentialsProvider;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -35,9 +36,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import sun.misc.BASE64Encoder;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.MessageDigest;
@@ -56,6 +59,8 @@ public class SslConnexionService{
     private int percentMem = -1;
     private int jobNumber = 0;
     private int maxPercent = 100 ;
+    private String proxyPassword;
+    private String proxyUser;
 
     public int getMaxPercent() {
         return maxPercent;
@@ -197,8 +202,11 @@ public class SslConnexionService{
                     && !System.getProperty(protocol + ".proxyPort").equals("null") ) {
                 port = Integer.parseInt(System.getProperty(protocol + ".proxyPort"));
             }
+            if (proxyUser == null || proxyUser.isEmpty())
+                proxyUser = System.getProperty(protocol + ".proxyUser");
+            if (proxyPassword == null || proxyPassword.isEmpty())
+                proxyPassword = System.getProperty(protocol + ".proxyPassword");
             HttpHost proxy = new HttpHost(System.getProperty(protocol + ".proxyHost"), port, protocol);
-            DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
             hcBuilder.setProxy(proxy);
             hcBuilder.setDefaultCredentialsProvider(initializeSSLProxyAuthenticator(protocol,
                     new AuthScope(System.getProperty(protocol + ".proxyHost"), port)));
@@ -212,14 +220,28 @@ public class SslConnexionService{
     }
 
     private CredentialsProvider initializeSSLProxyAuthenticator(String protocol, AuthScope authScope) {
-        final String proxyUser = System.getProperty(protocol + ".proxyUser");
-        final String proxyPassword = System.getProperty(protocol + ".proxyPassword");
-
+        String localMachineName = "";
+        String domainName = "";
+        if(proxyUser == null || proxyUser.isEmpty())
+            proxyUser = JOptionPane.showInputDialog(new Frame(), "Proxy user name ?");
+        if(proxyPassword == null || proxyPassword.isEmpty())
+            proxyPassword = JOptionPane.showInputDialog(new Frame(), "Proxy password ?");
+        try
+        {
+            InetAddress addr = java.net.InetAddress.getLocalHost();
+            localMachineName = addr.getHostName();
+            domainName = InetAddress.getLocalHost().getCanonicalHostName();
+            System.out.println("Hostname of system = " + domainName);
+        }
+        catch (UnknownHostException ex)
+        {
+            System.out.println("Hostname can not be resolved");
+        }
+        NTCredentials ntCreds = new NTCredentials(proxyUser, proxyPassword, localMachineName, domainName);
         if (proxyUser != null && !proxyUser.equals("null")
                 && proxyPassword != null && !proxyPassword.equals("null")) {
             CredentialsProvider credsProvider = new SystemDefaultCredentialsProvider();
-            credsProvider.setCredentials( authScope ,
-                    new UsernamePasswordCredentials(proxyUser, proxyPassword ));
+            credsProvider.setCredentials(authScope, ntCreds );
             return credsProvider;
         }
         return null;
@@ -230,9 +252,9 @@ public class SslConnexionService{
             Logs.sp("... Debut connexion ...");
         Logs.sp("HttpClient");
         Logs.sp("url : " + url);
-        CloseableHttpClient httpclient = createHttpClientOrProxy();
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("Cookie", "JSESSIONID="+Configuration.parameters.get("sessionid"));
+        CloseableHttpClient httpclient = createHttpClientOrProxy();
         if(httpclient == null)
             throw new NullPointerException("HTTP client is null !");
         if(httpGet == null)
