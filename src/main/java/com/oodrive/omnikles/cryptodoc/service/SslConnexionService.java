@@ -11,7 +11,11 @@ import com.oodrive.omnikles.cryptodoc.swing.component.ProgressListener;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.http.*;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.NTCredentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -21,9 +25,7 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
@@ -197,8 +199,9 @@ public class SslConnexionService{
             }
             HttpHost proxy = new HttpHost(System.getProperty(protocol + ".proxyHost"), port, protocol);
             DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
-            hcBuilder.setRoutePlanner(routePlanner);
-            initializeSSLProxyAuthenticator(protocol);
+            hcBuilder.setProxy(proxy);
+            hcBuilder.setDefaultCredentialsProvider(initializeSSLProxyAuthenticator(protocol,
+                    new AuthScope(System.getProperty(protocol + ".proxyHost"), port)));
         }
         CloseableHttpClient httpClient;
         if(isNotSSL)
@@ -208,22 +211,18 @@ public class SslConnexionService{
         return httpClient;
     }
 
-    private void initializeSSLProxyAuthenticator(String protocol) {
+    private CredentialsProvider initializeSSLProxyAuthenticator(String protocol, AuthScope authScope) {
         final String proxyUser = System.getProperty(protocol + ".proxyUser");
         final String proxyPassword = System.getProperty(protocol + ".proxyPassword");
 
         if (proxyUser != null && !proxyUser.equals("null")
                 && proxyPassword != null && !proxyPassword.equals("null")) {
-            Authenticator.setDefault(
-                new Authenticator() {
-                    public PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(
-                                proxyUser, proxyPassword.toCharArray()
-                        );
-                    }
-                }
-            );
+            CredentialsProvider credsProvider = new SystemDefaultCredentialsProvider();
+            credsProvider.setCredentials( authScope ,
+                    new UsernamePasswordCredentials(proxyUser, proxyPassword ));
+            return credsProvider;
         }
+        return null;
     }
 
     public CloseableHttpResponse getResponseHttpGet(String url){
