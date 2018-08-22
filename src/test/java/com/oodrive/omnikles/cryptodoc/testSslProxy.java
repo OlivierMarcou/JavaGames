@@ -5,29 +5,43 @@ import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 public class testSslProxy {
 
     private SslConnexionService ssl = SslConnexionService.getInstance();
 
     @Before
     public void init(){
-
-//        System.setProperty("http.proxySet", "true");
-//        System.setProperty("http.proxyHost", "192.168.5.72");
-//        System.setProperty("http.proxyPort", "808");
-//        System.setProperty("http.proxyUser", "");
-//        System.setProperty("http.proxyPassword", "");
-
+        try {
+            (new CryptoDoc(new String[]{"test=", "test1="})).loadLocalConfiguration();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testproxyAuthOk(){
         Logs.sp(System.getProperty("http.proxyHost"));
+        Logs.sp(ssl.getResponseHttpGet("http://www.google.fr").toString());
+    }
+
+
+    @Test
+    public void testSslproxyAuthOk(){
+        Logs.sp(System.getProperty("https.proxyHost"));
         Logs.sp(ssl.getResponseHttpGet("https://www.google.fr").toString());
     }
 
     @Test
-    public void testSslproxyAuthOk(){
+    public void testSystemproxyAuthOk(){
+
+//        System.setProperty("http.proxySet", "true");
+//        System.setProperty("http.proxyHost", "192.168.5.74");
+//        System.setProperty("http.proxyPort", "808");
+//        System.setProperty("http.proxyUser", "oliv");
+//        System.setProperty("http.proxyPassword", "");
+//        System.setProperty("http.proxyType", "ntlm");
         Logs.sp(System.getProperty("https.proxyHost"));
         Logs.sp(ssl.getResponseHttpGet("https://www.google.fr").toString());
     }
