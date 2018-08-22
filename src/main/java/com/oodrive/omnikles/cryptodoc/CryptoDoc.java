@@ -6,8 +6,11 @@ import com.oodrive.omnikles.cryptodoc.swing.window.LogWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
 import com.oodrive.omnikles.cryptodoc.swing.window.TestWindow;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -31,6 +34,7 @@ public class CryptoDoc {
             new LogWindow();
         }
         initContext();
+        loadLocalConfiguration();
 
         Logs.sp("WebStart CryptoDoc - version : " + contextProperties.getProperty("build.version"));
         if(Configuration.parameters.get("language") == null || Configuration.parameters.get("language").isEmpty()) {
@@ -103,17 +107,46 @@ public class CryptoDoc {
     }
 
     public void initContext() throws IOException{
-        URL url = this.getClass().getResource("/cryptodoc.properties");
-        if(url != null && url.getFile() != null) {
-            contextProperties.load(url.openStream());
+        URL propertiesUrl = this.getClass().getResource("/cryptodoc.properties");
+        if(propertiesUrl != null && propertiesUrl.getFile() != null) {
+            contextProperties.load(propertiesUrl.openStream());
             Configuration.version = contextProperties.getProperty("actual.version");
         }
     }
 
+    public void loadLocalConfiguration() throws IOException{
+        File localPropertiesFile = new File(System.getProperty("user.home")
+                    + File.separatorChar
+                    + "cryptodoc.conf");
+
+        if(localPropertiesFile == null || !localPropertiesFile.exists()){
+            File srcPropertiesFile = new File(this.getClass().getResource("/cryptodoc.conf").getFile());
+            if(srcPropertiesFile.exists() && srcPropertiesFile.isFile())
+                FileUtils.copyFile(srcPropertiesFile, localPropertiesFile);
+            loadLocalProperties(localPropertiesFile);
+        }else{
+            loadLocalProperties(localPropertiesFile);
+        }
+    }
+
+    private void loadLocalProperties(File localPropertiesFile) throws IOException {
+        contextProperties.load(new FileInputStream(localPropertiesFile));
+        Configuration.version = contextProperties.getProperty("actual.version");
+        Configuration.proxyHost = contextProperties.getProperty("proxy.host");
+        try {
+            Configuration.proxyPort = Integer.valueOf(contextProperties.getProperty("proxy.port"));
+        }catch( NumberFormatException  ex){
+            Configuration.proxyPort = null;
+        }
+        Configuration.proxyPass = contextProperties.getProperty("proxy.pass");
+        Configuration.proxyUser = contextProperties.getProperty("proxy.user");
+        Configuration.proxyAuthType = contextProperties.getProperty("proxy.authentication.type");
+    }
+
     public void initTextes(String language) throws IOException{
-        URL url = this.getClass().getResource("/texts_" + language + ".properties");
-        if(url != null && url.getFile() != null) {
-            textProperties.load(new InputStreamReader((url.openStream()),"UTF-8"));
+        URL propertiesUrl = this.getClass().getResource("/texts_" + language + ".properties");
+        if(propertiesUrl != null && propertiesUrl.getFile() != null) {
+            textProperties.load(new InputStreamReader((propertiesUrl.openStream()),"UTF-8"));
         }
     }
 }
