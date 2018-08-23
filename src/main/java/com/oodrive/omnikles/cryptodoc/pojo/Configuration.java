@@ -39,11 +39,7 @@ public class Configuration {
 
     private static BASE64Decoder decode = new BASE64Decoder();
 
-    public static String proxyHost;
-    public static Integer proxyPort;
-    public static String proxyPass;
-    public static String proxyUser;
-    public static String proxyAuthType;
+    public static ProxyConfig proxy;
 
     public static final void initParameters(String[] args) throws IOException {
         activFolder = System.getProperty("user.home");
