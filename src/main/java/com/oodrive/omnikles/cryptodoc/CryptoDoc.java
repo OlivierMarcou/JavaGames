@@ -1,6 +1,7 @@
 package com.oodrive.omnikles.cryptodoc;
 
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
+import com.oodrive.omnikles.cryptodoc.pojo.ProxyConfig;
 import com.oodrive.omnikles.cryptodoc.swing.window.IntroWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.LogWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
@@ -14,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.util.Properties;
 
@@ -129,18 +132,28 @@ public class CryptoDoc {
         }
     }
 
-    private void loadLocalProperties(File localPropertiesFile) throws IOException {
+    public static void saveLocalConfiguration(ProxyConfig proxyConfig) throws IOException{
+        File localPropertiesFile = new File(System.getProperty("user.home")
+                + File.separatorChar
+                + "cryptodoc.conf");
+        String content = proxyConfig.toString();
+        Files.write(localPropertiesFile.toPath(), content.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+        loadLocalProperties(localPropertiesFile);
+    }
+
+    public static void loadLocalProperties(File localPropertiesFile) throws IOException {
         contextProperties.load(new FileInputStream(localPropertiesFile));
         Configuration.version = contextProperties.getProperty("actual.version");
-        Configuration.proxyHost = contextProperties.getProperty("proxy.host");
+        Configuration.proxy = new ProxyConfig();
+        Configuration.proxy.setHost(contextProperties.getProperty("proxy.host"));
         try {
-            Configuration.proxyPort = Integer.valueOf(contextProperties.getProperty("proxy.port"));
+            Configuration.proxy.setPort(Integer.valueOf(contextProperties.getProperty("proxy.port")));
         }catch( NumberFormatException  ex){
-            Configuration.proxyPort = null;
+            Configuration.proxy.setPort(0);
         }
-        Configuration.proxyPass = contextProperties.getProperty("proxy.pass");
-        Configuration.proxyUser = contextProperties.getProperty("proxy.user");
-        Configuration.proxyAuthType = contextProperties.getProperty("proxy.authentication.type");
+        Configuration.proxy.setPassword(contextProperties.getProperty("proxy.pass"));
+        Configuration.proxy.setUser(contextProperties.getProperty("proxy.user"));
+        Configuration.proxy.setAuthenticationType(contextProperties.getProperty("proxy.authentication.type"));
     }
 
     public void initTextes(String language) throws IOException{

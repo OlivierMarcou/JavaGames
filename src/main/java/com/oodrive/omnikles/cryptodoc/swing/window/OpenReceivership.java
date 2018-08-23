@@ -35,6 +35,7 @@ public class OpenReceivership extends JFrame {
     private int screenNumber = 1;
     private ButtonTemplate openBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.open"), Design.MAX_SIZE);
     private ButtonTemplate backBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.back"), Design.MAX_SIZE);
+    private ButtonTemplate proxyConfigBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("config.button.proxy.button"), Design.MAX_SIZE);
 
     private GeneralTextTemplate infos = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.vide"));
 
@@ -164,6 +165,14 @@ public class OpenReceivership extends JFrame {
         line++;
 
         c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridx=0;
+        c.gridy=line;
+        c.gridwidth=1;
+        centerPanel.add(proxyConfigBtn, c);
+
+
+        c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
         c.gridy=line;
@@ -233,6 +242,15 @@ public class OpenReceivership extends JFrame {
                 System.exit(1);
             }
         });
+
+        proxyConfigBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ProxyWindow proxyWindow = new ProxyWindow();
+                proxyWindow.setVisible(true);
+            }
+        });
+
         initListener();
 
         setVisible(true);
@@ -304,6 +322,7 @@ public class OpenReceivership extends JFrame {
 
         page1Paragraphe1.setVisible(one);
         selectBtn.setVisible(one);
+        proxyConfigBtn.setVisible(one);
 
         page2Paragraphe1.setVisible(two);
         selectDepositPanel.setVisible(two);
