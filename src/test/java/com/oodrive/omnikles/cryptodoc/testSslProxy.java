@@ -40,10 +40,11 @@ public class testSslProxy {
 //        System.setProperty("http.proxyHost", "192.168.5.74");
 //        System.setProperty("http.proxyPort", "808");
 //        System.setProperty("http.proxyUser", "oliv");
-//        System.setProperty("http.proxyPassword", "");
-//        System.setProperty("http.proxyType", "ntlm");
+//        System.setProperty("http.proxyPassword", "1234");
+//        System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "ntlm");
+
         Logs.sp(System.getProperty("https.proxyHost"));
-        Logs.sp(ssl.getResponseHttpGet("https://www.google.fr").toString());
+        Logs.sp(ssl.getResponseHttpGet("https://www.google.fr").hashCode());
     }
 
 }

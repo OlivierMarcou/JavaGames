@@ -18,7 +18,11 @@ public class Design {
     public final static int WIDTH_CENTRAL_PANEL = 800;
     public final static Dimension CENTERPANEL_PREFERED_SIZE =  new Dimension(800, 600);
     public final static Dimension CENTERPANEL_PREFERED_SIZE_EMPTY =  new Dimension(760, 200);
+    public final static Dimension CENTERPANEL_CONFIG_PREFERED_SIZE =  new Dimension(600, 600);
+    public final static Dimension CENTERPANEL_CONFIG_PREFERED_SIZE_EMPTY =  new Dimension(560, 200);
     public final static Dimension TEXTFIELD_SIZE = new Dimension(760, 40);
+    public final static Dimension LABEL_SIZE = new Dimension(150, 40);
+    public final static Dimension TEXTCONFIG_SIZE = new Dimension(200, 40);
     public final static Dimension FILES_NAME_SIZE = new Dimension(760, 400);
     public final static Border TEXTFIELD_BORDER_FACTORY = BorderFactory.createEmptyBorder(5, 5, 5, 5);
 

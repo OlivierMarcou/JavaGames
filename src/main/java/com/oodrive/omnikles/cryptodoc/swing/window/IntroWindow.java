@@ -23,6 +23,8 @@ public class IntroWindow extends JFrame {
     private ButtonTemplate okBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.ok"), Design.MAX_SIZE);
     private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"), Design.MAX_SIZE);
     private ButtonTemplate activfolderBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.activfolder"), Design.MAX_SIZE);
+    private ButtonTemplate proxyConfigBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("config.button.proxy.button"), Design.MAX_SIZE);
+
     private JTextField activFolderTxt = new JTextField();
 
     public IntroWindow(){
@@ -91,7 +93,15 @@ public class IntroWindow extends JFrame {
         c.insets = new Insets(10, 10, 10, 10);
         centerPanel.add(activfolderBtn, c);
 
-
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_END;
+        c.weightx=0;
+        c.weighty=0;
+        c.gridx=1;
+        c.gridy=1;
+        c.gridwidth=1;
+        c.insets = new Insets(10, 10, 10, -280);
+        centerPanel.add(proxyConfigBtn, c);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -197,6 +207,13 @@ public class IntroWindow extends JFrame {
             }
         });
 
+        proxyConfigBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ProxyWindow proxyWindow = new ProxyWindow();
+                proxyWindow.setVisible(true);
+            }
+        });
         setVisible(true);
     }
 
