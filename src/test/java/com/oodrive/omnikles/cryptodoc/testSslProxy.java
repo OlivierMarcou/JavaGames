@@ -23,14 +23,22 @@ public class testSslProxy {
     @Test
     public void testproxyAuthOk(){
         Logs.sp(System.getProperty("http.proxyHost"));
-        Logs.sp(ssl.getResponseHttpGet("http://www.google.fr").toString());
+        try {
+            Logs.sp(ssl.getResponseHttpGet("http://www.google.fr").toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void testSslproxyAuthOk(){
         Logs.sp(System.getProperty("https.proxyHost"));
-        Logs.sp(ssl.getResponseHttpGet("https://www.google.fr").toString());
+        try {
+            Logs.sp(ssl.getResponseHttpGet("https://www.google.fr").toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -44,7 +52,11 @@ public class testSslProxy {
 //        System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "ntlm");
 
         Logs.sp(System.getProperty("https.proxyHost"));
-        Logs.sp(ssl.getResponseHttpGet("https://www.google.fr").hashCode());
+        try {
+            Logs.sp(ssl.getResponseHttpGet("https://www.google.fr").hashCode());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -46,11 +46,16 @@ public class ProxyWindow extends JFrame {
     public ProxyWindow(){
         GridBagConstraints c = initDesign();
 
-        hostTxt.setText(Configuration.proxy.getHost());
-        portTxt.setText(String.valueOf(Configuration.proxy.getPort()));
-        authTypeCbx.setSelectedItem(Configuration.proxy.getAuthenticationType());
-        userTxt.setText(Configuration.proxy.getUser());
-        passwordTxt.setText(Configuration.proxy.getPassword());
+        if(Configuration.proxy.getHost() != null)
+            hostTxt.setText(Configuration.proxy.getHost());
+        if(Configuration.proxy.getPort() != null)
+            portTxt.setText(String.valueOf(Configuration.proxy.getPort()));
+        if(Configuration.proxy.getAuthenticationType() != null)
+            authTypeCbx.setSelectedItem(Configuration.proxy.getAuthenticationType());
+        if(Configuration.proxy.getUser() != null)
+            userTxt.setText(Configuration.proxy.getUser());
+        if(Configuration.proxy.getPassword() != null)
+            passwordTxt.setText(Configuration.proxy.getPassword());
 
         int line = 0;
 
@@ -242,15 +247,13 @@ public class ProxyWindow extends JFrame {
             }
         });
 
-
         setVisible(true);
     }
 
     private void errorMsg(String result) {
         JOptionPane.showMessageDialog(ProxyWindow.this,
 
-                CryptoDoc.textProperties.getProperty("config.button.proxy.bad.text")
-                        + "<br>" +result,
+                CryptoDoc.textProperties.getProperty("config.button.proxy.bad.text").replace("+result+", result),
                 CryptoDoc.textProperties.getProperty("config.button.proxy.bad.title"),
                 JOptionPane.WARNING_MESSAGE);
     }
@@ -259,16 +262,12 @@ public class ProxyWindow extends JFrame {
         ProxyConfig proxyConfig = new ProxyConfig();
         if(hostTxt.getText() != null && ! hostTxt.getText().isEmpty())
             proxyConfig.setHost(hostTxt.getText());
-
         if(portTxt.getText() != null && ! portTxt.getText().isEmpty())
             proxyConfig.setPort(Integer.parseInt(portTxt.getText()));
-
         if(authTypeCbx.getSelectedItem() != null)
             proxyConfig.setAuthenticationType(authTypeCbx.getSelectedItem().toString());
-
         if(userTxt.getText() != null)
             proxyConfig.setUser(userTxt.getText());
-
         if(userTxt.getText() != null)
             proxyConfig.setPassword(new String(passwordTxt.getPassword()));
         return proxyConfig;
@@ -354,8 +353,8 @@ public class ProxyWindow extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
 
-        panel.getMyStatusBar().setPagesNumber(0);
-        panel.getMyStatusBar().setActualPage(0);
+        panel.getMyStatusBar().setPagesNumber(1);
+        panel.getMyStatusBar().setActualPage(1);
         return c;
     }
 

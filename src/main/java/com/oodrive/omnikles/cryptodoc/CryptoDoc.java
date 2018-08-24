@@ -7,7 +7,6 @@ import com.oodrive.omnikles.cryptodoc.swing.window.LogWindow;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
 import com.oodrive.omnikles.cryptodoc.swing.window.TestWindow;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
-import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.io.File;
@@ -37,13 +36,13 @@ public class CryptoDoc {
             new LogWindow();
         }
         initContext();
-        loadLocalConfiguration();
-
         Logs.sp("WebStart CryptoDoc - version : " + contextProperties.getProperty("build.version"));
         if(Configuration.parameters.get("language") == null || Configuration.parameters.get("language").isEmpty()) {
             Configuration.parameters.put("language", "fr");
         }
         initTextes(Configuration.parameters.get("language"));
+        loadLocalConfiguration();
+
     }
 
     public static void main(String[] args) throws InvalidKeyException, javax.security.cert.CertificateException,
@@ -121,12 +120,8 @@ public class CryptoDoc {
         File localPropertiesFile = new File(System.getProperty("user.home")
                     + File.separatorChar
                     + "cryptodoc.conf");
-
         if(localPropertiesFile == null || !localPropertiesFile.exists()){
-            File srcPropertiesFile = new File(this.getClass().getResource("/cryptodoc.conf").getFile());
-            if(srcPropertiesFile.exists() && srcPropertiesFile.isFile())
-                FileUtils.copyFile(srcPropertiesFile, localPropertiesFile);
-            loadLocalProperties(localPropertiesFile);
+            initLocalConfiguration();
         }else{
             loadLocalProperties(localPropertiesFile);
         }
@@ -137,8 +132,20 @@ public class CryptoDoc {
                 + File.separatorChar
                 + "cryptodoc.conf");
         String content = proxyConfig.toString();
-        Files.write(localPropertiesFile.toPath(), content.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+        if(localPropertiesFile.exists() && localPropertiesFile.isFile())
+            Files.write(localPropertiesFile.toPath(), content.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+        else
+            Files.write(localPropertiesFile.toPath(), content.getBytes(), StandardOpenOption.CREATE);
         loadLocalProperties(localPropertiesFile);
+    }
+
+    public static void initLocalConfiguration() throws IOException{
+        File localPropertiesFile = new File(System.getProperty("user.home")
+                + File.separatorChar
+                + "cryptodoc.conf");
+        Configuration.proxy = new ProxyConfig();
+        String content = Configuration.proxy.toString();
+        Files.write(localPropertiesFile.toPath(), content.getBytes(), StandardOpenOption.CREATE);
     }
 
     public static void loadLocalProperties(File localPropertiesFile) throws IOException {

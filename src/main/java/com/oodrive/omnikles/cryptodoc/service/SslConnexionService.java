@@ -80,7 +80,12 @@ public class SslConnexionService{
 
     public List<String> getCertificatesB64WithJSessionId(String urlCertificate ) throws JSONException {
         Logs.sp("getCertificatesWithJSessionId method");
-        HttpEntity entity = getResponseHttpGet(urlCertificate).getEntity();
+        HttpEntity entity = null;
+        try {
+            entity = getResponseHttpGet(urlCertificate).getEntity();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         String jsonCertificate = getStringResponse(entity);
         List<String> certificatsB64 = getJSONCertificates(jsonCertificate);
@@ -89,7 +94,12 @@ public class SslConnexionService{
 
     public HashMap<Long, DepositStatus> getDepositStatusesWithJSessionId(String urlDepositStatus) throws JSONException, ConnectionClosedException {
         Logs.sp("getDepositStatusesWithJSessionId method");
-        HttpEntity entity = getResponseHttpGet(urlDepositStatus).getEntity();
+        HttpEntity entity = null;
+        try {
+            entity = getResponseHttpGet(urlDepositStatus).getEntity();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         String jsonDepositStatus = getStringResponse(entity);
         HashMap<Long, DepositStatus> depositStatuses = null;
@@ -249,7 +259,7 @@ public class SslConnexionService{
             if (Configuration.proxy.getPassword() == null || Configuration.proxy.getPassword().isEmpty())
                 Configuration.proxy.setPassword(System.getProperty(protocol + ".proxyPassword"));
 
-            String defaultAuthType = "no";
+            String defaultAuthType = "";
             if (System.getProperty("jdk.http.auth.tunneling.disabledSchemes") != null
                     && !System.getProperty("jdk.http.auth.tunneling.disabledSchemes").isEmpty()
                     && !System.getProperty("jdk.http.auth.tunneling.disabledSchemes").equalsIgnoreCase("http")
@@ -270,7 +280,7 @@ public class SslConnexionService{
      * @return HttpHost if cryptodoc.conf have proxy, or null
      */
     private CredentialsProvider initializeProxyAuthenticator(AuthScope authScope) {
-        if(Configuration.proxy.getAuthenticationType().equals("no"))
+        if(Configuration.proxy.getAuthenticationType() == null || Configuration.proxy.getAuthenticationType().isEmpty())
             return null;
         if(Configuration.proxy.getUser() == null || Configuration.proxy.getUser().isEmpty())
             Configuration.proxy.setUser(JOptionPane.showInputDialog(new Frame(), "Proxy user name ?"));
@@ -312,7 +322,7 @@ public class SslConnexionService{
         return credsProvider;
     }
 
-    public CloseableHttpResponse getResponseHttpGet(String url){
+    public CloseableHttpResponse getResponseHttpGet(String url) throws IOException {
         if (debug)
             Logs.sp("... Debut connexion ...");
         Logs.sp("HttpClient");
@@ -325,12 +335,7 @@ public class SslConnexionService{
         if(httpGet == null)
             throw new NullPointerException("GET Request is null !");
         Logs.sp("Start request");
-        try {
-            return httpclient.execute(httpGet);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return httpclient.execute(httpGet);
     }
 
     public void sendPostEnveloppeEmpreinte(String url, String hashFile, boolean envoiMailDepotEmprunte) {
