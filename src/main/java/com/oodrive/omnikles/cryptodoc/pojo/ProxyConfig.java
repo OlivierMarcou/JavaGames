@@ -5,10 +5,10 @@ import com.oodrive.omnikles.cryptodoc.CryptoDoc;
 public class ProxyConfig {
 
     private String host;
-    private int port;
+    private Integer port;
     private String user;
     private String password;
-    private String authenticationType = "no";
+    private String authenticationType;
 
     public String getHost() {
         return host;
@@ -18,11 +18,11 @@ public class ProxyConfig {
         this.host = host;
     }
 
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 
@@ -47,21 +47,23 @@ public class ProxyConfig {
     }
 
     public void setAuthenticationType(String authenticationType) {
-        if(authenticationType == null || authenticationType.isEmpty())
-            this.authenticationType = "no";
-        else
-            this.authenticationType = authenticationType;
+        this.authenticationType = authenticationType;
     }
 
 
     @Override
     public String toString(){
         String content = CryptoDoc.textProperties.getProperty("default.proxy.configuration");
-        content = content.replace("proxy.host=","proxy.host="+host);
-        content = content.replace("proxy.port=","proxy.port="+port);
-        content = content.replace("proxy.user=","proxy.user="+user);
-        content = content.replace("proxy.pass=","proxy.pass="+password);
-        content = content.replace("proxy.authentication.type=no","proxy.authentication.type="+authenticationType);
+        if(host != null)
+            content = content.replace("proxy.host=","proxy.host="+host);
+        if(port != null)
+            content = content.replace("proxy.port=","proxy.port="+port);
+        if(user != null)
+            content = content.replace("proxy.user=","proxy.user="+user);
+        if(password != null)
+            content = content.replace("proxy.pass=","proxy.pass="+password);
+        if(authenticationType != null)
+            content = content.replace("proxy.authentication.type=","proxy.authentication.type="+authenticationType);
         return content;
     }
 }
