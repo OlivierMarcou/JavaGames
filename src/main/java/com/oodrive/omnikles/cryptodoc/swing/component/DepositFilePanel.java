@@ -91,7 +91,10 @@ public class DepositFilePanel extends JPanel{
             else
                 text.setText(depositStatus.getSupplierName() + " " + depositStatus.getNumLot() + " " + file.getName());
         else
-            text.setText(depositStatus.getSupplierName() + " " + depositStatus.getNumLot() + " " + file.getName());
+        {
+            long idLot=depositStatus.getLotId();
+            text.setText(depositStatus.getSupplierName() + " " +idLot + " " + file.getName());
+        }
         this.depositStatus = depositStatus;
         setLayout(new GridBagLayout());
         setPreferredSize(new Dimension(580, 40));
@@ -214,7 +217,7 @@ public class DepositFilePanel extends JPanel{
         if(depositStatus == null) {
             error(CryptoDoc.textProperties.getProperty("open.page3.decrypt.fail").replace("<filename>", file.getName()));
         }else{
-            ssl.updateExchangeDocumentState(depositStatus.getId(), Configuration.parameters.get("urlUpdateStatus"));
+            ssl.updateExchangeDocumentState(depositStatus.getId(), Configuration.parameters.get("urlUpdateStatus"), depositStatus.getLotId());
         }
     }
 

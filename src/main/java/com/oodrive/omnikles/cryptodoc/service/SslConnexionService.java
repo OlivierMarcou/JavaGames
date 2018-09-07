@@ -157,10 +157,11 @@ public class SslConnexionService{
         return podFile;
     }
 
-    public void updateExchangeDocumentState(long documentId, String urlUpdateStatus) throws IOException {
+    public void updateExchangeDocumentState(long documentId, String urlUpdateStatus, long idLot) throws IOException {
         Logs.sp("updateExchangeDocumentState method");
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("state", ExchangeDocumentState.OPEN.name()));
+        params.add(new BasicNameValuePair("lot_id", ""+idLot));
         getResponseHttpPost(urlUpdateStatus+documentId,params).getEntity();
     }
 
