@@ -77,25 +77,25 @@ public class DecryptFilesRunnable extends Thread{
                         kp = aes.getKeyPairWithPrivateKey(certificates.getAlias(),"");
                     } catch (Exception e1) {
                         e1.printStackTrace();
-                        errorOpener += e1.getMessage()+" \n";
+                        errorOpener += e1.getMessage()+" <br>";
                     }
                     try {
                         selectDeposit.get(i).initDecryptAction(kp);
                     } catch (IOException e2) {
                         e2.printStackTrace();
-                        errorOpener +=CryptoDoc.textProperties.getProperty("open.page3.decrypt.fail").replace("<filename>", selectDeposit.get(i).getName())+ " \n";
+                        errorOpener +=CryptoDoc.textProperties.getProperty("open.page3.decrypt.fail.text").replace("<filename>", selectDeposit.get(i).getName())+ " \n";
                     } catch (CertificateEncodingException e) {
                         e.printStackTrace();
-                        errorOpener += e.getMessage()+" \n";
+                        errorOpener += e.getMessage()+" <br>";
                     } catch (NullPointerException e) {
                         e.printStackTrace();
-                        errorOpener += e.getMessage()+" \n";
+                        errorOpener += e.getMessage()+" <br>";
                     }
                 }
             }
         }
         if(errorOpener != null){
-            error(CryptoDoc.textProperties.getProperty("message.error.text"));
+            error(CryptoDoc.textProperties.getProperty("message.error.open.text").replace("<error>", errorOpener) );
         }else{
             parent.getPage3Paragraphe2().setText(CryptoDoc.textProperties.getProperty("open.page3.sending.result.ok"));
         }
