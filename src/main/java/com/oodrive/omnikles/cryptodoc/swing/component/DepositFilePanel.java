@@ -215,7 +215,7 @@ public class DepositFilePanel extends JPanel{
             error(CryptoDoc.textProperties.getProperty("message.error.text")+ " " + file.getName());
         }
         if(depositStatus == null) {
-            error(CryptoDoc.textProperties.getProperty("open.page3.decrypt.fail").replace("<filename>", file.getName()));
+            error(CryptoDoc.textProperties.getProperty("open.page3.decrypt.fail.html").replace("<filename>", file.getName()));
         }else{
             ssl.updateExchangeDocumentState(depositStatus.getId(), Configuration.parameters.get("urlUpdateStatus"), depositStatus.getLotId());
         }

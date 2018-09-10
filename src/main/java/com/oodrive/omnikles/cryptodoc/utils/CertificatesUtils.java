@@ -159,6 +159,7 @@ public class CertificatesUtils {
 			}
 		} catch (Exception ioe) {
 			System.err.println(ioe.getMessage());
+			throw ioe;
 		}
 		return null;
 	}
