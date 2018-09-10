@@ -73,13 +73,13 @@ public class DepositFilesRunnable extends Thread{
         try {
             certificatesB64 = ssl.getCertificatesB64WithJSessionId(Configuration.parameters.get("urlCertificat"));
         } catch (JSONException e) {
-            JOptionPane.showMessageDialog(progressBar, CryptoDoc.textProperties.getProperty("message.error.text"),
+            JOptionPane.showMessageDialog(progressBar, CryptoDoc.textProperties.getProperty("message.error.json.text"),
             CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         }
         if(certificatesB64 == null || certificatesB64.size() <= 0) {
-            JOptionPane.showMessageDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("message.error.text"),
+            JOptionPane.showMessageDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("message.error.nocertificate.text"),
                     CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             throw new NullPointerException("Aucun certificat trouvé pour : " + Configuration.parameters.get("urlCertificat"));
         }
