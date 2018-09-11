@@ -78,6 +78,9 @@ public class DepositStatus {
                         case "idExchange":
                             this.idExchange = Long.parseLong(keyValue[1]);
                             break;
+                        case "lotId":
+                            this.lotId = Long.parseLong(keyValue[1]);
+                            break;
                         case "filename":
                             this.filename = keyValue[1];
                             break;
