@@ -305,7 +305,7 @@ public class AESService {
 
     public File createKeyFile(List<CertificateInformations> certificats) throws IOException, InvalidKeySpecException {
         BASE64Encoder encoder = new BASE64Encoder();
-        File jsonKeyFile = new File(Configuration.FILENAME_CRYPTED_KEYS);
+        File jsonKeyFile = new File(Configuration.activFolder + File.separator + Configuration.FILENAME_CRYPTED_KEYS);
         jsonKeyFile.delete();
         HashMap<String, String> dualKeys = new HashMap<>();
         JSONObject json = new JSONObject();
