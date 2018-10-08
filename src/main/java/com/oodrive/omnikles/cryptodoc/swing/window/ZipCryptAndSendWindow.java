@@ -39,8 +39,6 @@ public class ZipCryptAndSendWindow extends JFrame {
 
         setTitle(CryptoDoc.textProperties.getProperty("depot.page4.title"));
         String texte = CryptoDoc.textProperties.getProperty("depot.page4.paragraphe1");
-        texte = texte.replace("<titleProcedure>", Configuration.parameters.get("titleProcedure"));
-        texte = texte.replace("<organismName>", Configuration.parameters.get("organismName"));
         paragraphe1.setText(texte);
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
