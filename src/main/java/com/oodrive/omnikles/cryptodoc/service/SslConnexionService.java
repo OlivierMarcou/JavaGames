@@ -138,13 +138,23 @@ public class SslConnexionService{
         if(statusLine.getStatusCode() != 200)
             throw new UnsupportedOperationException("Error server : "+statusLine.getStatusCode() + "\n" + statusLine.getReasonPhrase() );
         HttpEntity entity = httpResponse.getEntity();
+        Header header = httpResponse.getFirstHeader("Content-Disposition");
 
+        String filename = "pod.";
+        if(Configuration.isOkMarches){
+            filename += "xml";
+        }else{
+            for(HeaderElement he:header.getElements()){
+                if(he.getName().equalsIgnoreCase("attachment"))
+                    if(he.getParameter(0) != null && he.getParameter(0).getValue() != null) {
+                        filename = he.getParameter(0).getValue();
+                        filename = filename.substring(0,filename.indexOf("_"))+".pdf";
+                    }
+            }
+        }
         Logs.sp("sslDownloadFile method");
-        String extension = "pdf";
-        if(Configuration.isOkMarches)
-            extension = "xml";
-        Logs.sp("Download File in " + Configuration.activFolder + File.separatorChar + "pod." + extension);
-        File podFile = new File(Configuration.activFolder + File.separatorChar + "pod." + extension);
+        Logs.sp("Download File in " + Configuration.activFolder + File.separatorChar + filename);
+        File podFile = new File(Configuration.activFolder + File.separatorChar + filename);
         try {
             FileOutputStream out = new FileOutputStream(podFile);
             entity.writeTo(out);

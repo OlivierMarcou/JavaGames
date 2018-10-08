@@ -33,6 +33,16 @@ public class Step2Window extends JFrame {
         String texte = CryptoDoc.textProperties.getProperty("depot.page3.paragraphe1");
         texte = texte.replace("<titleProcedure>", Configuration.parameters.get("titleProcedure"));
         texte = texte.replace("<organismName>", Configuration.parameters.get("organismName"));
+        if(Configuration.parameters.get("liblot") != null
+                && !Configuration.parameters.get("liblot").isEmpty()
+                && !Configuration.parameters.get("liblot").equals("0")) {
+            String paragraphLot = CryptoDoc.textProperties.getProperty("depot.allpages.lot");
+            paragraphLot = paragraphLot.replace("<liblot>", (Configuration.parameters.get("liblot") != null ? Configuration.parameters.get("liblot") : ""));
+            texte = texte.replace("<lot>", paragraphLot);
+        }else
+        {
+            texte = texte.replace("<lot>", "");
+        }
         paragraphe1.setText(texte);
         setSize(800,600);
         setMinimumSize(new Dimension(800, 600));
@@ -79,8 +89,8 @@ public class Step2Window extends JFrame {
         c.gridy=1;
         c.gridwidth=3;
         c.insets = new Insets(10, 10, 10, 10);
-        emptyPanel2.setPreferredSize(new Dimension(700, 200));
-        emptyPanel2.setMinimumSize(new Dimension(700, 200));
+        emptyPanel2.setPreferredSize(new Dimension(700, 50));
+        emptyPanel2.setMinimumSize(new Dimension(700, 50));
         centerPanel.add(emptyPanel2, c);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -51,7 +51,7 @@ public class Configuration {
             keyValue[0] = parameter.substring(0, indexEqual);
             keyValue[0].replaceFirst("-","");
             keyValue[1] = parameter.substring(indexEqual+1);
-            if(keyValue[0].equals("titleProcedure") || keyValue[0].equals("organismName"))
+            if(keyValue[0].equals("titleProcedure") || keyValue[0].equals("organismName") || keyValue[0].equals("liblot"))
                 keyValue[1] = new String(decode.decodeBuffer(keyValue[1]), Charset.forName("UTF-8"));
             Logs.sp(keyValue[0] + " " + keyValue[1]);
             if(keyValue[0].toLowerCase().equals("activfolder")) {
