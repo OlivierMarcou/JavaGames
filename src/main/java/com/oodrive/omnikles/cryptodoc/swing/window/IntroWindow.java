@@ -67,6 +67,16 @@ public class IntroWindow extends JFrame {
         String texte = CryptoDoc.textProperties.getProperty("depot.page1.paragraphe1");
         texte = texte.replace("<titleProcedure>", Configuration.parameters.get("titleProcedure"));
         texte = texte.replace("<organismName>", Configuration.parameters.get("organismName"));
+        if(Configuration.parameters.get("liblot") != null
+                && !Configuration.parameters.get("liblot").isEmpty()
+                && !Configuration.parameters.get("liblot").equals("0")) {
+            String paragraphLot = CryptoDoc.textProperties.getProperty("depot.allpages.lot");
+            paragraphLot = paragraphLot.replace("<liblot>", (Configuration.parameters.get("liblot") != null ? Configuration.parameters.get("liblot") : ""));
+            texte = texte.replace("<lot>", paragraphLot);
+        }else
+        {
+            texte = texte.replace("<lot>", "");
+        }
         paragraphe1.setText(texte);
 
         c.fill = GridBagConstraints.BOTH;

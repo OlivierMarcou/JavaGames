@@ -80,6 +80,7 @@ public class CryptoDoc {
             Configuration.parameters.put("language","fr");
             Configuration.parameters.put("titleProcedure","titleProcedure");
             Configuration.parameters.put("organismName","organismName");
+            Configuration.parameters.put("liblot","liblot");
             Configuration.parameters.put("urlCryptedFile","http://localhost/");
             Configuration.parameters.put("sessionid","111111111");
             Configuration.parameters.put("filename","test.pdf");
