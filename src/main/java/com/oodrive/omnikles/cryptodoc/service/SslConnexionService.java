@@ -148,7 +148,7 @@ public class SslConnexionService{
                 if(he.getName().equalsIgnoreCase("attachment"))
                     if(he.getParameter(0) != null && he.getParameter(0).getValue() != null) {
                         filename = he.getParameter(0).getValue();
-                        filename = filename.substring(0,filename.indexOf("_"))+".pdf";
+                        filename = filename.substring(0, filename.lastIndexOf("_"))+".pdf";
                     }
             }
         }
