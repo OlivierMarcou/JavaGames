@@ -129,7 +129,10 @@ public class DecryptOkMarchesService {
             details[7] = secretAndPublicKey.getPublicCertificate();
             SecretKeySpec skeySpec = new SecretKeySpec(secretAndPublicKey.getSecretKey(), Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
 
-            File homeFolder = new File(enveloppe.getParent()+ File.separator  + depositeStatus.getNumLot() + File.separator + depositeStatus.getSupplierName());
+            String supplierName = "";
+            if(depositeStatus.getSupplierName() != null)
+                supplierName =  depositeStatus.getSupplierName().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+            File homeFolder = new File(enveloppe.getParent()+ File.separator  + depositeStatus.getNumLot() + File.separator + supplierName);
             File tempsFolder = new File( homeFolder.getPath() + File.separator + "TECHNIQUE");
             Files.createDirectories(tempsFolder.toPath());
             String tempDecryptedZipFile =  tempsFolder.getPath() + File.separator + File.separator + 1 + "_temp.zip";
