@@ -159,13 +159,20 @@ public class DepositFilePanel extends JPanel{
     }
 
     public void initDecryptAction(KeyPair kp) throws CertificateEncodingException, IOException {
+
+        String supplierName = "";
+        String supplierOrganism = "";
+        if(depositStatus.getSupplierName() != null)
+            supplierName =  depositStatus.getSupplierName().toUpperCase().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+        if(depositStatus.getSupplierOrganism() != null)
+            supplierOrganism =  depositStatus.getSupplierOrganism().toUpperCase().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
         String decryptedFoldernameDestination= Configuration.destinationFolderPath
                 + File.separatorChar + file.getName().replace(".zip", "");
         File decryptedFileDestination = new File(decryptedFoldernameDestination
                 + File.separatorChar
-                + depositStatus.getSupplierName().toUpperCase()
+                + supplierName
                 + "_"
-                + depositStatus.getSupplierOrganism().toUpperCase()
+                + supplierOrganism
                 + "_"
                 + depositStatus.getTenderId()
                 + "_"
