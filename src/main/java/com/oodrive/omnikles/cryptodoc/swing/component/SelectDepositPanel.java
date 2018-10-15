@@ -6,6 +6,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
+import com.oodrive.omnikles.cryptodoc.swing.component.template.SelectAll;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
 import org.apache.http.ConnectionClosedException;
@@ -27,6 +28,7 @@ public class SelectDepositPanel extends JPanel {
     private OpenReceivership parent;
     private ZipService zs = ZipService.getInstance();
     private JPanel scrollablePanel = new JPanel();
+    private SelectAll selectAll = new SelectAll(scrollablePanel);
 
     public JPanel getScrollablePanel() {
         return scrollablePanel;
@@ -43,8 +45,8 @@ public class SelectDepositPanel extends JPanel {
                 getBorder(),
                 Design.TEXTFIELD_BORDER_FACTORY));
         setFont(Design.TEXTFIELD_FONT);
-
         setLayout(new BorderLayout());
+        add(selectAll, BorderLayout.NORTH);
         scrollablePanel.setLayout(new GridBagLayout());
         scrollablePanel.setMinimumSize(new Dimension(600, 280));
         scrollablePanel.setBackground(Design.BG_COLOR);
@@ -56,7 +58,7 @@ public class SelectDepositPanel extends JPanel {
         scrollPane.setPreferredSize(new Dimension(20, 380));
         add(scrollPane, BorderLayout.CENTER);
 
-
+        selectAll.addActionListener(e -> {});
     }
 
     public void getFilesInfos(File[] contentZipFolder) {
