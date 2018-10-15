@@ -155,5 +155,4 @@ public class SelectDepositPanel extends JPanel {
         JOptionPane.showMessageDialog(this, msg,
                 CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
     }
-
 }
