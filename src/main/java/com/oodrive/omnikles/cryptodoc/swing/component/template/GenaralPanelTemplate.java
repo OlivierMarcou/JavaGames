@@ -2,6 +2,7 @@ package com.oodrive.omnikles.cryptodoc.swing.component.template;
 
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
 import com.oodrive.omnikles.cryptodoc.swing.component.FooterBar;
+import com.oodrive.omnikles.cryptodoc.swing.window.SpinnerPanel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -14,6 +15,7 @@ public class GenaralPanelTemplate extends JPanel {
 
     private JFrame parent = null;
     private JPanel centerPanel = new JPanel();
+    private SpinnerPanel centerPanelSpinner = new SpinnerPanel();
     private FooterBar myStatusBar = null;
 
     public FooterBar getMyStatusBar() {
@@ -32,7 +34,19 @@ public class GenaralPanelTemplate extends JPanel {
         this.centerPanel = centerPanel;
     }
 
+    public void setLoading(boolean isLoading){
+        if(isLoading){
+            centerPanel.setVisible(false);
+            centerPanelSpinner.setVisible(true);
+        }
+        else{
+            centerPanelSpinner.setVisible(false);
+            centerPanel.setVisible(true);
+        }
+    }
+
     public GenaralPanelTemplate(JFrame parent) {
+        centerPanelSpinner.setVisible(false);
         setBackground(Design.BG_COLOR);
         setForeground(Design.FG_COLOR);
         centerPanel.setBackground(Design.BG_COLOR);
@@ -55,6 +69,7 @@ public class GenaralPanelTemplate extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         restricSizePanel.add(centerPanel, c);
+        restricSizePanel.add(centerPanelSpinner, c);
 
         add(restricSizePanel, BorderLayout.CENTER);
         add(myStatusBar, BorderLayout.PAGE_END);

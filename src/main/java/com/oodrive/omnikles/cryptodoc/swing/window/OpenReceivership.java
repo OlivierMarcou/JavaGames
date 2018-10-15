@@ -26,7 +26,7 @@ import java.util.ArrayList;
 /**
  * Created by olivier on 20/03/17.
  */
-public class OpenReceivership extends JFrame {
+public class OpenReceivership extends JFrame{
 
     private AESService aes = AESService.getInstance();
     private SummaryTextTemplate page1Paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.page1.paragraphe1"));
@@ -36,15 +36,11 @@ public class OpenReceivership extends JFrame {
     private ButtonTemplate openBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.open"), Design.MAX_SIZE);
     private ButtonTemplate backBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.back"), Design.MAX_SIZE);
     private ButtonTemplate proxyConfigBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("config.button.proxy.button"), Design.MAX_SIZE);
-
     private GeneralTextTemplate infos = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.vide"));
-
     private SelectDepositPanel selectDepositPanel = new SelectDepositPanel(this);
-
     private CertificatesComboBox listCertificate = new CertificatesComboBox();
     private GeneralTextTemplate lblCertificates = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.list.certificate"));
     private GenaralPanelTemplate panel = null;
-
     private SummaryTextTemplate page3Paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.page3.paragraphe1"));
 
     public GeneralTextTemplate getPage3Paragraphe2() {
@@ -269,7 +265,9 @@ public class OpenReceivership extends JFrame {
         selectBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                panel.setLoading(true);
                 selectDepositPanel.parseFile(zipFileChooser());
+                panel.setLoading(false);
                 screenNumber = 2;
                 activateScreen();
             }
@@ -316,7 +314,7 @@ public class OpenReceivership extends JFrame {
             case 3:
                 one = false;
                 two = false;
-                three = true ;
+                three = true;
                 break;
         }
 
