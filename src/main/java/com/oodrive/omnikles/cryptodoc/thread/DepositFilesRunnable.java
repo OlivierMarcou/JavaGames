@@ -9,7 +9,6 @@ import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
-import org.json.JSONException;
 
 import javax.swing.*;
 import java.io.File;
@@ -72,14 +71,17 @@ public class DepositFilesRunnable extends Thread{
         List<String> certificatesB64 = null;
         try {
             certificatesB64 = ssl.getCertificatesB64WithJSessionId(Configuration.parameters.get("urlCertificat"));
-        } catch (JSONException e) {
-            JOptionPane.showMessageDialog(progressBar, CryptoDoc.textProperties.getProperty("message.error.json.text"),
-            CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(progressBar,
+                    CryptoDoc.textProperties.getProperty("message.error.json.text"),
+                    CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         }
+
         if(certificatesB64 == null || certificatesB64.size() <= 0) {
-            JOptionPane.showMessageDialog(progressBar.getParent(), CryptoDoc.textProperties.getProperty("message.error.nocertificate.text"),
+            JOptionPane.showMessageDialog(progressBar.getParent(),
+                    CryptoDoc.textProperties.getProperty("message.error.nocertificate.text"),
                     CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             throw new NullPointerException("Aucun certificat trouvé pour : " + Configuration.parameters.get("urlCertificat"));
         }
