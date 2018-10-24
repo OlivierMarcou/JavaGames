@@ -145,6 +145,7 @@ public class CryptoDoc {
                 + File.separatorChar
                 + "cryptodoc.conf");
         Configuration.proxy = new ProxyConfig();
+
         String content = Configuration.proxy.toString();
         Files.write(localPropertiesFile.toPath(), content.getBytes(), StandardOpenOption.CREATE);
     }
