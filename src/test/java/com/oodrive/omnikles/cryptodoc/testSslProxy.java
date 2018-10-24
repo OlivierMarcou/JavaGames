@@ -45,8 +45,8 @@ public class testSslProxy {
     public void testSystemproxyAuthOk(){
 
 //        System.setProperty("http.proxySet", "true");
-//        System.setProperty("http.proxyHost", "192.168.5.74");
-//        System.setProperty("http.proxyPort", "808");
+//        System.setProperty("http.proxyHost", "212.116.65.244");
+//        System.setProperty("http.proxyPort", "42441");
 //        System.setProperty("http.proxyUser", "oliv");
 //        System.setProperty("http.proxyPassword", "1234");
 //        System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "ntlm");

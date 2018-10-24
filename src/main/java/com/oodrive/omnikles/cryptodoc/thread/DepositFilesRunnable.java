@@ -12,7 +12,9 @@ import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
 import javax.swing.*;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -96,7 +98,7 @@ public class DepositFilesRunnable extends Thread{
                 List<KeyPair> keyPairs = new ArrayList<>();
                 for(String certificateB64: certificatesB64)
                     keyPairs.add(new KeyPair(certificateB64));
-                String pathCryptedKeyFile = Configuration.activFolder + File.separator + Configuration.FILENAME_CRYPTED_KEYS;
+                String pathCryptedKeyFile = Configuration.activFolder + File.separator + Configuration.FILENAME_FOLDERZIP + File.separator + Configuration.FILENAME_CRYPTED_KEYS;
                 byte[] symKey = cryptOkMarchesService.genereSymKeyFile(pathCryptedKeyFile, keyPairs);
                 enveloppe = cryptOkMarchesService.cryptFileWithSymKey(symKey, zip, pathCryptedKeyFile);
             }else{
@@ -126,6 +128,14 @@ public class DepositFilesRunnable extends Thread{
                     CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+        if(Configuration.isOkMarches) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_YYYY_hh_mm_ss");
+            File oldFile = new File(Configuration.activFolder + File.separator + Configuration.FILENAME_FOLDERZIP);
+            oldFile.renameTo(new File(Configuration.activFolder + File.separator + Configuration.FILENAME_FOLDERZIP
+                    + sdf.format(new Date())));
+        }
+
         Logs.sp("send ok");
         progressBar.finish(podFile);
         this.interrupt();

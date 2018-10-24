@@ -84,7 +84,8 @@ public class CryptOkMarchesService {
     public File cryptFileWithSymKey(byte[] rawkey, File zipToCrypt, String keyFile){
         byte[] buf = new byte[1024];
         String fileName = Configuration.parameters.get("fileName");
-        String cryptedZipfileName = Configuration.activFolder + File.separator + "ENVELOPPE.zip.crypt";
+        String cryptedZipfileName = Configuration.activFolder + File.separator
+                + Configuration.FILENAME_FOLDERZIP + File.separator + "ENVELOPPE.zip.crypt";
 
         // initialisation du moteur crypto
         // -> note l'algo 3DES est le plus commun sur les JVM dispos
@@ -107,7 +108,7 @@ public class CryptOkMarchesService {
             java.util.Arrays.fill(buf, (byte) 0);
             buf = new byte[1024];
 
-            File enveloppe = new File(Configuration.activFolder + File.separator + Configuration.parameters.get("fileName"));
+            File enveloppe = new File(Configuration.activFolder + File.separator + Configuration.FILENAME_FOLDERZIP + File.separator + Configuration.parameters.get("fileName"));
             FileOutputStream outfinalfile = new FileOutputStream(enveloppe);
             ZipOutputStream out = new ZipOutputStream(outfinalfile);
 
