@@ -241,48 +241,10 @@ public class SslConnexionService{
     }
 
     private HttpHost setConfigProxy(){
+
         if(Configuration.proxy.getHost() != null && !Configuration.proxy.getHost().isEmpty()
                 && Configuration.proxy.getPort() != 0){
             return new HttpHost(Configuration.proxy.getHost(), Configuration.proxy.getPort());
-        }
-        return null;
-    }
-
-    /**
-     * @return HttpHost if system proxy on or null
-     */
-    private HttpHost detectSystemProxy() {
-        if((System.getProperty("http.proxy.getHost()") != null && !System.getProperty("http.proxy.getHost()").equals("null"))
-            || (System.getProperty("https.proxy.getHost()") != null && !System.getProperty("https.proxy.getHost()").equals("null"))){
-            int port = 80;
-            String protocol = "http";
-            if( System.getProperty("https.proxy.getHost()") != null && !System.getProperty("https.proxy.getHost()").equals("null")){
-                port = 443;
-                protocol = "https";
-            }
-            if( System.getProperty(protocol + ".proxyPort") != null
-                    && !System.getProperty(protocol + ".proxyPort").equals("null") ) {
-                port = Integer.parseInt(System.getProperty(protocol + ".proxyPort"));
-            }
-            if (Configuration.proxy.getUser() == null || Configuration.proxy.getUser().isEmpty()){
-                Configuration.proxy.setUser(System.getProperty(protocol + ".proxy.getUser()"));
-            }
-            if (Configuration.proxy.getPassword() == null || Configuration.proxy.getPassword().isEmpty())
-                Configuration.proxy.setPassword(System.getProperty(protocol + ".proxyPassword"));
-
-            String defaultAuthType = "";
-            if (System.getProperty("jdk.http.auth.tunneling.disabledSchemes") != null
-                    && !System.getProperty("jdk.http.auth.tunneling.disabledSchemes").isEmpty()
-                    && !System.getProperty("jdk.http.auth.tunneling.disabledSchemes").equalsIgnoreCase("http")
-                    && !System.getProperty("jdk.http.auth.tunneling.disabledSchemes").equalsIgnoreCase("https")){
-                defaultAuthType = System.getProperty("jdk.http.auth.tunneling.disabledSchemes");
-            }
-            Configuration.proxy.setAuthenticationType(defaultAuthType);
-
-            Configuration.proxy.setHost(System.getProperty(protocol + ".proxy.getHost()"));
-            Configuration.proxy.setPort(port)  ;
-            HttpHost proxy = new HttpHost(Configuration.proxy.getHost(), Configuration.proxy.getPort(), protocol);
-            return proxy;
         }
         return null;
     }
