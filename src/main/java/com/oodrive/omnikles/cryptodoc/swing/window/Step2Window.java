@@ -35,7 +35,8 @@ public class Step2Window extends JFrame {
         texte = texte.replace("<organismName>", Configuration.parameters.get("organismName"));
         if(Configuration.parameters.get("liblot") != null
                 && !Configuration.parameters.get("liblot").isEmpty()
-                && !Configuration.parameters.get("liblot").equals("0")) {
+                && !Configuration.parameters.get("liblot").equals("0")
+                && !Configuration.parameters.get("liblot").equals("-1")) {
             String paragraphLot = CryptoDoc.textProperties.getProperty("depot.allpages.lot");
             paragraphLot = paragraphLot.replace("<liblot>", (Configuration.parameters.get("liblot") != null ? Configuration.parameters.get("liblot") : ""));
             texte = texte.replace("<lot>", paragraphLot);
