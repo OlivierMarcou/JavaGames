@@ -3,7 +3,6 @@ package com.oodrive.omnikles.cryptodoc.pojo;
 import com.oodrive.omnikles.cryptodoc.service.AESService;
 import com.oodrive.omnikles.cryptodoc.utils.Base64;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.kerby.asn1.Asn1;
 import org.apache.kerby.asn1.parse.Asn1Container;
 import org.apache.kerby.asn1.parse.Asn1Item;
