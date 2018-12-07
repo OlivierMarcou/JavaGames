@@ -47,7 +47,7 @@ public class GenaralPanelTemplate extends JPanel {
 
     public GenaralPanelTemplate(JFrame parent) {
         centerPanelSpinner.setVisible(false);
-        setBackground(Design.BG_COLOR);
+        setBackground(Design.BG_COLOR4);
         setForeground(Design.FG_COLOR);
         centerPanel.setBackground(Design.BG_COLOR);
         centerPanel.setForeground(Design.FG_COLOR);
