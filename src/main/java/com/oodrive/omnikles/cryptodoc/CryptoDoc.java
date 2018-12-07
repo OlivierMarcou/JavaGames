@@ -54,7 +54,8 @@ public class CryptoDoc {
         if(Configuration.parameters.get("action").equals("depot") || Configuration.parameters.get("action").equals("depotMarches")) {
             if(Configuration.parameters.get("action").equals("depotMarches"))
                 Configuration.isOkMarches=true;
-            new IntroWindow();
+            );
+            changeLookAndFeel(3, new IntroWindow());
         }
 
         if(Configuration.parameters.get("action").equals("decrypt") || Configuration.parameters.get("action").equals("decryptMarches")){
@@ -64,7 +65,7 @@ public class CryptoDoc {
             }
             openReceivership.setVisible(true);
 
-          //  changeLookAndFeel(1, openReceivership);
+            changeLookAndFeel(3, openReceivership);
         }
 
         if(Configuration.parameters.get("action").equals("src/main/test")){
