@@ -9,17 +9,22 @@ import java.awt.*;
 public class SpinnerPanel extends JPanel{
 
     private ImageIcon spinnerIcon =  new ImageIcon(new ImageIcon(OpenReceivership.class.getResource("/load.gif"))
-            .getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+            .getImage().getScaledInstance(64, 64, Image.SCALE_DEFAULT));
     SummaryTextTemplate label = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.loading.paragraphe1"));
     public SpinnerPanel(){
+        setPreferredSize(new Dimension(200,200));
         setOpaque(false);
         setFocusable(false);
-        setLayout(new BorderLayout());
+        setLayout(new FlowLayout());
+
         JLabel loadingIcon = new JLabel();
+        loadingIcon.setPreferredSize(new Dimension(64,150));
         loadingIcon.setOpaque(false);
         loadingIcon.setIcon(spinnerIcon);
-        add(loadingIcon, BorderLayout.CENTER);
-        add(label, BorderLayout.SOUTH);
+
+        add(loadingIcon);
+        add(label);
+
         setVisible(false);
     }
 }

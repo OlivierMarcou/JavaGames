@@ -32,6 +32,15 @@ public class OpenReceivership extends JFrame{
     private SummaryTextTemplate page1Paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.page1.paragraphe1"));
     private ButtonTemplate selectBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.select"), Design.MAX_SIZE);
     private GeneralTextTemplate page2Paragraphe1 = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.paragraphe1"));
+
+    public int getScreenNumber() {
+        return screenNumber;
+    }
+
+    public void setScreenNumber(int screenNumber) {
+        this.screenNumber = screenNumber;
+    }
+
     private int screenNumber = 1;
     private ButtonTemplate openBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.open"), Design.MAX_SIZE);
     private ButtonTemplate backBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("open.page1.button.back"), Design.MAX_SIZE);
@@ -106,7 +115,6 @@ public class OpenReceivership extends JFrame{
         GridBagConstraints c = new GridBagConstraints();
         setContentPane(panel);
         loadingIcon.setIcon(new ImageIcon(getClass().getResource("/load.gif")));
-
         activateScreen();
 
         int line = 0;
@@ -265,11 +273,20 @@ public class OpenReceivership extends JFrame{
         selectBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setLoading(true);
-                selectDepositPanel.parseFile(zipFileChooser());
-                panel.setLoading(false);
-                screenNumber = 2;
-                activateScreen();
+                File zipFile = zipFileChooser();
+                if(zipFile != null) {
+                    panel.setLoading(true);
+                    Thread runParsing = new Thread() {
+                        @Override
+                        public void run() {
+                            selectDepositPanel.parseFile(zipFile);
+                            panel.setLoading(false);
+                            screenNumber = 2;
+                            activateScreen();
+                        }
+                    };
+                    runParsing.start();
+                }
             }
         });
         backBtn.addActionListener(new ActionListener() {
@@ -296,7 +313,7 @@ public class OpenReceivership extends JFrame{
         return null;
     }
 
-    private void activateScreen(){
+    public void activateScreen(){
         boolean one = true;
         boolean two = false;
         boolean three = false;
