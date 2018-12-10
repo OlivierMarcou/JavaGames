@@ -88,6 +88,7 @@ public class DecryptFilesRunnable extends Thread{
                         }
                     }
                 }else{
+                    isDecrypted = true;
                     KeyPair kp = null;
                     try {
                         kp = aes.getKeyPairWithPrivateKey(certificates.getAlias(),"");
