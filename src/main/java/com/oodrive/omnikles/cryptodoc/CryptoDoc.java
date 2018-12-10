@@ -54,7 +54,6 @@ public class CryptoDoc {
         if(Configuration.parameters.get("action").equals("depot") || Configuration.parameters.get("action").equals("depotMarches")) {
             if(Configuration.parameters.get("action").equals("depotMarches"))
                 Configuration.isOkMarches=true;
-            );
             changeLookAndFeel(3, new IntroWindow());
         }
 
