@@ -241,12 +241,11 @@ public class AESService {
         }
         try {
             Cipher dcipher = null;
-            String cipherAlorithme = cipherAlgorithm;
             if(CertificatesUtils.provider != null) {
                 Logs.sp("CertificatesUtils.provider " + CertificatesUtils.provider.getName() + " " + CertificatesUtils.provider.getInfo());
-                dcipher = Cipher.getInstance(cipherAlorithme, CertificatesUtils.provider);
+                dcipher = Cipher.getInstance(cipherAlgorithm, CertificatesUtils.provider);
             }else{
-                dcipher = Cipher.getInstance(cipherAlorithme);
+                dcipher = Cipher.getInstance(cipherAlgorithm);
             }
             dcipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivateKey());
             Logs.sp( "PK " + keyPair.getPrivateKey());
