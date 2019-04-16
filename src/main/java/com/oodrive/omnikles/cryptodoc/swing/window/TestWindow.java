@@ -38,7 +38,26 @@ public class TestWindow extends JFrame {
     CryptOkMarchesService ck = CryptOkMarchesService.getInstance();
     DecryptOkMarchesService dk = DecryptOkMarchesService.getInstance();
     private File zipFile;
+
+    public File getP12() {
+        return p12;
+    }
+
+    public void setP12(File p12) {
+        this.p12 = p12;
+    }
+
     private File p12;
+
+    public String getP12Password() {
+        return p12Password;
+    }
+
+    public void setP12Password(String p12Password) {
+        this.p12Password = p12Password;
+    }
+
+    private String p12Password;
 
     public TestWindow(){
         setSize(800,800);
@@ -118,7 +137,8 @@ public class TestWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 CryptoTests cryptoTests = new CryptoTests();
                 try {
-                    cryptoTests.decryptNew(zipFile, new KeyPair(p12.getAbsolutePath(), "1234"));
+                    zipFile =  fileChooser().getAbsoluteFile();
+                    cryptoTests.decryptNew(zipFile, new KeyPair(p12.getAbsolutePath(), p12Password));
                 } catch (KeyStoreException e1) {
                     e1.printStackTrace();
                 } catch (IOException e1) {
@@ -145,7 +165,29 @@ public class TestWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 zipFile =  fileChooser().getAbsoluteFile();
-//                Logs.spDump(dk.openEnveloppe(zipFile, new DepositStatus({"idCand":2013621,"ouvertcand":1,"idFournisseur":98930,"idlot":999252833,"numLot":1,"nomFournisseur":"titi","dateReponse":1516639975000}));
+                if(p12 != null){
+                    try {
+                        KeyPair kp = new KeyPair(p12.getAbsolutePath(), p12Password);
+                        dk.setP12(kp);
+                    } catch (KeyStoreException e1) {
+                        e1.printStackTrace();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (CertificateException e1) {
+                        e1.printStackTrace();
+                    } catch (NoSuchAlgorithmException e1) {
+                        e1.printStackTrace();
+                    } catch (UnrecoverableKeyException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                dk.openEnveloppe(zipFile, new DepositStatus(new String[]{"idCand:2013621"
+                        ,"ouvertcand:1"
+                        ,"idFournisseur:98930"
+                        ,"idlot:999252833"
+                        ,"numLot:1"
+                        ,"nomFournisseur:titi"
+                        ,"dateReponse:1516639975000"}));
             }
         });
 
@@ -219,6 +261,7 @@ public class TestWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 p12 = fileChooser();
+                new PinCodeWindow(TestWindow.this);
             }
         });
 

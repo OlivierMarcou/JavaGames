@@ -509,7 +509,10 @@ public class SslConnexionService{
         try {
             depositStatusesArray = obj.getJSONArray("data");
         }catch(JSONException e){
-            throw new ConnectionClosedException("\n" + obj.getJSONObject("status").get("message"));
+            if(obj.getJSONObject("status") != null)
+                throw new ConnectionClosedException("\n" + obj.getJSONObject("status").get("message"));
+            else
+                throw new ConnectionClosedException("\n error on json status return : " + jsonDepositStatus);
         }
         HashMap<Long, DepositStatus> depositStatuses = new HashMap<>();
         for(int i=0; i<depositStatusesArray.length(); i++){

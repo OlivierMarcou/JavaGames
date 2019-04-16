@@ -3,6 +3,7 @@ package com.oodrive.omnikles.cryptodoc.service;
 
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
+import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.pojo.SecretAndPublicKey;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
 
@@ -26,6 +27,17 @@ public class DecryptOkMarchesService {
     private AESService aes = AESService.getInstance();
 
     private DecryptOkMarchesService(){}
+
+
+    public KeyPair getP12() {
+        return p12;
+    }
+
+    public void setP12(KeyPair p12) {
+        this.p12 = p12;
+    }
+
+    private KeyPair p12 = null;
 
     public String makeCr(String[] mydet) {
         String mycr = "";
@@ -125,7 +137,7 @@ public class DecryptOkMarchesService {
                 throw new IOException("Could not completely read file " + keyUnzippedFile);
             }
             is.close();
-            SecretAndPublicKey secretAndPublicKey = new SecretAndPublicKey(new String(bytes));
+            SecretAndPublicKey secretAndPublicKey = new SecretAndPublicKey(new String(bytes), p12);
             details[7] = secretAndPublicKey.getPublicCertificate();
             SecretKeySpec skeySpec = new SecretKeySpec(secretAndPublicKey.getSecretKey(), Configuration.CIPHER_KEY_ALGORITHME_MARCHES);
 

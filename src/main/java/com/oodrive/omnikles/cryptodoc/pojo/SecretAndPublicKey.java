@@ -8,6 +8,7 @@ import org.apache.kerby.asn1.parse.Asn1Container;
 import org.apache.kerby.asn1.parse.Asn1Item;
 import org.apache.kerby.asn1.parse.Asn1ParseResult;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -34,7 +35,7 @@ public class SecretAndPublicKey {
         this.publicCertificate = publicCertificate;
     }
 
-    public SecretAndPublicKey(String p7mFile){
+    public SecretAndPublicKey(String p7mFile, KeyPair p12 ){
         int indexCert = 0;
         String certAanalyser = "";
         byte[] bytedecrypted = null;
@@ -47,7 +48,14 @@ public class SecretAndPublicKey {
                 certAanalyser = certAanalyser.replaceAll("-----BEGIN CERTIFICATE-----", "");
                 certAanalyser = certAanalyser.replaceAll("-----END CERTIFICATE-----", "");
                 publicCertificate = certAanalyser;
-                List<KeyPair> kps = aes.getInstalledCertificates();
+                List<KeyPair> kps = null;
+                if(Configuration.parameters.get("action").equals("test")
+                        && p12 != null){
+                    kps = new ArrayList<>();
+                    kps.add(p12);
+                }
+                else
+                    kps = aes.getInstalledCertificates();
                 for(KeyPair kp:kps){
                     String certInstalled = kp.getX509CertificateB64().replaceAll("[\r\n]+", "");
                     certInstalled = certInstalled.replaceAll("-----BEGIN CERTIFICATE-----", "");
@@ -83,8 +91,6 @@ public class SecretAndPublicKey {
             }
         }
     }
-
-
 
     private static byte[] getAsn1Key(Asn1Container container) {
         List<Asn1ParseResult> parseResults = container.getChildren();
