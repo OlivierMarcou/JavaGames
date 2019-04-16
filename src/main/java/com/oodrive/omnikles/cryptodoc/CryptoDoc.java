@@ -67,7 +67,7 @@ public class CryptoDoc {
             changeLookAndFeel(3, openReceivership);
         }
 
-        if(Configuration.parameters.get("action").equals("src/main/test")){
+        if(Configuration.parameters.get("action").equals("test")){
             TestWindow test = new TestWindow();
             changeLookAndFeel(0, test);
         }
