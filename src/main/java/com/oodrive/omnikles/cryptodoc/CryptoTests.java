@@ -29,15 +29,11 @@ public class CryptoTests {
             byte[] content  = zs.getContentFile(new ZipFile(zip), Configuration.FILENAME_CRYPTED_KEYS);
             if(pk != null) {
                 Logs.sp("Begin decode sercret key ...");
-//                try {
-//                    secret = aes.decryptSecretKey(content, new KeyPair(pk.getCertificate(), pk.getPrivateKey(), pk.getAlias()));
-//                } catch (CertificateException e) {
-//                    e.printStackTrace();
-//                } catch (ClassNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    secret = aes.decryptSecretKey(new KeyPair(pk.getCertificate(), pk.getPrivateKey(), pk.getAlias()), content , Configuration.CIPHER_ALGORITHME);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 Logs.sp("End decode sercret key ...");
                 if(secret == null){
                     error(CryptoDoc.textProperties.getProperty("open.page2.decrypt.secret.fail").replace("<filename>",zip.getName()));
