@@ -24,7 +24,9 @@ public class IntroWindow extends JFrame {
     private ButtonTemplate annulBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.annul"), Design.MAX_SIZE);
     private ButtonTemplate activfolderBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("depot.page1.button.activfolder"), Design.MAX_SIZE);
     private ButtonTemplate proxyConfigBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("config.button.proxy.button"), Design.MAX_SIZE);
+    private ButtonTemplate changeLookBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("config.button.proxy.look"), Design.MAX_SIZE);
 
+    private int laf = CryptoDoc.getLaf();
     private JTextField activFolderTxt = new JTextField();
 
     public IntroWindow(){
@@ -114,6 +116,28 @@ public class IntroWindow extends JFrame {
         c.insets = new Insets(10, 10, 10, -280);
         centerPanel.add(proxyConfigBtn, c);
 
+        if(Boolean.parseBoolean(Configuration.parameters.get("look")) == true){
+            c.fill = GridBagConstraints.NONE;
+            c.anchor = GridBagConstraints.LINE_END;
+            c.weightx=0;
+            c.weighty=0;
+            c.gridx=0;
+            c.gridy=1;
+            c.gridwidth=1;
+            c.insets = new Insets(10, 10, 10, -280);
+            centerPanel.add(changeLookBtn, c);
+
+            changeLookBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(laf >= 3)
+                        laf=0;
+                    else
+                        laf++;
+                    CryptoDoc.changeLookAndFeel(laf, IntroWindow.this);
+                }
+            });
+        }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Input
