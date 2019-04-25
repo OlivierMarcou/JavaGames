@@ -91,7 +91,7 @@ public class CryptoDoc {
         Logs.sp("End Init");
     }
 
-    private static int getLaf() {
+    public static int getLaf() {
         int laf = 3;
         if(Configuration.parameters.get("laf") != null){
             try{

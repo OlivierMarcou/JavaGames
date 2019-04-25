@@ -51,6 +51,9 @@ public class OpenReceivership extends JFrame{
     private GeneralTextTemplate lblCertificates = new GeneralTextTemplate(CryptoDoc.textProperties.getProperty("open.page2.list.certificate"));
     private GenaralPanelTemplate panel = null;
     private SummaryTextTemplate page3Paragraphe1 = new SummaryTextTemplate(CryptoDoc.textProperties.getProperty("open.page3.paragraphe1"));
+    private ButtonTemplate changeLookBtn = new ButtonTemplate(CryptoDoc.textProperties.getProperty("config.button.proxy.look"), Design.MAX_SIZE);
+
+    private int laf = CryptoDoc.getLaf();
 
     public GeneralTextTemplate getPage3Paragraphe2() {
         return page3Paragraphe2;
@@ -176,6 +179,27 @@ public class OpenReceivership extends JFrame{
         centerPanel.add(proxyConfigBtn, c);
 
 
+        if(Boolean.parseBoolean(Configuration.parameters.get("look")) == true){
+
+            line++;
+            c.fill = GridBagConstraints.BOTH;
+            c.anchor = GridBagConstraints.CENTER;
+            c.gridx=0;
+            c.gridy=line;
+            c.gridwidth=1;
+            centerPanel.add(changeLookBtn, c);
+
+            changeLookBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(laf >= 3)
+                        laf=0;
+                    else
+                        laf++;
+                    CryptoDoc.changeLookAndFeel(laf, OpenReceivership.this);
+                }
+            });
+        }
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx=0;
