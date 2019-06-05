@@ -142,7 +142,7 @@ public class SslConnexionService{
 
         String filename = "pod.";
         if(Configuration.isOkMarches){
-            filename += "xml";
+            filename += "pdf";
         }else{
             for(HeaderElement he:header.getElements()){
                 if(he.getName().equalsIgnoreCase("attachment"))
