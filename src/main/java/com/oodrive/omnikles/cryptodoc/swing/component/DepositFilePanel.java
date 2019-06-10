@@ -6,6 +6,7 @@ import com.oodrive.omnikles.cryptodoc.service.AESService;
 import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.json.JSONException;
 
 import javax.swing.*;
@@ -226,6 +227,11 @@ public class DepositFilePanel extends JPanel{
         }else{
             ssl.updateExchangeDocumentState(depositStatus.getId(), Configuration.parameters.get("urlUpdateStatus"), depositStatus.getLotId());
         }
+        forceDeleteFile(cryptedFile);
+        forceDeleteFile(new File(decryptedFoldernameDestination
+                + File.separatorChar
+                + Configuration.FILENAME_CRYPTED_KEYS));
+        forceDeleteFile(file);
     }
 
     private void error(String msg){
@@ -236,6 +242,13 @@ public class DepositFilePanel extends JPanel{
     private int chooser(String msg){
         return JOptionPane.showConfirmDialog(this, msg,
                 CryptoDoc.textProperties.getProperty("message.warning.title"), JOptionPane.YES_NO_OPTION);
+    }
+    private void forceDeleteFile(File file) {
+        try {
+            FileDeleteStrategy.FORCE.delete(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

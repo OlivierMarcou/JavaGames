@@ -6,6 +6,7 @@ import com.oodrive.omnikles.cryptodoc.pojo.DepositStatus;
 import com.oodrive.omnikles.cryptodoc.pojo.KeyPair;
 import com.oodrive.omnikles.cryptodoc.pojo.SecretAndPublicKey;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
+import org.apache.commons.io.FileDeleteStrategy;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -294,7 +295,13 @@ public class DecryptOkMarchesService {
             // nombre de documents dans l'enveloppe
             details[3] = String.valueOf(nbdocs);
             // Verifier les signatures des differents fichiers
-            tempsFolder.delete();
+            File racineFolder = new File(enveloppe.getParent()+ File.separator);
+
+            for (File file : racineFolder.listFiles()) {
+                if(!file.isDirectory())
+                    FileDeleteStrategy.FORCE.delete(file);
+            }
+            FileDeleteStrategy.FORCE.delete(tempsFolder);
         } catch (IllegalStateException ex4) {
             ex4.printStackTrace();
             details = null;
