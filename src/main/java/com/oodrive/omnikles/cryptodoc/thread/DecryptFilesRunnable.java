@@ -59,7 +59,8 @@ public class DecryptFilesRunnable extends Thread{
                     File destination = new File(selectDeposit.get(i).getFile().getParent() + File.separator + depositStatus.getNumLot() + File.separator + depositStatus.getSupplierName());
                     int choose = -1;
                     if(destination.exists() && destination.isDirectory())
-                        choose = chooser(CryptoDoc.textProperties.getProperty("message.chooser.folder.exist").replace("<depot>", depositStatus.getFilename()));
+                        choose = chooser(CryptoDoc.textProperties.getProperty("message.chooser.folder.exist")
+                                    .replace("<depot>", depositStatus.getFilename()));
                     if(choose != 1)
                     {
                         isDecrypted = true;

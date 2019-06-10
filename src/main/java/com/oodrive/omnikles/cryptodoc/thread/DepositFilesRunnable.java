@@ -9,12 +9,12 @@ import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.service.ZipService;
 import com.oodrive.omnikles.cryptodoc.swing.component.AnimatedProgressBar;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
+import org.apache.commons.io.FileDeleteStrategy;
 
 import javax.swing.*;
 import java.io.File;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -128,17 +128,21 @@ public class DepositFilesRunnable extends Thread{
                     CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        if(Configuration.isOkMarches) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_YYYY_hh_mm_ss");
-            File oldFile = new File(Configuration.activFolder + File.separator + Configuration.FILENAME_FOLDERZIP);
-            oldFile.renameTo(new File(Configuration.activFolder + File.separator + Configuration.FILENAME_FOLDERZIP
-                    + sdf.format(new Date())));
-        }
-
+        forceDeleteFile(zip);
+        forceDeleteFile(enveloppe);
+        forceDeleteFile(new File(Configuration.activFolder + File.separator + Configuration.FILENAME_CRYPTED_ZIP));
+        forceDeleteFile(new File(Configuration.activFolder + File.separator + Configuration.FILENAME_CRYPTED_KEYS));
         Logs.sp("send ok");
         progressBar.finish(podFile);
         this.interrupt();
+    }
+
+    private void forceDeleteFile(File file) {
+        try {
+            FileDeleteStrategy.FORCE.delete(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
