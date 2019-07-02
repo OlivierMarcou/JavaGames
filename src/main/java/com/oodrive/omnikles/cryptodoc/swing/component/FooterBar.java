@@ -2,12 +2,15 @@ package com.oodrive.omnikles.cryptodoc.swing.component;
 
 import com.oodrive.omnikles.cryptodoc.pojo.Configuration;
 import com.oodrive.omnikles.cryptodoc.pojo.Design;
+import com.oodrive.omnikles.cryptodoc.swing.component.template.easter.MenuEasterEggs;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by olivier on 06/03/17.
@@ -19,7 +22,17 @@ public class FooterBar extends JMenuItem{
     private JLabel footerWestTxt = new JLabel();
     private LineProgressBar lineProgressBar = null;
 
+    private int count = 0;
     public FooterBar(JFrame parent) {
+        addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            count++;
+            if(count == 5) {
+                new MenuEasterEggs();
+                count = 0;
+            }
+        }
+    });
         setBackground(Color.DARK_GRAY);
         setForeground(Color.WHITE);
         footerEastTxt.setForeground(Color.WHITE);
