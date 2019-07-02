@@ -10,6 +10,7 @@ import com.oodrive.omnikles.cryptodoc.service.SslConnexionService;
 import com.oodrive.omnikles.cryptodoc.swing.component.DepositFilePanel;
 import com.oodrive.omnikles.cryptodoc.swing.window.OpenReceivership;
 import com.oodrive.omnikles.cryptodoc.utils.Logs;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -50,7 +51,12 @@ public class DecryptFilesRunnable extends Thread{
         errorOpener = null;
         boolean isDecrypted = false;
         parent.getPage3Paragraphe2().setText(CryptoDoc.textProperties.getProperty("open.page3.decrypt"));
+
+
+        File racineFolder = null ;
         for(int i =0 ; i< selectDeposit.size(); i++){
+
+            racineFolder = selectDeposit.get(i).getFile().getParentFile();
             if(selectDeposit.get(i).getCheck().isSelected()) {
                 Logs.sp("Selected zip :  " + selectDeposit.get(i).getFile().getName());
                 if(Configuration.isOkMarches){
@@ -109,6 +115,15 @@ public class DecryptFilesRunnable extends Thread{
                         e.printStackTrace();
                         errorOpener += e.getMessage()+" <br>";
                     }
+                }
+            }
+        }
+        for (File file : racineFolder.listFiles()) {
+            if(!file.isDirectory()) {
+                try {
+                    FileDeleteStrategy.FORCE.delete(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
