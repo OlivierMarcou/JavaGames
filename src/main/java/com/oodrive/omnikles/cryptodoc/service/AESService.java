@@ -89,8 +89,6 @@ public class AESService {
             }
             try {
                 contentZip.add(encryptFileWithSecretKey(depositZipFile));
-            } catch (IOException e) {
-                e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             } catch (InvalidKeyException e) {
@@ -105,6 +103,7 @@ public class AESService {
                 e.printStackTrace();
             }
             File enveloppeZip = new File(Configuration.activFolder + File.separatorChar
+                    + Configuration.FILENAME_FOLDERZIP + File.separator
                     + Configuration.FILENAME_ZIP+Configuration.parameters.get("ids")+".zip");
             zs.setProgressBar(progressBar);
             zs.setJobNumber(2);
@@ -132,14 +131,24 @@ public class AESService {
     }
 
     public File encryptFileWithSecretKey(File file)
-            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidParameterSpecException, IOException, BadPaddingException, IllegalBlockSizeException {
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidParameterSpecException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance(Configuration.CRYPTED_KEY_ALGORITHME);
         cipher.init(Cipher.ENCRYPT_MODE, secret);
-        FileInputStream fin1 = new FileInputStream(file);
+        FileInputStream fin1 = null;
+        try {
+            fin1 = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         File cryptedFile = new File(Configuration.activFolder
-                + File.separatorChar
+                + File.separatorChar + Configuration.FILENAME_FOLDERZIP + File.separatorChar
                 + Configuration.FILENAME_CRYPTED_ZIP);
-        FileOutputStream fout = new FileOutputStream(cryptedFile);
+        FileOutputStream fout = null;
+        try {
+            fout = new FileOutputStream(cryptedFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         CipherOutputStream cos = new CipherOutputStream(fout, cipher);
 
         byte[] block = new byte[2048];
@@ -147,25 +156,42 @@ public class AESService {
         long size = 0 ;
         int percentMem = -1;
         long fileSize = file.length()/1024;
-        while ((i = fin1.read(block)) != -1) {
-            cos.write(block, 0, i);
-            if(progressBar != null){
-                size += block.length/1024;
-                int percent = maxPercent;
-                if(fileSize > 0) {
-                    percent = Math.round((size * maxPercent) / fileSize);
-                }
-                if(percentMem != percent){
-                    progressBar.setActualIcon(percent + (maxPercent*jobNumber));
-                    percentMem = percent;
-                    progressBar.setText(CryptoDoc.textProperties.getProperty("depot.page4.sending") +
-                            (percent + (maxPercent*jobNumber)) + "%");
+        try{
+            while ((i = fin1.read(block)) != -1) {
+                cos.write(block, 0, i);
+                if(progressBar != null){
+                    size += block.length/1024;
+                    int percent = maxPercent;
+                    if(fileSize > 0) {
+                        percent = Math.round((size * maxPercent) / fileSize);
+                    }
+                    if(percentMem != percent){
+                        progressBar.setActualIcon(percent + (maxPercent*jobNumber));
+                        percentMem = percent;
+                        progressBar.setText(CryptoDoc.textProperties.getProperty("depot.page4.sending") +
+                                (percent + (maxPercent*jobNumber)) + "%");
+                    }
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                cos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fin1.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fout.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        cos.close();
-        fin1.close();
-        fout.close();
 
         return cryptedFile;
     }
