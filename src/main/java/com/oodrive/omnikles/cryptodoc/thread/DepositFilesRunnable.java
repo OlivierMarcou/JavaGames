@@ -128,10 +128,12 @@ public class DepositFilesRunnable extends Thread{
                     CryptoDoc.textProperties.getProperty("message.error.title"), JOptionPane.ERROR_MESSAGE);
             return;
         }
-        forceDeleteFile(zip);
-        forceDeleteFile(enveloppe);
-        forceDeleteFile(new File(Configuration.activFolder + File.separator + Configuration.FILENAME_CRYPTED_ZIP));
-        forceDeleteFile(new File(Configuration.activFolder + File.separator + Configuration.FILENAME_CRYPTED_KEYS));
+        forceDeleteFile(new File(Configuration.activFolder + File.separator
+                + Configuration.FILENAME_FOLDERZIP + File.separator + Configuration.FILENAME_CRYPTED_ZIP));
+        forceDeleteFile(new File(Configuration.activFolder + File.separator
+                + Configuration.FILENAME_FOLDERZIP + File.separator + "ENVELOPPE.zip.crypt"));
+        forceDeleteFile(new File(Configuration.activFolder + File.separator
+                + Configuration.FILENAME_FOLDERZIP + File.separator + Configuration.FILENAME_CRYPTED_KEYS));
         Logs.sp("send ok");
         progressBar.finish(podFile);
         this.interrupt();
