@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.URL;
 
 //le jeux...
 public class Demineur
@@ -53,7 +52,7 @@ public class Demineur
   //type == 2 -> Intermediaire
   //type == 3 -> Expert
   //type == 4 -> Personnalise
-  public Demineur(int hauteur, int largeur, int mines, int type) {
+  public Demineur(int hauteur, int largeur, int mines, int type){
     HAUTEUR = hauteur;
     LARGEUR = largeur;
     nCases = HAUTEUR * LARGEUR;
@@ -62,15 +61,11 @@ public class Demineur
     jeux = new DeminCase[HAUTEUR][LARGEUR];
 
     //Recuperer les gif dans le fichier .jar
-    URL location;
-    location = ClassLoader.getSystemResource("Images/cool.gif");
-    cool = new ImageIcon(location);
-    location = ClassLoader.getSystemResource("Images/oups.gif");
-    oups = new ImageIcon(location);
-    location = ClassLoader.getSystemResource("Images/boum.gif");
-    boum = new ImageIcon(location);
-    location = ClassLoader.getSystemResource("Images/win.gif");
-    win = new ImageIcon(location);
+
+    cool = new ImageIcon(this.getClass().getResource("Images/cool.gif"));
+    oups =  new ImageIcon(this.getClass().getResource("Images/oups.gif"));
+    boum =  new ImageIcon(this.getClass().getResource("Images/boum.gif"));
+    win =  new ImageIcon(this.getClass().getResource("Images/win.gif"));
 
     //creation des cases
     for (int i = 0; i < HAUTEUR; i++) {
