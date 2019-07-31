@@ -62,10 +62,10 @@ public class Demineur
 
     //Recuperer les gif dans le fichier .jar
 
-    cool = new ImageIcon(this.getClass().getResource("Images/cool.gif"));
-    oups =  new ImageIcon(this.getClass().getResource("Images/oups.gif"));
-    boum =  new ImageIcon(this.getClass().getResource("Images/boum.gif"));
-    win =  new ImageIcon(this.getClass().getResource("Images/win.gif"));
+    cool = new ImageIcon(this.getClass().getResource("/images/cool.gif"));
+    oups =  new ImageIcon(this.getClass().getResource("/images/oups.gif"));
+    boum =  new ImageIcon(this.getClass().getResource("/images/boum.gif"));
+    win =  new ImageIcon(this.getClass().getResource("/images/win.gif"));
 
     //creation des cases
     for (int i = 0; i < HAUTEUR; i++) {
