@@ -64,8 +64,8 @@ class Gagne extends JFrame
 		JLabel jl2=new JLabel("Vous avez gagne !", (int) JLabel.CENTER_ALIGNMENT);
 		
 		//Creation des JLabel contenant les images
-		JLabel jl_etoile=new JLabel(new ImageIcon(this.getClass().getResource("/image/etoile.gif")));
-		JLabel jl_etoile2=new JLabel(new ImageIcon(this.getClass().getResource("/image/etoile2.gif")));
+		JLabel jl_etoile=new JLabel(new ImageIcon(this.getClass().getResource("/images/etoile.gif")));
+		JLabel jl_etoile2=new JLabel(new ImageIcon(this.getClass().getResource("/images/etoile2.gif")));
 		
 		//Creation des JPanel
 		JPanel jp=new JPanel(new BorderLayout());

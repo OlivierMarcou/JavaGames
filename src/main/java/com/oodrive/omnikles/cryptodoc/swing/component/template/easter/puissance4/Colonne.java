@@ -28,7 +28,7 @@ class Colonne extends JPanel
 		//on initialise le tableau de valeurs correspondant
 		tab=new int[7];
 		//on cree le bouton et on lui affecte l'image de la fleche
-		this.jb=new JButton(new ImageIcon(this.getClass().getResource("/image/fleche.gif")));
+		this.jb=new JButton(new ImageIcon(this.getClass().getResource("/images/fleche.gif")));
 		
 		//creation de l'ecouteur pour le bouton d'ajout dans la colonne
 		ActionListener al=new ActionListener(){
@@ -80,7 +80,7 @@ class Colonne extends JPanel
 				//si la colonne est pleine apres l'ajout
 				if (estPleine())
 					//on change l'image placee sur le bouton
-					jb.setIcon(new ImageIcon(this.getClass().getResource("/image/croix.gif")));
+					jb.setIcon(new ImageIcon(this.getClass().getResource("/images/croix.gif")));
 			}
 		};
 		
@@ -99,7 +99,7 @@ class Colonne extends JPanel
 		for (int i=6;i>=0;i--)
 		{
 			//on instancie le JLabel
-			this.jl_case[i]=new JLabel(new ImageIcon(this.getClass().getResource("/image/vide.gif")));
+			this.jl_case[i]=new JLabel(new ImageIcon(this.getClass().getResource("/images/vide.gif")));
 			//et on le rajoute dans le JPanel
 			(this.jp).add(this.jl_case[i]);
 		}
@@ -118,7 +118,7 @@ class Colonne extends JPanel
 	public void ajouter(int joueur)
 	{
 		//on affiche l'image correspondant au joueur courant
-		this.jl_case[hauteur].setIcon(new ImageIcon(this.getClass().getResource("/image/" +joueur+".gif")));
+		this.jl_case[hauteur].setIcon(new ImageIcon(this.getClass().getResource("/images/" +joueur+".gif")));
 		//on affecte sa valeur dans le tableau correspondant
 		this.tab[hauteur]=joueur;
 	
@@ -182,7 +182,7 @@ class Colonne extends JPanel
 		//on vide toutes les cases
 		for (int i=0;i<7;i++)
 		{
-			jl_case[i].setIcon(new ImageIcon(this.getClass().getResource("/image/vide.gif")));
+			jl_case[i].setIcon(new ImageIcon(this.getClass().getResource("/images/vide.gif")));
 			tab[i]=0;
 		}
 		//on reactive le bouton de la colonne
@@ -190,6 +190,6 @@ class Colonne extends JPanel
 		//on reinitialise le nombre d'elements dans la colonne
 		this.hauteur=0;
 		//et on remet l'icene de fleche sur le bouton
-		this.jb.setIcon(new ImageIcon(this.getClass().getResource("/image/fleche.gif")));
+		this.jb.setIcon(new ImageIcon(this.getClass().getResource("/images/fleche.gif")));
 	}
 }
