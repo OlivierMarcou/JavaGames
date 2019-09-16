@@ -10,6 +10,8 @@ import java.security.cert.X509Certificate;
  */
 public class CertificateInformations {
 
+    private static String BEGIN_CERTIFICATE = "-----BEGIN CERTIFICATE-----";
+    private static String END_CERTIFICATE = "-----END CERTIFICATE-----";
     private X509Certificate x509Certificate;
 
     public X509Certificate getX509Certificate() {
@@ -38,6 +40,11 @@ public class CertificateInformations {
         } catch (CertificateException e) {
             e.printStackTrace();
         }
+        if(b64Certificate.indexOf(BEGIN_CERTIFICATE) == -1)
+            b64Certificate =  BEGIN_CERTIFICATE +"\n"+b64Certificate;
+        if(b64Certificate.indexOf(END_CERTIFICATE) == -1)
+            b64Certificate = b64Certificate +"\n"+END_CERTIFICATE ;
+
         byte[] bytes=b64Certificate.getBytes();
         try {
             this.x509Certificate = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(bytes));
@@ -46,5 +53,20 @@ public class CertificateInformations {
         }
 
     }
+
+	private String insertIntoString(String string, String insert, int splitLength) {
+		if(splitLength <= 0) {
+			return string;
+		}
+		String result = new String();
+		for (int i = 0; i < string.length() - 1; i += splitLength) {
+			if(i + splitLength <= string.length() - 1) {
+				result += string.substring(i, i + splitLength) + insert;
+			} else {
+				result += string.substring(i);
+			}
+		}
+		return result;
+	}
 
 }
