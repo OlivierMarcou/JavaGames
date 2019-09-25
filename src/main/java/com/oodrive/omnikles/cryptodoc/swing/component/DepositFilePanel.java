@@ -168,6 +168,10 @@ public class DepositFilePanel extends JPanel{
         if(depositStatus.getSupplierOrganism() != null)
             supplierOrganism =  depositStatus.getSupplierOrganism().toUpperCase().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
         String decryptedFoldernameDestination= Configuration.destinationFolderPath
+                + File.separatorChar
+                + depositStatus.getLotId()
+                + File.separatorChar
+                + supplierOrganism
                 + File.separatorChar + file.getName().replace(".zip", "");
         File decryptedFileDestination = new File(decryptedFoldernameDestination
                 + File.separatorChar
