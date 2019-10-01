@@ -4,8 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.awt.event.WindowEvent;
+
+import static java.lang.Thread.sleep;
 
 public class Tetris extends JFrame {
 	private JPanel general = new JPanel();
@@ -75,9 +76,9 @@ public class Tetris extends JFrame {
 	};
 	
 	private Point pieceOrigin;
-	private int currentPiece;
+	private int currentPiece = (int) (Math.random()*6);
 	private int rotation;
-	private ArrayList<Integer> nextPieces = new ArrayList<Integer>();
+	private int nextPiece;
 
 	private long score;
 	private Color[][] well;
@@ -96,19 +97,40 @@ public class Tetris extends JFrame {
 		}
 		newPiece();
 	}
-	
+
 	// Put a new, random piece into the dropping position
 	public void newPiece() {
 		pieceOrigin = new Point(5, 2);
-		rotation = 0;
-		if (nextPieces.isEmpty()) {
-			Collections.addAll(nextPieces, 0, 1, 2, 3, 4, 5, 6);
-			Collections.shuffle(nextPieces);
+		if (this.isActive() && collidesAt(pieceOrigin.x, pieceOrigin.y + 1, rotation)){
+			AllRed();
+			this.repaint();
+			JOptionPane.showMessageDialog(this, "score :" +score ,
+					"Gameover !", JOptionPane.YES_NO_OPTION);
+			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			this.dispose();
 		}
-		currentPiece = nextPieces.get(0);
-		nextPieces.remove(0);
+		rotation = 0;
+		currentPiece = nextPiece;
+		nextPiece = (int) (Math.random()*6);
 	}
-	
+
+	private void TwoSeconds() {
+		try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+	}
+
+	private void AllRed() {
+		well = new Color[12][24];
+		for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 23; j++) {
+                well[i][j] = Color.RED;
+            }
+        }
+	}
+
 	// Collision test for the dropping piece
 	private boolean collidesAt(int x, int y, int rotation) {
 		for (Point p : Tetraminos[currentPiece][rotation]) {
@@ -214,6 +236,18 @@ public class Tetris extends JFrame {
 		}
 	}
 
+
+	private void drawNextPiece(Graphics g) {
+		g.setColor(tetraminoColors[nextPiece]);
+		for (Point p : Tetraminos[nextPiece][0]) {
+			int alpha = 127;
+			g.setColor(new Color(200,200,150, alpha));
+			g.fillRect((p.x* 26 )+210,
+					   (p.y * 26)+40,
+					25, 25);
+		}
+	}
+
 	@Override
 	public void paint(Graphics g) {
 		// Paint the well
@@ -232,6 +266,7 @@ public class Tetris extends JFrame {
 		// Display the score
 		g.setColor(Color.WHITE);
 		g.drawString("score : " + score , 10, 60);
+		drawNextPiece(g);
 	}
 
 	public Tetris() {
@@ -276,7 +311,7 @@ public class Tetris extends JFrame {
 			@Override public void run() {
 				while (true) {
 					try {
-						Thread.sleep(1000);
+						sleep(1000);
 						dropDown();
 					} catch ( InterruptedException e ) {}
 				}
