@@ -217,6 +217,7 @@ public class Tetris extends JFrame {
 	@Override
 	public void paint(Graphics g) {
 		// Paint the well
+
 		g.fillRect(0, 0, 26*12, 26*23);
 		for (int i = 0; i < 12; i++) {
 			for (int j = 0; j < 23; j++) {
@@ -224,13 +225,13 @@ public class Tetris extends JFrame {
 				g.fillRect(26*i, 26*j, 25, 25);
 			}
 		}
-		
-		// Display the score
-		g.setColor(Color.WHITE);
-		g.drawString("" + score, 19*12, 25);
-		
+
+
 		// Draw the currently falling piece
 		drawPiece(g);
+		// Display the score
+		g.setColor(Color.WHITE);
+		g.drawString("score : " + score , 10, 60);
 	}
 
 	public Tetris() {
@@ -239,7 +240,7 @@ public class Tetris extends JFrame {
 		setVisible(true);
 
 		init();
-		
+
 		// Keyboard controls
 		addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent e) {
