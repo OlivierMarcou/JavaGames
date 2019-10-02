@@ -4,14 +4,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
+import java.awt.font.TextAttribute;
+import java.text.AttributedString;
 
+import static java.awt.font.TextAttribute.WEIGHT_BOLD;
 import static java.lang.Thread.sleep;
 
 public class Tetris extends JFrame {
 	private JPanel general = new JPanel();
 
 	private static final long serialVersionUID = -8715353373678321308L;
+	private boolean isPause = false;
+	private boolean isOver = false;;
+	private int level = 1;
+	private int levelSize = 500;
 
 	private final Point[][][] Tetraminos = {
 			// I-Piece
@@ -102,12 +108,8 @@ public class Tetris extends JFrame {
 	public void newPiece() {
 		pieceOrigin = new Point(5, 2);
 		if (this.isActive() && collidesAt(pieceOrigin.x, pieceOrigin.y + 1, rotation)){
-			AllRed();
+			isOver = true;
 			this.repaint();
-			JOptionPane.showMessageDialog(this, "score :" +score ,
-					"Gameover !", JOptionPane.YES_NO_OPTION);
-			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-			this.dispose();
 		}
 		rotation = 0;
 		currentPiece = nextPiece;
@@ -122,13 +124,31 @@ public class Tetris extends JFrame {
         }
 	}
 
-	private void AllRed() {
-		well = new Color[12][24];
-		for (int i = 0; i < 12; i++) {
-            for (int j = 0; j < 23; j++) {
-                well[i][j] = Color.RED;
-            }
-        }
+	private void AllRed(Graphics g) {
+			g.setColor(Color.RED);
+			g.fillRect(0,0, this.getWidth(), this.getHeight());
+			g.setColor(Color.WHITE);
+		AttributedString attributedString = getBoldText(g, "GAMEOVER");
+		g.drawString(attributedString.getIterator(),20,200);
+		AttributedString attributedString2 = getBoldText(g, "SCORE :" +score);
+		g.drawString(attributedString2.getIterator(),20, 300);
+	}
+
+	private AttributedString getBoldText(Graphics g, String gameover) {
+		AttributedString attributedString = new AttributedString(gameover);
+		attributedString.addAttribute(TextAttribute.SIZE, 32);
+		attributedString.addAttribute(TextAttribute.FONT, g.getFont());
+		attributedString.addAttribute(TextAttribute.FOREGROUND, Color.WHITE);
+		attributedString.addAttribute(TextAttribute.WEIGHT, WEIGHT_BOLD);
+		return attributedString;
+	}
+
+	private void AllGray(Graphics g) {
+		g.setColor(Color.lightGray);
+		g.fillRect(0,0, this.getWidth(), this.getHeight());
+		g.setColor(Color.WHITE);
+		AttributedString attributedString = getBoldText(g, "PAUSE");
+		g.drawString(attributedString.getIterator(),20,200);
 	}
 
 	// Collision test for the dropping piece
@@ -224,6 +244,7 @@ public class Tetris extends JFrame {
 			score += 800;
 			break;
 		}
+		level = (int) ((score+levelSize) / levelSize);
 	}
 	
 	// Draw the falling piece
@@ -251,22 +272,28 @@ public class Tetris extends JFrame {
 	@Override
 	public void paint(Graphics g) {
 		// Paint the well
-
-		g.fillRect(0, 0, 26*12, 26*23);
-		for (int i = 0; i < 12; i++) {
-			for (int j = 0; j < 23; j++) {
-				g.setColor(well[i][j]);
-				g.fillRect(26*i, 26*j, 25, 25);
+		if(isOver){
+			AllRed(g);
+		}else{
+			if(isPause){
+				AllGray(g);
+			}else{
+				g.fillRect(0, 0, 26 * 12, 26 * 23);
+				for (int i = 0; i < 12; i++) {
+					for (int j = 0; j < 23; j++) {
+						g.setColor(well[i][j]);
+						g.fillRect(26 * i, 26 * j, 25, 25);
+					}
+				}
+				// Draw the currently falling piece
+				drawPiece(g);
+				// Display the score
+				g.setColor(Color.WHITE);
+				g.drawString("score : " + score, 10, 60);
+				g.drawString("level : " + level, 10, 80);
+				drawNextPiece(g);
 			}
 		}
-
-
-		// Draw the currently falling piece
-		drawPiece(g);
-		// Display the score
-		g.setColor(Color.WHITE);
-		g.drawString("score : " + score , 10, 60);
-		drawNextPiece(g);
 	}
 
 	public Tetris() {
@@ -284,24 +311,33 @@ public class Tetris extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_UP:
+					isPause = false;
 					rotate(-1);
 					break;
 				case KeyEvent.VK_DOWN:
+					isPause = false;
 					rotate(+1);
 					break;
 				case KeyEvent.VK_LEFT:
+					isPause = false;
 					move(-1);
 					break;
 				case KeyEvent.VK_RIGHT:
+					isPause = false;
 					move(+1);
 					break;
 				case KeyEvent.VK_SPACE:
+					isPause = false;
 					dropDown();
 					score += 1;
 					break;
-				} 
+				case KeyEvent.VK_P:
+					isPause = !isPause;
+					break;
+
+				}
+				repaint();
 			}
-			
 			public void keyReleased(KeyEvent e) {
 			}
 		});
@@ -311,8 +347,9 @@ public class Tetris extends JFrame {
 			@Override public void run() {
 				while (true) {
 					try {
-						sleep(1000);
-						dropDown();
+						sleep(1000-(level*20));
+						if(!isPause && !isOver)
+							dropDown();
 					} catch ( InterruptedException e ) {}
 				}
 			}
