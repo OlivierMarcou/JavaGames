@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.oodrive.omnikles.cryptographie</groupId>
-    <artifactId>CryptoDoc</artifactId>
-    <version>1.0.0.3</version>
+    <groupId>com.oodrive.omnikles.easter</groupId>
+    <artifactId>Games</artifactId>
+    <version>1.0.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,52 +39,6 @@
     </scm>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.santuario</groupId>
-            <artifactId>xmlsec</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>sun.security.mscapi</groupId>
-            <artifactId>sunmscapi</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20080701</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>4.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kerby</groupId>
-            <artifactId>kerby-asn1</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -93,14 +47,14 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/cryptodoc.properties</include>
+                    <include>**/games.properties</include>
                 </includes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>**/cryptodoc.properties</exclude>
+                    <exclude>**/games.properties</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -155,20 +109,20 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <finalName>CryptoDoc</finalName>
+                    <finalName>Games</finalName>
                     <outputDirectory>target</outputDirectory>
                     <archive>
                         <addMavenDescriptor>true</addMavenDescriptor>
                         <manifestEntries>
-                            <Application-Name>OMNIKLES</Application-Name>
+                            <Application-Name>JavaGames</Application-Name>
                             <Permissions>all-permissions</Permissions>
                             <Codebase>*</Codebase><addClasspath>true</addClasspath>
-                            <Caller-Allowable-Codebase>localhost *.omnikles.com *.omnikles.net *.oodrive.fr *.oodrive.com *.oodrive.net *</Caller-Allowable-Codebase>
+                            <Caller-Allowable-Codebase>localhost *.arkaine.net *.aikane.com </Caller-Allowable-Codebase>
                         </manifestEntries>
                         <manifest>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>com.oodrive.omnikles.cryptodoc.CryptoDoc</mainClass>
+                            <mainClass>net.arkaine.easter.Game</mainClass>
                             <addClasspath>true</addClasspath>
                             <addExtensions />
                             <classpathPrefix />
@@ -176,24 +130,6 @@
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jarsigner-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<id>sign</id>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-                    <keystore>certificate.pfx</keystore>
-                    <alias>1</alias>
-                    <storepass><![CDATA[vOlOBCrtgajl93Of7oXW]]></storepass>
-				</configuration>
-			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
