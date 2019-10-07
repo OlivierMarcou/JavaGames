@@ -372,9 +372,10 @@ public class Tetris extends JFrame {
 					break;
 				case KeyEvent.VK_SPACE:
 					isPause = false;
-					if(!isOver)
+					if(!isOver){
 						dropDown();
-					score += 1;
+					    score += 1;
+					}
 					break;
 				case KeyEvent.VK_P:
 					isPause = !isPause;
