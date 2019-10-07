@@ -22,7 +22,7 @@ public class Tetris extends JFrame {
 	private int levelSize;
 	private Point tetrisSize;
 	private int briqueSize;
-	private int piecesNumber = 11;
+	private int piecesNumber = 10;
 
 
 	private Point pieceOrigin;
