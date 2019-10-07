@@ -22,7 +22,7 @@ public class Tetris extends JFrame {
 	private int levelSize;
 	private Point tetrisSize;
 	private int briqueSize;
-	private int piecesNumber = 9;
+	private int piecesNumber = 11;
 
 
 	private Point pieceOrigin;
@@ -89,24 +89,40 @@ public class Tetris extends JFrame {
 				{ new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(2, 1) },
 				{ new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(0, 2) }
 			},
-			// PLOT-Piece
-			{
-				{ new Point(0, 0)},
-				{ new Point(0, 0)},
-				{ new Point(0, 0)},
-				{ new Point(0, 0)}
-			},
 			// CROSS-Piece
 			{
 				{ new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(2, 1) , new Point(1, 2) },
 					{ new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(2, 1) , new Point(1, 2) },
 					{ new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(2, 1) , new Point(1, 2) },
 					{ new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(2, 1) , new Point(1, 2) }
+			},
+			// trait-Piece
+			{
+					{ new Point(0, 1), new Point(0, 2)},
+					{ new Point(0, 1), new Point(1, 1)},
+					{ new Point(0, 1), new Point(0, 2)},
+					{ new Point(0, 1), new Point(1, 1)}
+			},
+			// V-Piece
+			{
+					{ new Point(1, 1), new Point(1, 2), new Point(2, 1)},
+					{ new Point(1, 1), new Point(2, 1), new Point(1, 0)},
+					{ new Point(1, 1), new Point(1, 0), new Point(0, 1)},
+					{ new Point(1, 1), new Point(0, 1), new Point(1, 2)}
 			}
+			// PLOT-Piece
+//			,{
+//				{ new Point(0, 0)},
+//				{ new Point(0, 0)},
+//				{ new Point(0, 0)},
+//				{ new Point(0, 0)}
+//			}
 	};
 	
 	private final Color[] tetraminoColors = {
-		Color.cyan, Color.blue, Color.orange, Color.yellow, Color.green, Color.pink, Color.red, Color.WHITE, Color.MAGENTA
+		Color.cyan, Color.blue, Color.orange, Color.yellow, Color.green, Color.pink, Color.red,
+			new Color(0xff8855ff), Color.MAGENTA, new Color(0xffff8855)
+			//,Color.WHITE
 	};
 
 	// Creates a border around the well and initializes the dropping piece
@@ -356,7 +372,8 @@ public class Tetris extends JFrame {
 					break;
 				case KeyEvent.VK_SPACE:
 					isPause = false;
-					dropDown();
+					if(!isOver)
+						dropDown();
 					score += 1;
 					break;
 				case KeyEvent.VK_P:
