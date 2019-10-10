@@ -22,7 +22,7 @@ public class Tetris extends JFrame {
 	private int levelSize;
 	private Point tetrisSize;
 	private int briqueSize;
-	private int piecesNumber = 10;
+	private int piecesNumber = 7;
 
 
 	private Point pieceOrigin;
@@ -337,7 +337,8 @@ public class Tetris extends JFrame {
     	g.drawImage(offscreen, 0, 0, this);
 	}
 
-	public Tetris(int levelSize, Point tetrisSize, int briqueSize) {
+	public Tetris(int levelSize, Point tetrisSize, int briqueSize, int piecesNumber) {
+		this.piecesNumber = piecesNumber;
 		this.levelSize = levelSize;
 		this.tetrisSize = tetrisSize;
 		this.briqueSize = briqueSize;

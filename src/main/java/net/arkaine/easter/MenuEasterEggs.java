@@ -1,6 +1,8 @@
 package net.arkaine.easter;
 
 import net.arkaine.easter.demin.Demineur;
+import net.arkaine.easter.poker.ihm.FenetrePrincipale;
+import net.arkaine.easter.poker.process.Partie;
 import net.arkaine.easter.puissance4.Joueur;
 
 import javax.swing.*;
@@ -16,6 +18,7 @@ public class MenuEasterEggs extends JFrame{
     private JButton tetris = new JButton("Tetris");
     private JButton p4 = new JButton("Puissance 4 (deux joueurs)");
     private JButton p5 = new JButton("Demineur");
+    private JButton p6 = new JButton("Poker");
 
     static public TetrisSizeChooser ts = null;
     static public Joueur game4 = null;
@@ -61,6 +64,23 @@ public class MenuEasterEggs extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 demineur = new Demineur(16, 30, 99, 3);
+            }
+        });
+
+        c.gridx=0;
+        c.gridy=3;
+        c.gridheight=1;
+        c.gridwidth=1;
+        add(p6, c);
+        p6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+                }
+                catch(Exception ex){}
+                FenetrePrincipale.getInstance();
+                Partie.getInstance().start();
             }
         });
 
