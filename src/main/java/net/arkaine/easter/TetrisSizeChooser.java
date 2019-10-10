@@ -13,6 +13,7 @@ public class TetrisSizeChooser extends JFrame{
     private JButton sBtn = new JButton("Small");
     private JButton nBtn = new JButton("Normal");
     private JButton bBtn = new JButton("Big");
+    private JButton cBtn = new JButton("Original version");
 
     static public Tetris ts = null;
 
@@ -31,7 +32,7 @@ public class TetrisSizeChooser extends JFrame{
         sBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               ts = new Tetris(200,new Point(10,18),35);
+               ts = new Tetris(200,new Point(10,18),35,10);
             }
         });
 
@@ -43,7 +44,7 @@ public class TetrisSizeChooser extends JFrame{
         nBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ts = new Tetris(500,new Point(12,24),25);
+                ts = new Tetris(500,new Point(12,24),25,10);
 
 
             }
@@ -57,11 +58,23 @@ public class TetrisSizeChooser extends JFrame{
         bBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ts = new Tetris(2000,new Point(20,40),15);
+                ts = new Tetris(2000,new Point(20,40),15, 10);
 
             }
         });
 
+        c.gridx=0;
+        c.gridy=3;
+        c.gridheight=1;
+        c.gridwidth=1;
+        add(cBtn, c);
+        cBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Tetris(500,new Point(12,24),25, 7);
+
+            }
+        });
         setVisible(true);
     }
 }
